@@ -1,0 +1,117 @@
+Week 1;;;
+[hide]Day 1;;;
+TSM;0;1;CLG
+C9;0;1;IMT
+DIG;0;1;NRG
+REN;1;0;TL
+FOX;1;0;TIP
+[hide]Day 2;;;
+REN;0;1;NRG
+DIG;1;0;CLG
+TSM;1;0;TL
+FOX;0;1;C9
+IMT;1;0;TIP
+Week 2;;;
+[hide]Day 1;;;
+TIP;1;0;C9
+TSM;0;1;IMT
+TL;0;1;CLG
+DIG;1;0;REN
+NRG;1;0;FOX
+[hide]Day 2;;;
+TSM;1;0;DIG
+NRG;0;1;IMT
+CLG;0;1;C9
+FOX;0;1;TL
+REN;0;1;TIP
+Week 3;;;
+[hide]Day 1;;;
+TIP;1;0;DIG
+C9;0;1;TSM
+TL;1;0;NRG
+CLG;1;0;FOX
+IMT;1;0;REN
+[hide]Day 2;;;
+TL;1;0;TIP
+NRG;1;0;TSM
+DIG;0;1;C9
+FOX;0;1;IMT
+CLG;1;0;REN
+Week 4;;;
+[hide]Day 1;;;
+TL;1;0;DIG
+C9;1;0;REN
+CLG;0;1;IMT
+TSM;1;0;FOX
+NRG;1;0;TIP
+[hide]Day 2;;;
+IMT;1;0;TL
+C9;1;0;NRG
+REN;0;1;TSM
+TIP;0;1;CLG
+DIG;1;0;FOX
+Week 5;;;
+[hide]Day 1;;;
+FOX;1;0;REN
+NRG;0;1;CLG
+C9;1;0;TL
+TIP;0;1;TSM
+IMT;1;0;DIG
+[hide]Day 2;;;
+FOX;1;0;NRG
+CLG;0;1;TSM
+IMT;1;0;C9
+TL;1;0;REN
+DIG;0;1;TIP
+Week 6;;;
+[hide]Day 1;;;
+NRG;1;0;DIG
+REN;0;1;IMT
+TSM;0;1;C9
+CLG;1;0;TIP
+TL;0;1;FOX
+[hide]Day 2;;;
+REN;0;1;CLG
+DIG;1;0;TSM
+NRG;0;1;C9
+TIP;0;1;FOX
+TL;0;1;IMT
+Week 7;;;
+[hide]Day 1;;;
+TIP;0;1;TL
+FOX;0;1;TSM
+IMT;0;1;CLG
+NRG;1;0;REN
+C9;1;0;DIG
+[hide]Day 2;;;
+TIP;1;0;NRG
+C9;0;1;CLG
+TL;1;0;TSM
+REN;1;0;DIG
+IMT;1;0;FOX
+Week 8;;;
+[hide]Day 1;;;
+REN;0;1;C9
+IMT;1;0;NRG
+CLG;0;1;TL
+TSM;1;0;TIP
+FOX;1;0;DIG
+[hide]Day 2;;;
+C9;1;0;TIP
+NRG;1;0;TL
+TSM;0;1;REN
+DIG;0;1;IMT
+FOX;0;1;CLG
+Week 9;;;
+[hide]Day 1;;;
+TIP;0;1;REN
+CLG;1;0;NRG
+IMT;1;0;TSM
+DIG;0;1;TL
+C9;1;0;FOX
+[hide]Day 2;;;
+REN;1;0;FOX
+TL;1;0;C9
+TIP;0;1;IMT
+CLG;1;0;DIG
+TSM;0;1;NRG

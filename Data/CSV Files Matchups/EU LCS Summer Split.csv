@@ -1,0 +1,117 @@
+Week 1;;;
+[hide]Day 1;;;
+OG;0;2;G2
+S04;2;0;UoL
+FNC;2;0;GIA
+H2k;1;1;ROC
+SPY;1;1;VIT
+[hide]Day 2;;;
+SPY;1;1;ROC
+GIA;0;2;G2
+H2k;1;1;S04
+UoL;2;0;OG
+VIT;1;1;FNC
+Week 2;;;
+[hide]Day 1;;;
+H2k;2;0;GIA
+FNC;2;0;UoL
+SPY;2;0;S04
+VIT;1;1;OG
+ROC;1;1;G2
+[hide]Day 2;;;
+SPY;0;2;G2
+H2k;2;0;FNC
+S04;1;1;OG
+VIT;0;2;ROC
+GIA;2;0;UoL
+Week 3;;;
+[hide]Day 1;;;
+ROC;0;2;OG
+VIT;2;0;UoL
+SPY;2;0;GIA
+FNC;2;0;S04
+H2k;1;1;G2
+[hide]Day 2;;;
+UoL;0;2;G2
+SPY;0;2;FNC
+GIA;2;0;OG
+ROC;0;2;S04
+VIT;0;2;H2k
+Week 4;;;
+[hide]Day 1;;;
+S04;1;1;G2
+FNC;1;1;OG
+SPY;1;1;H2k
+VIT;1;1;GIA
+ROC;1;1;UoL
+[hide]Day 2;;;
+GIA;0;2;S04
+VIT;1;1;G2
+SPY;1;1;OG
+ROC;0;2;FNC
+H2k;0;2;UoL
+Week 5;;;
+[hide]Day 1;;;
+SPY;1;1;UoL
+VIT;1;1;S04
+FNC;0;2;G2
+ROC;0;2;GIA
+H2k;1;1;OG
+[hide]Day 2;;;
+ROC;1;1;H2k
+VIT;0;2;SPY
+GIA;2;0;FNC
+UoL;1;1;S04
+G2;1;1;OG
+Week 6;;;
+[hide]Day 1;;;
+FNC;2;0;VIT
+G2;1;1;GIA
+S04;0;2;H2k
+OG;0;2;UoL
+ROC;0;2;SPY
+[hide]Day 2;;;
+OG;0;2;VIT
+G2;2;0;ROC
+S04;0;2;SPY
+UoL;1;1;FNC
+GIA;2;0;H2k
+Week 7;;;
+[hide]Day 1;;;
+ROC;0;2;VIT
+FNC;2;0;H2k
+UoL;2;0;GIA
+G2;1;1;SPY
+OG;1;1;S04
+[hide]Day 2;;;
+UoL;1;1;VIT
+G2;2;0;H2k
+OG;2;0;ROC
+GIA;0;2;SPY
+S04;1;1;FNC
+Week 8;;;
+[hide]Day 1;;;
+FNC;0;2;SPY
+H2k;2;0;VIT
+OG;0;2;GIA
+S04;0;2;ROC
+G2;2;0;UoL
+[hide]Day 2;;;
+G2;2;0;S04
+UoL;2;0;ROC
+GIA;2;0;VIT
+H2k;0;2;SPY
+OG;1;1;FNC
+Week 9;;;
+[hide]Day 1;;;
+UoL;0;2;H2k
+FNC;1;1;ROC
+G2;1;1;VIT
+OG;0;2;SPY
+S04;1;1;GIA
+[hide]Day 2;;;
+GIA;2;0;ROC
+OG;0;2;H2k
+S04;1;1;VIT
+G2;2;0;FNC
+UoL;2;0;SPY

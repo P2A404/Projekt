@@ -1,0 +1,93 @@
+Week 1;;;
+[hide]Day 1;;;
+FW;0;2;ahq
+HKE;2;0;CGE
+[hide]Day 2;;;
+MS;0;2;HKE
+M17;0;2;ahq
+[hide]Day 3;;;
+XG;1;1;MS
+TPA;2;0;M17
+Week 2;;;
+[hide]Day 1;;;
+M17;2;0;MS
+ahq;2;0;HKE
+[hide]Day 2;;;
+CGE;0;2;XG
+TPA;0;2;FW
+[hide]Day 3;;;
+TPA;2;0;CGE
+XG;2;0;FW
+Week 3;;;
+[hide]Day 1;;;
+M17;2;0;XG
+MS;0;2;FW
+[hide]Day 2;;;
+FW;2;0;CGE
+M17;1;1;HKE
+[hide]Day 3;;;
+CGE;0;2;ahq
+HKE;1;1;TPA
+Week 4;;;
+[hide]Day 1;;;
+MS;1;1;TPA
+CGE;0;2;M17
+[hide]Day 2;;;
+TPA;2;0;XG
+ahq;2;0;MS
+[hide]Day 3;;;
+XG;0;2;ahq
+HKE;1;1;FW
+Week 5;;;
+[hide]Day 1;;;
+HKE;1;1;XG
+FW;2;0;M17
+[hide]Day 2;;;
+CGE;0;2;MS
+ahq;2;0;TPA
+Week 6;;;
+[hide]Day 1;;;
+ahq;1;1;HKE
+CGE;0;2;TPA
+[hide]Day 2;;;
+TPA;2;0;MS
+ahq;2;0;XG
+[hide]Day 3;;;
+FW;2;0;MS
+XG;0;2;M17
+Week 7;;;
+[hide]Day 1;;;
+MS;1;1;M17
+XG;0;2;FW
+[hide]Day 2;;;
+CGE;0;2;FW
+HKE;1;1;M17
+[hide]Day 3;;;
+ahq;2;0;CGE
+TPA;1;1;HKE
+Week 8;;;
+[hide]Day 1;;;
+M17;0;2;FW
+CGE;0;2;HKE
+[hide]Day 2;;;
+XG;0;2;TPA
+MS;0;2;ahq
+[hide]Day 3;;;
+FW;2;0;HKE
+M17;2;0;CGE
+[hide]Day 4;;;
+MS;1;1;XG
+TPA;0;2;ahq
+Week 9;;;
+[hide]Day 1;;;
+XG;1;1;CGE
+HKE;1;1;MS
+[hide]Day 2;;;
+ahq;1;1;M17
+FW;0;2;TPA
+[hide]Day 3;;;
+XG;0;2;HKE
+MS;2;0;CGE
+[hide]Day 4;;;
+M17;1;1;TPA
+FW;1;1;ahq

@@ -1,0 +1,146 @@
+Week 1;;;
+[hide]Day 1;;;
+EDG;2;1;NB
+SS;1;2;GT
+[hide]Day 2;;;
+RNG;2;1;WE
+OMG;0;2;IM
+[hide]Day 3;;;
+EDG;2;0;SS
+GT;2;0;SAT
+NB;2;1;iG
+[hide]Day 4;;;
+LGD;0;2;IM
+RNG;2;0;VG
+WE;2;0;OMG
+Week 2;;;
+[hide]Day 1;;;
+VG;2;0;LGD
+WE;2;1;IM
+[hide]Day 2;;;
+NB;0;2;GT
+iG;2;1;SAT
+[hide]Day 3;;;
+RNG;2;0;OMG
+VG;2;1;IM
+WE;2;1;LGD
+[hide]Day 4;;;
+EDG;2;0;SAT
+iG;2;0;GT
+NB;0;2;SS
+Week 3;;;
+[hide]Day 1;;;
+SS;2;0;SAT
+EDG;2;1;iG
+[hide]Day 2;;;
+RNG;2;0;LGD
+VG;2;0;OMG
+[hide]Day 3;;;
+SS;2;0;iG
+NB;2;1;SAT
+EDG;2;0;GT
+[hide]Day 4;;;
+WE;2;0;VG
+RNG;2;0;IM
+LGD;2;1;OMG
+Week 4;;;
+[hide]Day 1;;;
+EDG;2;1;RNG
+iG;1;2;OMG
+[hide]Day 2;;;
+GT;2;1;WE
+LGD;2;0;SS
+[hide]Day 3;;;
+NB;2;0;VG
+iG;0;2;RNG
+SAT;0;2;IM
+[hide]Day 4;;;
+GT;2;0;LGD
+SS;2;1;WE
+Week 5;;;
+[hide]Day 1;;;
+VG;2;1;SAT
+EDG;2;1;OMG
+[hide]Day 2;;;
+NB;0;2;IM
+iG;1;2;WE
+[hide]Day 3;;;
+SS;2;0;OMG
+EDG;2;0;VG
+LGD;2;0;SAT
+[hide]Day 4;;;
+GT;0;2;IM
+NB;1;2;RNG
+Week 6;;;
+[hide]Day 1;;;
+WE;2;0;SAT
+GT;1;2;RNG
+[hide]Day 2;;;
+iG;1;2;IM
+OMG;2;0;NB
+[hide]Day 3;;;
+GT;0;2;VG
+RNG;2;0;SS
+EDG;2;0;WE
+[hide]Day 4;;;
+NB;2;1;LGD
+SAT;2;0;OMG
+Week 7;;;
+[hide]Day 1;;;
+VG;2;0;iG
+EDG;2;1;LGD
+[hide]Day 2;;;
+SS;0;2;IM
+NB;0;2;WE
+[hide]Day 3;;;
+SAT;0;2;RNG
+GT;0;2;OMG
+iG;0;2;LGD
+[hide]Day 4;;;
+EDG;2;0;IM
+SS;2;1;VG
+Week 8;;;
+[hide]Day 1;;;
+IM;2;1;OMG
+WE;2;1;RNG
+[hide]Day 2;;;
+NB;0;2;EDG
+GT;1;2;SS
+[hide]Day 3;;;
+IM;2;0;LGD
+OMG;1;2;WE
+VG;1;2;RNG
+[hide]Day 4;;;
+GT;0;2;EDG
+SAT;1;2;NB
+iG;1;2;SS
+Week 9;;;
+[hide]Day 1;;;
+SAT;1;2;iG
+GT;2;0;NB
+[hide]Day 2;;;
+IM;1;2;WE
+LGD;2;0;VG
+[hide]Day 3;;;
+SAT;0;2;EDG
+GT;0;2;iG
+SS;2;0;NB
+[hide]Day 4;;;
+LGD;2;1;WE
+IM;0;2;VG
+OMG;2;1;RNG
+Week 10;;;
+[hide]Day 1;;;
+LGD;1;2;RNG
+OMG;1;2;VG
+[hide]Day 2;;;
+SAT;1;2;SS
+iG;0;2;EDG
+[hide]Day 3;;;
+VG;2;0;WE
+OMG;0;2;LGD
+IM;0;2;RNG
+[hide]Day 4;;;
+SAT;1;2;GT
+SS;0;2;EDG
+iG;2;1;NB
