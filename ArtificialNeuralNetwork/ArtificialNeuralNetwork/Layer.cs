@@ -9,15 +9,13 @@ namespace ArtificialNeuralNetwork
     class Layer
     {
         //Variables
-        public Neuron[] neurons;
-        public Layer nextLayer;
+        public double[,] weights;
 
         //Constructor
-        public Layer(int size, Layer _nextLayer)
+        public Layer(int size, int prevSize)
         {
-            neurons = new Neuron[size];
-            nextLayer = _nextLayer;
-            //make better
+            weights = new double[size, prevSize];
+            Console.WriteLine($"Made new layer with {weights.GetLength(0)} and {weights.GetLength(1)}");
         }
     }
 }
