@@ -110,4 +110,37 @@ class TransferFunction
 
 		return result;
 	}
+
+	public double[] SoftMax(double[] inputArray, double[,] weightArray)
+	{
+		double[] result = new double[weightArray.GetLength(0)];
+
+		int k = 0;
+
+		for (int i = 0; i < weightArray.GetLength(0); i++)
+		{
+			foreach (double input in inputArray)
+			{
+				result[k] += input * weightArray[i, k];
+				k++;
+			}
+
+		}
+
+		double sumExp;
+
+		foreach (double input in result)
+		{
+			sumExp += Exp(input);
+		}
+
+		foreach (double res in result)
+		{
+			k = 0;
+			result[k] = Exp(k) / sumExp;
+			k++;
+		}
+
+		return result;
+	}
 }
