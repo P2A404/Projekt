@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace ArtificialNeuralNetwork
 {
-    class Layer
+    class WeightLayer
     {
         //Variables
         public double[,] weights;
 
         //Constructor
-        public Layer(int size, int prevSize)
+        public WeightLayer(int size, int prevSize)
         {
             weights = new double[size, prevSize];
             Console.WriteLine($"Made new layer with {weights.GetLength(0)} and {weights.GetLength(1)}");
