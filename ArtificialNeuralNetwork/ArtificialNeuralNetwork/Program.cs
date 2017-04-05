@@ -15,6 +15,7 @@ namespace ArtificialNeuralNetwork
             Console.WriteLine("Hello World!");
             #endregion
             NeuralNetwork NN = new NeuralNetwork(new int[] { 2, 3, 3, 2 });
+            int[] test = new int[3];
             #region end
             Console.WriteLine("Goodbye Cruel World.");
             Console.ReadLine();

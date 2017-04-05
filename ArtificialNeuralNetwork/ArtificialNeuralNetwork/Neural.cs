@@ -23,6 +23,11 @@ namespace ArtificialNeuralNetwork
             }
         }
 
+        public void Training ()
+        {
+
+        }
+        
         public double[] Cycle (double[] input)
         {
             if (input.Length != inputSize)
@@ -34,25 +39,28 @@ namespace ArtificialNeuralNetwork
                 double[] data = input;
                 for (int i = 0; i < layers.Length; i++)
                 {
-                    data = Forward(data, layers[i].weights);
+                    data = Sum(data, layers[i].weights);
+                    //Activation Function
                 }
+                //Softmax
+                //Possibility Tree
                 return data;
             }
         }
 
-        public double[] Forward (double[] input, double[,] weights)
+        public double[] Sum (double[] input, double[,] weights)
         {
-            double[] ret = new double[weights.GetLength(0)];
-            for (int i = 0; i < ret.Length; i++)
+            double[] returnArray = new double[weights.GetLength(0)];
+            for (int outputIndex = 0; outputIndex < returnArray.Length; outputIndex++)
             {
-                double curr = 0;
-                for (int i2 = 0; i2 < input.Length; i++)
+                for (int inputIndex = 0; inputIndex < input.Length; outputIndex++)
                 {
-                    curr += input[i2] * weights[i, i2];
+                    returnArray[outputIndex] += input[inputIndex] * weights[outputIndex, inputIndex];
                 }
-                ret[i] = curr;
             }
-            return ret;
+            return returnArray;
         }
+
+
     }
 }
