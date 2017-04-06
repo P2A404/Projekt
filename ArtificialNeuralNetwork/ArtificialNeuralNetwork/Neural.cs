@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Math;
 
 namespace ArtificialNeuralNetwork
 {
@@ -28,13 +29,14 @@ namespace ArtificialNeuralNetwork
 
         //Functions
 
-        public delegate double TranferFunction(double input);
+        public delegate double[] TranferFunction(double[] input);
 
         public void Training ()
         {
-
+            //Cycle
+            //Learning Function
         }
-        
+
         public double[] Cycle (double[] input)
         {
             if (input.Length != inputSize)
@@ -47,16 +49,21 @@ namespace ArtificialNeuralNetwork
                 Console.WriteLine($"Layer size is {layers.Length}");
                 for (int i = 0; i < layers.Length; i++)
                 {
-                    //sum
-                    data = Sum(data, layers[i].weights);
-                    //activation
-                    for(int j = 0; j < data.Length; j++)
+                    if (i != layers.Length - 1)
                     {
-                        data[j] = _tf(data[j]);
+                        //sum
+                        data = Sum(data, layers[i].weights);
+                        //activation
+                        data = _tf(data);
+                        PrintArray("layer output:", data);
                     }
-                    PrintArray("layer output:", data);
+                    else
+                    {
+                        data = SoftMax(data, layers[i].weights);
+                        PrintArray("layer output:", data);
+                        Console.WriteLine($"Softmax: {data[0]+data[1]}");
+                    }
                 }
-                //Softmax
                 //Possibility Tree
                 return data;
             }
@@ -90,6 +97,25 @@ namespace ArtificialNeuralNetwork
                 }
             }
             return returnArray;
+        }
+
+        public double[] SoftMax(double[] inputArray, double[,] weightArray)
+        {
+            double[] result = Sum(inputArray, weightArray);
+
+            double sumExp = 0;
+
+            foreach (double input in result)
+            {
+                sumExp += Exp(input);
+            }
+
+            for(int i = 0; i < result.Length; i++)
+            {
+                result[i] = Exp(result[i]) / sumExp;
+            }
+
+            return result;
         }
 
 

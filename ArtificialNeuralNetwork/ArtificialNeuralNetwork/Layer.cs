@@ -19,7 +19,8 @@ namespace ArtificialNeuralNetwork
             {
                 for (int i2 = 0; i2 < weights.GetLength(1); i2++)
                 {
-                    weights[i,i2] = rand.NextDouble();
+                    //weights[i,i2] = rand.NextDouble();
+                    weights[i, i2] = 1;
                 }
             }
             Console.WriteLine($"Made new layer with {weights.GetLength(0)} and {weights.GetLength(1)}");

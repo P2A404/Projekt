@@ -9,22 +9,37 @@ namespace ArtificialNeuralNetwork
 {
     class TransferFunctions
     {
-        public double Logistic (double input)
+        public double[] Logistic (double[] input)
         {
-            return 1 / (1 + Exp(-input));
+            double[] ret = new double[input.Length];
+            for (int i = 0; i < input.Length; i++)
+            {
+                ret[i] = 1 / (1 + Exp(-input[i]));
+            }
+            return ret;
         }
 
-        public double Tahn (double input)
+        public double[] Tahn (double[] input)
         {
-            return 2 / (1 + Exp(-2 * input)) - 1;
+            double[] ret = new double[input.Length];
+            for (int i = 0; i < input.Length; i++)
+            {
+                ret[i] = 2 / (1 + Exp(-2 * input[i])) - 1;
+            }
+            return ret;
         }
 
-        public double Hyperbolic (double input)
+        public double[] Hyperbolic (double[] input)
         {
-            return (Exp(input) - Exp(-input)) / (Exp(input) + Exp(-input));
+            double[] ret = new double[input.Length];
+            for (int i = 0; i < input.Length; i++)
+            {
+                ret[i] = (Exp(input[i]) - Exp(-input[i])) / (Exp(input[i]) + Exp(-input[i]));
+            }
+            return ret;
         }
 
-        public double Linear (double input)
+        public double[] Linear (double[] input)
         {
             return input;
         }
