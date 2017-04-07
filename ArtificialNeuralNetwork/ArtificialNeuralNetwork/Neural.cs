@@ -45,18 +45,33 @@ namespace ArtificialNeuralNetwork
             }
             else
             {
-                double[] data = input;
+                //Set up bias node for input
+                double[] data = new double[input.Length + 1];
+                for (int i = 0; i < data.Length; i++)
+                {
+                    if (i == 0)
+                    {
+                        data[i] = 1;
+                    }
+                    else
+                    {
+                        data[i] = input[i-1];
+                    }
+                }
+                //Cycle through network
                 Console.WriteLine($"Layer size is {layers.Length}");
                 for (int i = 0; i < layers.Length; i++)
                 {
+                    //Use Transferfunction on all layers except the last
                     if (i != layers.Length - 1)
                     {
-                        //sum
+                        //Find sums for each neuron
                         data = Sum(data, layers[i].weights);
-                        //activation
+                        //Use Transferfunction on each sum
                         data = _tf(data);
                         PrintArray("layer output:", data);
                     }
+                    //Use Softmax on last layer
                     else
                     {
                         data = SoftMax(data, layers[i].weights);
