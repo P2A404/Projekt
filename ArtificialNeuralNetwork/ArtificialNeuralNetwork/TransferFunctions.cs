@@ -43,5 +43,22 @@ namespace ArtificialNeuralNetwork
         {
             return input;
         }
+
+        public double[] SoftMax(double[] input)
+        {
+            double sumExp = 0;
+
+            foreach (double num in input)
+            {
+                sumExp += Exp(num);
+            }
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                input[i] = Exp(input[i]) / sumExp;
+            }
+
+            return input;
+        }
     }
 }

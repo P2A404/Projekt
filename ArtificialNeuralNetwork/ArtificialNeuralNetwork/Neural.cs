@@ -12,13 +12,15 @@ namespace ArtificialNeuralNetwork
         //Variables
         public WeightLayer[] layers;
         public int inputSize;
-        private TranferFunction _tf;
+        private TranferFunction _activationFunction;
+        private TranferFunction _outputFunction;
         private Random rand = new Random();
 
         //Constructor
-        public NeuralNetwork(int[] size, TranferFunction TF)
+        public NeuralNetwork(int[] size, TranferFunction activationFunction, TranferFunction outputFunction)
         {
-            _tf = TF;
+            _activationFunction = activationFunction;
+            _outputFunction = outputFunction;
             inputSize = size[0];
             layers = new WeightLayer[size.Length-1];
             for (int i = 0; i < layers.Length; i++)
@@ -68,13 +70,14 @@ namespace ArtificialNeuralNetwork
                         //Find sums for each neuron
                         data = Sum(data, layers[i].weights);
                         //Use Transferfunction on each sum
-                        data = _tf(data);
+                        data = _activationFunction(data);
                         PrintArray("layer output:", data);
                     }
                     //Use Softmax on last layer
                     else
                     {
-                        data = SoftMax(data, layers[i].weights);
+                        data = Sum(data, layers[i].weights);
+                        data = _outputFunction(data);
                         PrintArray("layer output:", data);
                         Console.WriteLine($"Softmax: {data[0]+data[1]}");
                     }
@@ -113,26 +116,6 @@ namespace ArtificialNeuralNetwork
             }
             return returnArray;
         }
-
-        public double[] SoftMax(double[] inputArray, double[,] weightArray)
-        {
-            double[] result = Sum(inputArray, weightArray);
-
-            double sumExp = 0;
-
-            foreach (double input in result)
-            {
-                sumExp += Exp(input);
-            }
-
-            for(int i = 0; i < result.Length; i++)
-            {
-                result[i] = Exp(result[i]) / sumExp;
-            }
-
-            return result;
-        }
-
 
     }
 }
