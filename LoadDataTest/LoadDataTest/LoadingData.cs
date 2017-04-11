@@ -9,27 +9,51 @@ namespace LoadDataTest
 {
     class LoadingData
     {
+        public string [][,] LoadPath(string path)
+        {
+            int NOFilesInPath = GetFileNames(path).Length;
+            string[][,] FullDataArray = new string[NOFilesInPath][,];
+            string[,] Data;
 
-        public string[] GetFileNames()
-        {            
-            string[] files = Directory.GetFiles(@"C:\Users\Rasmus\Desktop\Python\Backup\Data\CSV Files Champion Data\", "*.csv");
+            // Loading in all files in  given path
+            for (int i = 0; i < NOFilesInPath; i++)
+            {
+                // Loading one file
+                Data = LoadCsv(path + @"\" + GetFileNames(path)[i]);
+
+                // Calculating the number of rows and collums
+                int NumberOfRows = Data.GetLength(0);
+                int NumberOfCollums = Data.GetLength(1);
+
+                // New instance of 2d array
+                FullDataArray[i] = new string[NumberOfRows, NumberOfCollums];
+
+                //Loading data into Full Data Array
+                for (int x = 0; x < NumberOfRows; x++)
+                {
+                    for (int y = 0; y < NumberOfCollums; y++)
+                    {
+                        FullDataArray[i][x, y] = Data[x, y];
+                    }
+                }
+            }
+            return FullDataArray;
+
+        }
+
+        public string[] GetFileNames(string path)
+        {
+            string[] files = Directory.GetFiles(path, "*.csv");
 
             for (int index = 0; index < files.Length; index++)
             {
                 files[index] = Path.GetFileName(files[index]);
             }
-            
-            foreach (var item in files)
-            {
-                Console.WriteLine(item);
-            }
-            
-            return files;    
+
+            return files;
         }
 
-        
-
-        public string[,,] LoadCsv(string path)
+        public string[,] LoadCsv(string path)
         {
 
             // Get the file's text.
@@ -42,19 +66,19 @@ namespace LoadDataTest
 
             // See how many rows and columns there are.
             int num_rows = lines.Length;
-            int num_cols = lines[0].Split(',').Length;
-            int num_files = GetFileNames().Length;
+            int num_cols = lines[0].Split(';').Length;
+
 
             // Allocate the data array.
-            string[,,] values = new string[num_rows, num_cols, num_files];
+            string[,] values = new string[num_rows, num_cols];
 
             // Load the array.
             for (int r = 0; r < num_rows; r++)
             {
-                string[] line_r = lines[r].Split(',');
+                string[] line_r = lines[r].Split(';');
                 for (int c = 0; c < num_cols; c++)
                 {
-                    values[r, c, 0] = line_r[c];
+                    values[r, c] = line_r[c];
                 }
             }
 
@@ -62,12 +86,12 @@ namespace LoadDataTest
             return values;
         }
 
-        public void PrintArray(string[,,] values)
+        public void PrintArray(string[,] values)
         {
             foreach (var item in values)
             {
                 Console.WriteLine(item);
             }
-        }
+        }     
     }
 }
