@@ -7,10 +7,12 @@ using static System.Math;
 
 namespace ArtificialNeuralNetwork
 {
+    //make layers a class consturct med activering og størrelse
+    //
     class NeuralNetwork
     {
         //Variables
-        public WeightLayer[] layers;
+        public Layer[] layers;
         public int inputSize;
         private TranferFunction _activationFunction;
         private TranferFunction _outputFunction;
@@ -22,15 +24,33 @@ namespace ArtificialNeuralNetwork
             _activationFunction = activationFunction;
             _outputFunction = outputFunction;
             inputSize = size[0];
-            layers = new WeightLayer[size.Length-1];
+            layers = new Layer[size.Length-1];
             for (int i = 0; i < layers.Length; i++)
             {
-                layers[i] = new WeightLayer(size[i+1], size[i], rand);
+                layers[i] = new Layer(size[i+1], size[i], rand);
             }
         }
 
         //Functions
 
+        public void AddLayer(Layer lay)
+        //Work in progress
+        {
+            Layer[] newLayers = new Layer[layers.Length + 1];
+            for (int i = 0; i < newLayers.Length; i++)
+            {
+                if (i == newLayers.Length-1)
+                {
+                    newLayers[i] = lay;
+                }
+                else
+                {
+                    newLayers[i] = layers[i];
+                }
+            }
+            layers = newLayers;
+        }
+        
         public delegate double[] TranferFunction(double[] input);
 
         public void Training ()
@@ -41,6 +61,7 @@ namespace ArtificialNeuralNetwork
 
         public double[] Cycle (double[] input)
         {
+            //double check if bias works!
             if (input.Length != inputSize)
             {
                 throw new Exception($"Wrong input array size, expected {inputSize}, but got {input.Length}.");
@@ -60,25 +81,26 @@ namespace ArtificialNeuralNetwork
                         data[i] = input[i-1];
                     }
                 }
+                PrintArray("Data:",data);
                 //Cycle through network
-                Console.WriteLine($"Layer size is {layers.Length}");
                 for (int i = 0; i < layers.Length; i++)
                 {
                     //Use Transferfunction on all layers except the last
                     if (i != layers.Length - 1)
                     {
+                        PrintArray($"Pre-Data Layer {i}:", data);
                         //Find sums for each neuron
                         data = Sum(data, layers[i].weights);
                         //Use Transferfunction on each sum
                         data = _activationFunction(data);
-                        PrintArray("layer output:", data);
+                        PrintArray($"Data Layer {i}:", data);
                     }
                     //Use Softmax on last layer
                     else
                     {
                         data = Sum(data, layers[i].weights);
                         data = _outputFunction(data);
-                        PrintArray("layer output:", data);
+                        PrintArray("Data output:", data);
                         Console.WriteLine($"Softmax: {data[0]+data[1]}");
                     }
                 }
