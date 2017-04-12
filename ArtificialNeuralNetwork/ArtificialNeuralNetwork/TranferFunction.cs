@@ -20,7 +20,6 @@ class TransferFunction
 				result[k] += input * weightArray[i, k];
 				k++;
 			}
-
 		}
 
 		foreach (double res in result)
@@ -138,6 +137,108 @@ class TransferFunction
 		{
 			k = 0;
 			result[k] = Exp(k) / sumExp;
+			k++;
+		}
+
+		return result;
+	}
+
+	//Deretive
+
+	public double[] LogistikDerivative(double[] inputArray, double[,] weightArray)
+	{
+		double[] result = new double[weightArray.GetLength(0)];
+
+		int k = 0;
+
+		for (int i = 0; i < weightArray.GetLength(0); i++)
+		{
+			foreach (double input in inputArray)
+			{
+				result[k] += input * weightArray[i, k];
+				k++;
+			}
+		}
+
+		foreach (double res in result)
+		{
+			k = 0;
+			result[k] = -Exp(res) / Pow((1 + Exp(res)), 2);
+			k++;
+		}
+
+		return result;
+	}
+
+	public double[] TahnDerivative(double[] inputArray, double[,] weightArray)
+	{
+		double[] result = new double[weightArray.GetLength(0)];
+
+		int k = 0;
+
+		for (int i = 0; i < weightArray.GetLength(0); i++)
+		{
+			foreach (double input in inputArray)
+			{
+				result[k] += input * weightArray[i, k];
+				k++;
+			}
+		}
+
+		foreach (double res in result)
+		{
+			k = 0;
+			result[k] = -(4 * Exp(-2 * res)) / (Pow((1 + Exp(-2 * res)),2));
+			k++;
+		}
+
+		return result;
+	}
+
+	public double[] HyperbolicDeivative(double[] inputArray, double[,] weightArray)
+	{
+		double[] result = new double[weightArray.GetLength(0)];
+
+		int k = 0;
+
+		for (int i = 0; i < weightArray.GetLength(0); i++)
+		{
+			foreach (double input in inputArray)
+			{
+				result[k] += input * weightArray[i, k];
+				k++;
+			}
+		}
+
+		foreach (double res in result)
+		{
+			k = 0;
+			result[k] = 4 * Exp(res) / Pow((Exp(2 * res) + 1), 2);
+			k++;
+		}
+
+		return result;
+	}
+
+	public double[] LinearDeivative(double[] inputArray, double[,] weightArray)
+	{
+		double[] result = new double[weightArray.GetLength(0)];
+
+		int k = 0;
+
+		for (int i = 0; i < weightArray.GetLength(0); i++)
+		{
+			foreach (double input in inputArray)
+			{
+				result[k] += input * weightArray[i, k];
+				k++;
+			}
+		}
+
+		foreach (double res in result)
+		{
+			k = 0;
+			result[k] = 1;
 			k++;
 		}
 
