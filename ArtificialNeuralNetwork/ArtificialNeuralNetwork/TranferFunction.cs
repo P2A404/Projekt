@@ -126,7 +126,7 @@ class TransferFunction
 
 		}
 
-		double sumExp;
+        double sumExp = 0;
 
 		foreach (double input in result)
 		{
