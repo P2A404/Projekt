@@ -31,10 +31,69 @@ namespace ArtificialNeuralNetwork
 
         public delegate double[] TranferFunction(double[] input);
 
-        public void Training ()
+        public void Training (double[][] trainingData) // All training data as input
         {
             //Cycle
             //Learning Function
+
+            // layers[i].weight.GetLength(0); row
+            // layers[i].weight.GetLength(1); column
+
+            double totalErrorTerm = 0, trainingsRate = 0.001;
+
+            double[][] errorTerm = new double[layers.Length][];
+            double[][] sumOfOutputError = new double[layers.Length][];
+
+            for (int l = 0; l < layers.GetLength(0); l++)
+            {
+                errorTerm[l] = new double[layers[l].weights.GetLength(0)];
+                sumOfOutputError[l] = new double[layers[l].weights.GetLength(0)];
+            }
+
+            do
+            {
+                Array.Clear(errorTerm, 0, errorTerm.Length);
+                Array.Clear(sumOfOutputError, 0, sumOfOutputError.Length);
+
+                for (int k = 0; k < trainingData.Length; k++)
+                {
+                    Cycle(trainingData[k]);
+
+                    CalculateErrorTerm(Weight, errorTerm, CycleInfo); // CycleInfo = neuron output, zum, matchResult ...
+                    CalculateSumError(errorTerm, CycleInfo, sumOfOutputError);
+                }
+
+                UpdateWeights(sumOfOutputError, trainingsRate);
+
+                //...
+
+            } while (totalErrorTerm > 0.2); // Changeable Error term
+        }
+
+        private void CalculateErrorTerm(double[][] weight, double[][] errorTerm, object cycleInfo)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void CalculateSumError(double[][] errorTerm, object cycleInfo, double[][] sumOfOutputError)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void UpdateWeights(double[][] sumOfOutputError, double trainingsRate)
+        {
+            double sumValue;
+            for (int l = 0; l < layers.Length; l++)
+            {
+                for (int i = 0; i < layers[i].weights.GetLength(0); i++)
+                {
+                    sumValue = sumOfOutputError[l][i];
+                    for (int j = 0; j < layers[i].weights.GetLength(1); j++)
+                    {
+                        layers[l].weights[i][j] -= trainingsRate * (sumValue + lambdaWeight);
+                    }
+                }
+            }
         }
 
         public double[] Cycle (double[] input)
