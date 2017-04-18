@@ -96,22 +96,21 @@ namespace ArtificialNeuralNetwork
                     }
                     data = newdata;
                     PrintArray($"Data Layer {i}:", data);
-                    //Use Transferfunction on all layers except the last
-                    if (i != layers.Length - 1)
+                    //Find sums for each neuron
+                    data = Sum(data, layers[i].weights);
+                    layers[i].sums = Sum(data, layers[i].weights);
+                    //Use Transferfunction / Outputfunction on each sum
+                    if(i != layers.Length-1)
                     {
-                        //Find sums for each neuron
-                        data = Sum(data, layers[i].weights);
-                        //Use Transferfunction on each sum
                         data = _activationFunction(data);
+                        layers[i].activations = _activationFunction(data);
                     }
-                    //Use Softmax on last layer
                     else
                     {
-                        data = Sum(data, layers[i].weights);
                         data = _outputFunction(data);
-                        PrintArray("Data output:", data);
-                        Console.WriteLine($"Softmax check: {data[0]+data[1]}");
+                        layers[i].activations = _outputFunction(data);
                     }
+                    PrintArray("Data output:", data);
                 }
                 //Possibility Tree
                 return data;
