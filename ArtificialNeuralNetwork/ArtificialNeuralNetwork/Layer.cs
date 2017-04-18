@@ -8,12 +8,13 @@ namespace ArtificialNeuralNetwork
 {
     class Layer
     {
-        //Variables
+        #region Variables
         public double[,] weights;
         public double[] activations;
         public double[] zums;
+        #endregion
 
-        //Constructor
+        #region Constructor
         public Layer(int size, int prevSize, Random rand)
         {
             activations = new double[size];
@@ -32,7 +33,7 @@ namespace ArtificialNeuralNetwork
                     weights[i, i2] = 1;
                 }
             }
-            Console.WriteLine($"Made new layer with {weights.GetLength(0)} and {weights.GetLength(1)}");
         }
+        #endregion
     }
 }

@@ -8,17 +8,18 @@ using static System.Math;
 namespace ArtificialNeuralNetwork
 {
     //make layers a class consturct med activering og størrelse
-    //
     class NeuralNetwork
     {
-        //Variables
+        #region Variables
         public Layer[] layers;
         public int inputSize;
         private TranferFunction _activationFunction;
         private TranferFunction _outputFunction;
         private Random rand = new Random();
+        #endregion
 
-        //Constructor
+        #region Constructors
+        //neuralt netværk constructor med bestemt størrelse
         public NeuralNetwork(int[] size, TranferFunction activationFunction, TranferFunction outputFunction)
         {
             _activationFunction = activationFunction;
@@ -38,12 +39,15 @@ namespace ArtificialNeuralNetwork
             _outputFunction = outputFunction;
             layers = new Layer[0];
         }
+        #endregion
 
-        //Functions
+        #region Functions
+
+        public delegate double[] TranferFunction(double[] input);
 
         public void AddLayer(Layer lay)
-        //Work in progress
         {
+            //Work in progress
             Layer[] newLayers = new Layer[layers.Length + 1];
             for (int i = 0; i < newLayers.Length; i++)
             {
@@ -59,8 +63,6 @@ namespace ArtificialNeuralNetwork
             layers = newLayers;
         }
         
-        public delegate double[] TranferFunction(double[] input);
-
         public void Training ()
         {
             //Cycle
@@ -145,6 +147,6 @@ namespace ArtificialNeuralNetwork
             }
             return returnArray;
         }
-
+        #endregion
     }
 }
