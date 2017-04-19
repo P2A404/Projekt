@@ -42,9 +42,9 @@ namespace ArtificialNeuralNetwork
         #endregion
 
         #region Functions
-
+        
         public delegate double[] TranferFunction(double[] input);
-
+        
         public void AddLayer(Layer lay)
         {
             //Work in progress
@@ -63,6 +63,12 @@ namespace ArtificialNeuralNetwork
             layers = newLayers;
         }
         
+        //maybie not have this?
+        public void ChangeTranferFunction(TranferFunction newTransfer)
+        {
+            _activationFunction = newTransfer;
+        }
+
         public void Training ()
         {
             //Cycle
