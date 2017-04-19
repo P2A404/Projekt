@@ -14,7 +14,7 @@ namespace ArtificialNeuralNetwork
         //Constructor
         public WeightLayer(int size, int prevSize, Random rand)
         {
-            weights = new double[size, prevSize+1];
+            weights = new double[size, prevSize];
             for(int i = 0; i < weights.GetLength(0); i++)
             {
                 for (int i2 = 0; i2 < weights.GetLength(1); i2++)
