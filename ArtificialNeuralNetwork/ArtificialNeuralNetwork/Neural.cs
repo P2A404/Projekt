@@ -59,7 +59,7 @@ namespace ArtificialNeuralNetwork
                 {
                     Cycle(trainingData[k]);
 
-                    CalculateErrorTerm(Weight, errorTerm, CycleInfo); // CycleInfo = neuron output, zum, matchResult ...
+                    CalculateErrorTerm(errorTerm, CycleInfo); // CycleInfo = neuron output, zum, matchResult ...
                     CalculateSumError(errorTerm, CycleInfo, sumOfOutputError);
                 }
 
@@ -70,7 +70,7 @@ namespace ArtificialNeuralNetwork
             } while (totalErrorTerm > 0.2); // Changeable Error term
         }
 
-        private void CalculateErrorTerm(double[][] weight, double[][] errorTerm, object cycleInfo)
+        private void CalculateErrorTerm(double[][] errorTerm, object cycleInfo)
         {
             double sumError = 0.0;
 
@@ -90,7 +90,7 @@ namespace ArtificialNeuralNetwork
                     }
                     else
                     {
-                        // bias
+                        // Last layer
                         errorTerm[l][0] += -(MatchResult_i - a_i) * gradientDescent_Of_Zum_i;
                     }
                 }
