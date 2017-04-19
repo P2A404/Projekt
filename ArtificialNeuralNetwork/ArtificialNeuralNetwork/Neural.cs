@@ -31,10 +31,106 @@ namespace ArtificialNeuralNetwork
 
         public delegate double[] TranferFunction(double[] input);
 
-        public void Training ()
+        public void Training (double[][] trainingData) // All training data as input
         {
             //Cycle
             //Learning Function
+
+            // layers[i].weight.GetLength(0); row
+            // layers[i].weight.GetLength(1); column
+
+            double totalErrorTerm = 0.0, trainingsRate = 0.001, weightDecay = 0.5;
+
+            double[][] errorTerm = new double[layers.Length][];
+            double[][,] sumOfOutputError = new double[layers.Length][,];
+
+            for (int l = 0; l < layers.GetLength(0); l++)
+            {
+                errorTerm[l] = new double[layers[l].weights.GetLength(0)];
+                sumOfOutputError[l] = new double[layers[l].weights.GetLength(0), layers[l].weights.GetLength(0)];
+            }
+
+            do
+            {
+                Array.Clear(errorTerm, 0, errorTerm.Length);
+                Array.Clear(sumOfOutputError, 0, sumOfOutputError.Length);
+
+                for (int k = 0; k < trainingData.Length; k++)
+                {
+                    Cycle(trainingData[k]);
+
+                    CalculateErrorTerm(Weight, errorTerm, CycleInfo); // CycleInfo = neuron output, zum, matchResult ...
+                    CalculateSumError(errorTerm, CycleInfo, sumOfOutputError);
+                }
+
+                UpdateWeights(sumOfOutputError, trainingsRate, weightDecay, trainingData.Length);
+
+                // find totalErrorTerm ...
+
+            } while (totalErrorTerm > 0.2); // Changeable Error term
+        }
+
+        private void CalculateErrorTerm(double[][] weight, double[][] errorTerm, object cycleInfo)
+        {
+            double sumError = 0.0;
+
+            for (int l = layers.Length; l >= 0; l--)
+            {
+                for (int i = 0; i < layers[l].weights.GetLength(1); i++)
+                {
+                    if (l != layers.Length)
+                    {
+                        sumError = 0.0;
+                        for (int j = 1; j < layers[l].weights.GetLength(0); j++)    // bias update ??
+                        {
+                            sumError += layers[l].weights[j, i] * errorTerm[l + 1][j];
+                        }
+
+                        errorTerm[l][i] += sumError * gradientDescent_Of_Zum_i;
+                    }
+                    else
+                    {
+                        // bias
+                        errorTerm[l][0] += -(MatchResult_i - a_i) * gradientDescent_Of_Zum_i;
+                    }
+                }
+            }
+        }
+
+        private void CalculateSumError(double[][] errorTerm, object cycleInfo, double[][,] sumOfOutputError)
+        {
+            for (int l = 0; l < layers.Length; l++)
+            {
+                for (int j = 1; j < layers[l].weights.GetLength(0); j++)        // bias update ??
+                {
+                    for (int i = 0; i < layers[l].weights.GetLength(1); i++)
+                    {
+                        sumOfOutputError[l][j, i] += a_i * errorTerm[l + 1][j];
+                    }
+                }
+            }
+        }
+
+        private void UpdateWeights(double[][,] sumOfOutputError, double trainingsRate, double weightDecay, int trainingsDataLength)
+        {
+            for (int l = 0; l < layers.Length; l++)
+            {
+                for (int j = 0; j < layers[j].weights.GetLength(0); j++)
+                {
+                    for (int i = 0; i < layers[j].weights.GetLength(1); i++)
+                    {
+                        if (i != 0)
+                        {
+                            layers[l].weights[j, i] -= trainingsRate * (1/trainingsDataLength * sumOfOutputError[l][j, i] + weightDecay * layers[l].weights[j, i]);
+                        }
+                        else
+                        {
+                            // Bias
+                            layers[l].weights[j, i] -= trainingsRate * 1/ trainingsDataLength * sumOfOutputError[l][j, i];
+                        }
+                    }
+                }
+            }
         }
 
         public double[] Cycle (double[] input)
