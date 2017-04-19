@@ -74,7 +74,7 @@ namespace ArtificialNeuralNetwork
             //Cycle
             //Learning Function
         }
-
+        
         public double[] Cycle (double[] input)
         {
             if (input.Length != inputSize)
@@ -88,6 +88,7 @@ namespace ArtificialNeuralNetwork
                 for (int i = 0; i < layers.Length; i++)
                 {
                     //Set up bias node for input
+                    //make into function
                     double[] newdata = new double[data.Length + 1];
                     for (int j = 0; j < newdata.Length; j++)
                     {
@@ -101,7 +102,7 @@ namespace ArtificialNeuralNetwork
                         }
                     }
                     data = newdata;
-                    PrintArray($"Data Layer {i}:", data);
+                    PrintArray($"Data Layer {i} Input:", data);
                     //Find sums for each neuron
                     data = Sum(data, layers[i].weights);
                     layers[i].sums = Sum(data, layers[i].weights);
@@ -116,7 +117,7 @@ namespace ArtificialNeuralNetwork
                         data = _outputFunction(data);
                         layers[i].activations = _outputFunction(data);
                     }
-                    PrintArray("Data output:", data);
+                    PrintArray($"Data Layer {i} Output:", data);
                 }
                 //Possibility Tree
                 return data;
