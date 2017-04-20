@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Reflection;
 
 namespace LoadDataTest
 {
@@ -17,10 +18,12 @@ namespace LoadDataTest
             // New instance of Loading data
             LoadingData Load = new LoadingData();
 
+            string LocalPath = Load.GetLocalDirectory();
+
             // Data Paths
-            string ChampionDataPath = @"C:\Users\Rasmus\Desktop\Uni\P2\Git\Projekt\Data\CSV Files Champion Data";
-            string EsportsDataPath = @"C:\Users\Rasmus\Desktop\Uni\P2\Git\Projekt\Data\CSV Files Lol Esport Data";
-            string MatchupsDataPath = @"C:\Users\Rasmus\Desktop\Uni\P2\Git\Projekt\Data\CSV Files Matchups";
+            string ChampionDataPath = LocalPath + @"Data\CSV Files Champion Data";
+            string EsportsDataPath = LocalPath + @"Data\CSV Files Lol Esport Data";
+            string MatchupsDataPath = LocalPath + @"\Data\CSV Files Matchups";
 
             // Number of files in datapaths
             int NOFilesInChampion = Load.GetFileNames(ChampionDataPath).Length;
@@ -51,23 +54,23 @@ namespace LoadDataTest
 
             //Load.ReadJson(@"C: \Users\Rasmus\Desktop\Uni\P2\Git\Projekt\Data\Player Pool Data\out.json");
 
+            
+            
 
             DoubleChampionData = Load.ConvertToIntArray(ChampionData);
 
             //Console.WriteLine(ChampionData[0][6,11]);
+            
+               
 
-            for (int i = 0; i < 19; i++)
-            {
-                Console.WriteLine(DoubleChampionData[0][1,i]);
-            }
-            
-            
 
-            
-            
-            
 
-                     
+
+
+
+
+
+
             Console.ReadKey();
 
         }
