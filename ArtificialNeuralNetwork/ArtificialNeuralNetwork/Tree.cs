@@ -8,7 +8,7 @@ namespace ArtificialNeuralNetwork
 {
     class Tree
     {
-        int GetChances(int BestOf, int HandicapHome, int HandicapOut, double ChanceHome, double ChanceOut)
+        double[] GetChances(int BestOf, int HandicapHome, int HandicapOut, double ChanceHome, double ChanceOut)
         {
             double HomeChance = 0;
             double OutChance = 0;
@@ -21,7 +21,12 @@ namespace ArtificialNeuralNetwork
 
             DrawChance = 1 - HomeChance - OutChance;
 
-            return 0;
+            double[] Chances = new double[3];
+            Chances[0] = HomeChance;
+            Chances[1] = OutChance;
+            Chances[2] = DrawChance;
+
+            return Chances;
         }
 
         double GetSingleTeamChance(int HomeWon, int OutWon, int BestOf, double ChanceHome, double ChanceOut, int Round)
