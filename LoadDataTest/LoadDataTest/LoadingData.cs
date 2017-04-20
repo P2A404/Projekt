@@ -7,6 +7,7 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace LoadDataTest
 {
@@ -110,12 +111,11 @@ namespace LoadDataTest
             }
         }
 
-        public void PrintArray(string[,] values)
+        public string GetLocalDirectory()
         {
-            foreach (var item in values)
-            {
-                Console.WriteLine(item);
-            }
+            string LocalDirectory = Assembly.GetExecutingAssembly().Location;
+            LocalDirectory = LocalDirectory.Remove(Regex.Match(LocalDirectory,"LoadDataTest").Index);
+            return LocalDirectory;
         }
 
         public double[][,] ConvertToIntArray(string[][,] array)
