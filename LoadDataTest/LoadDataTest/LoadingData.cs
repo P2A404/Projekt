@@ -4,12 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace LoadDataTest
 {
     class LoadingData
     {
-        public string [][,] LoadPath(string path)
+        public string[][,] LoadPath(string path)
         {
             int NOFilesInPath = GetFileNames(path).Length;
             string[][,] FullDataArray = new string[NOFilesInPath][,];
@@ -86,12 +89,79 @@ namespace LoadDataTest
             return values;
         }
 
+        // Still not done
+        public void ReadJson(string path)
+        {
+            string PlayerPool = File.ReadAllText(path);
+            int NumberOfPlayers = Regex.Matches(PlayerPool, "player").Count;
+
+            string[][,] PlayerPoolData = new string[NumberOfPlayers][,];
+            string[] UnConvertedPool = new string[NumberOfPlayers];
+
+            //int StartOfCurrentPlayer = Regex.Match(PlayerPool, "[{").Index;
+            int EndOfCurrentPlayer = Regex.Match(PlayerPool, "}]").Index;
+
+
+            UnConvertedPool = Regex.Split(PlayerPool, "2016");
+
+            for (int i = 0; i < 1; i++)
+            {
+                Console.WriteLine(UnConvertedPool[i]);
+            }
+        }
+
         public void PrintArray(string[,] values)
         {
             foreach (var item in values)
             {
                 Console.WriteLine(item);
             }
-        }     
+        }
+
+        public double[][,] ConvertToIntArray(string[][,] array)
+        {
+
+            double[][,] ConvertedArray = new double[array.GetLength(0)][,];
+            
+            for (int CurrentFile = 0; CurrentFile < array.GetLength(0); CurrentFile++)
+            {
+                ConvertedArray[CurrentFile] = new double[array[CurrentFile].GetLength(0), array[CurrentFile].GetLength(1)];
+
+                for (int First2D = 1; First2D < array[CurrentFile].GetLength(0); First2D++)
+                {
+                    for (int Second2D = 1; Second2D < array[CurrentFile].GetLength(1); Second2D++)
+                    {
+
+                        double Test;
+
+                        var currentCulture = System.Globalization.CultureInfo.InstalledUICulture;
+                        var numberFormat = (System.Globalization.NumberFormatInfo)currentCulture.NumberFormat.Clone();
+                        numberFormat.NumberDecimalSeparator = ".";
+
+                        bool isNumeric = double.TryParse(array[CurrentFile][First2D, Second2D], System.Globalization.NumberStyles.Any, numberFormat, out Test);
+
+                        if (isNumeric)
+                        {                        
+                            ConvertedArray[CurrentFile][First2D, Second2D] = Test;
+                        }
+                        else
+                        {
+                            double ConvertedNumber;
+                            array[CurrentFile][First2D, Second2D] = array[CurrentFile][First2D, Second2D].Trim('k', '%');
+                            isNumeric = double.TryParse(array[CurrentFile][First2D, Second2D], out ConvertedNumber);
+                            if (isNumeric)
+                            {
+                                ConvertedArray[CurrentFile][First2D, Second2D] = ConvertedNumber;
+                            }            
+                        }                
+                    }
+                }
+            }
+            Console.WriteLine("Converted");
+            
+
+            return ConvertedArray;
+        }
+
     }
 }
