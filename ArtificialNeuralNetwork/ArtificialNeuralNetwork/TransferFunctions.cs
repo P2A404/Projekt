@@ -64,104 +64,43 @@ namespace ArtificialNeuralNetwork
         #endregion
 
         #region Derivatives
-        //make them work without weightArray
-        public double[] LogistikDerivative(double[] inputArray, double[,] weightArray)
+        public double[] LogistikDerivative(double[] inputArray)
         {
-            double[] result = new double[weightArray.GetLength(0)];
-
-            int k = 0;
-
-            for (int i = 0; i < weightArray.GetLength(0); i++)
+            double[] result = new double[inputArray.Length];
+            for (int i = 0; i < inputArray.Length; i++)
             {
-                foreach (double input in inputArray)
-                {
-                    result[k] += input * weightArray[i, k];
-                    k++;
-                }
+                result[i] = -Exp(inputArray[i]) / Pow((1 + Exp(inputArray[i])), 2);
             }
-
-            foreach (double res in result)
-            {
-                k = 0;
-                result[k] = -Exp(res) / Pow((1 + Exp(res)), 2);
-                k++;
-            }
-
             return result;
         }
-
-        public double[] TahnDerivative(double[] inputArray, double[,] weightArray)
+        
+        public double[] TahnDerivative(double[] inputArray)
         {
-            double[] result = new double[weightArray.GetLength(0)];
-
-            int k = 0;
-
-            for (int i = 0; i < weightArray.GetLength(0); i++)
+            double[] result = new double[inputArray.Length];
+            for (int i = 0; i < inputArray.Length; i++)
             {
-                foreach (double input in inputArray)
-                {
-                    result[k] += input * weightArray[i, k];
-                    k++;
-                }
+                result[i] = -(4 * Exp(-2 * inputArray[i])) / (Pow((1 + Exp(-2 * inputArray[i])), 2));
             }
-
-            foreach (double res in result)
-            {
-                k = 0;
-                result[k] = -(4 * Exp(-2 * res)) / (Pow((1 + Exp(-2 * res)), 2));
-                k++;
-            }
-
             return result;
         }
-
-        public double[] HyperbolicDeivative(double[] inputArray, double[,] weightArray)
+        
+        public double[] HyperbolicDeivative(double[] inputArray)
         {
-            double[] result = new double[weightArray.GetLength(0)];
-
-            int k = 0;
-
-            for (int i = 0; i < weightArray.GetLength(0); i++)
+            double[] result = new double[inputArray.Length];
+            for (int i = 0; i < inputArray.Length; i++)
             {
-                foreach (double input in inputArray)
-                {
-                    result[k] += input * weightArray[i, k];
-                    k++;
-                }
+                result[i] = 4 * Exp(inputArray[i]) / Pow((Exp(2 * inputArray[i]) + 1), 2);
             }
-
-            foreach (double res in result)
-            {
-                k = 0;
-                result[k] = 4 * Exp(res) / Pow((Exp(2 * res) + 1), 2);
-                k++;
-            }
-
             return result;
         }
-
-        public double[] LinearDeivative(double[] inputArray, double[,] weightArray)
+        
+        public double[] LinearDeivative(double[] inputArray)
         {
-            double[] result = new double[weightArray.GetLength(0)];
-
-            int k = 0;
-
-            for (int i = 0; i < weightArray.GetLength(0); i++)
+            double[] result = new double[inputArray.Length];
+            for (int i = 0; i < inputArray.Length; i++)
             {
-                foreach (double input in inputArray)
-                {
-                    result[k] += input * weightArray[i, k];
-                    k++;
-                }
+                result[i] = 1;
             }
-
-            foreach (double res in result)
-            {
-                k = 0;
-                result[k] = 1;
-                k++;
-            }
-
             return result;
         }
         #endregion
