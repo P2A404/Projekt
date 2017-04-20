@@ -140,9 +140,12 @@ namespace ArtificialNeuralNetwork
 
         private void CalculateSumError(double[][] errorTerm, double[][,] sumOfOutputError)
         {
+            int j;
             for (int l = 0; l < layers.Length; l++)
             {
-                for (int j = 1; j < layers[l].weights.GetLength(0); j++)        // bias update ??
+                j = ((l != layers.Length - 1) ? 0 : 1);
+
+                for (; j < layers[l].weights.GetLength(0); j++)
                 {
                     for (int i = 0; i < layers[l].weights.GetLength(1); i++)
                     {
@@ -156,7 +159,7 @@ namespace ArtificialNeuralNetwork
         {
             for (int l = 0; l < layers.Length; l++)
             {
-                for (int j = 0; j < layers[j].weights.GetLength(0); j++)
+                for (int j = 1; j < layers[j].weights.GetLength(0); j++)
                 {
                     for (int i = 0; i < layers[j].weights.GetLength(1); i++)
                     {
