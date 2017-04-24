@@ -46,7 +46,32 @@ namespace ArtificialNeuralNetwork
         #endregion
 
         #region Functions
-        
+
+        double[] PossiblityTree(int BestOf, int[] handicap, double[] chances)
+        {
+            double homeChance = 0, outChance = 0, drawChance = 0;
+            int TempBestOf = BestOf + handicap[0] + handicap[1];
+            int PseudoRound = handicap[0] + handicap[1];
+            homeChance = PossibilityTreeTeamChance(handicap[0], handicap[1], TempBestOf, chances[0], chances[1], PseudoRound);
+            outChance = PossibilityTreeTeamChance(handicap[1], handicap[0], TempBestOf, chances[1], chances[0], PseudoRound);
+            drawChance = 1 - homeChance - outChance;
+            double[] Chances = new double[3] { homeChance, outChance, drawChance };
+            return Chances;
+        }
+
+        double PossibilityTreeTeamChance(int HomeWon, int OutWon, int BestOf, double ChanceHome, double ChanceOut, int Round)
+        {
+            if (HomeWon == (BestOf / 2) + 1)
+            { return 1; }
+            else if (OutWon == (BestOf / 2) + 1 || Round == BestOf)
+            { return 0; }
+            else
+            {
+                return ChanceHome * PossibilityTreeTeamChance(HomeWon + 1, OutWon, BestOf, ChanceHome, ChanceOut, Round)
+                    + ChanceOut * PossibilityTreeTeamChance(HomeWon, OutWon + 1, BestOf, ChanceHome, ChanceOut, Round);
+            }
+        }
+
         public delegate double[] TranferFunction(double[] input);
         
         public void AddLayer(Layer lay)
@@ -224,6 +249,11 @@ namespace ArtificialNeuralNetwork
                 //Possibility Tree
                 return data;
             }
+        }
+
+        public double[] TreeCycle(double[] input, int[] handicap, int bestOf)
+        {
+            return PossiblityTree(bestOf, handicap, Cycle(input));
         }
 
         public void PrintArray(string message, double[] input)
