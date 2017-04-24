@@ -71,9 +71,6 @@ namespace ArtificialNeuralNetwork
 
         public void Training(double[][] inputData, double[][] outputData) // All training data as input
         {
-            //Cycle
-            //Learning Function
-
             // layers[i].weight.GetLength(0); row
             // layers[i].weight.GetLength(1); column
 
@@ -103,20 +100,27 @@ namespace ArtificialNeuralNetwork
 
                 UpdateWeights(sumOfOutputError, trainingsRate, weightDecay, inputData.Length);
 
-                // find totalErrorTerm ...
+                // Find totalErrorTerm
+                for (int l = 0; l < layers.GetLength(0); l++)
+                {
+                    for (int i = 0; i < layers[l].weights.GetLength(0); i++)
+                    {
+                        totalErrorTerm += errorTerm[l][i];
+                    }
+                }
 
             } while (totalErrorTerm > 0.2); // Changeable Error term
         }
 
-        private void CalculateErrorTerm(double[][] errorTerm, double[] outputData)
+        private void CalculateErrorTerm(double[][] errorTerm, double[] resultMatch)
         {
             double sumError = 0.0;
 
-            for (int l = layers.Length; l >= 0; l--)
+            for (int l = layers.Length - 1; l >= 0; l--)
             {
                 for (int i = 0; i < layers[l].weights.GetLength(1); i++)
                 {
-                    if (l != layers.Length)
+                    if (l != layers.Length - 1)
                     {
                         sumError = 0.0;
                         for (int j = 1; j < layers[l].weights.GetLength(0); j++)    // bias update ??
@@ -131,7 +135,7 @@ namespace ArtificialNeuralNetwork
                         // Last layer
                         for (int j = 0; j < layers[l].activations.Length; j++)
                         {
-                            errorTerm[l][j] -= (outputData[j] - layers[l].activations[j]) * gradientDescent_Of_Zum_i;
+                            errorTerm[l][j] -= (resultMatch[j] - layers[l].activations[j]) * gradientDescent_Of_Zum_i;
                         }
                     }
                 }
@@ -140,12 +144,9 @@ namespace ArtificialNeuralNetwork
 
         private void CalculateSumError(double[][] errorTerm, double[][,] sumOfOutputError)
         {
-            int j;
             for (int l = 0; l < layers.Length; l++)
             {
-                j = ((l != layers.Length - 1) ? 0 : 1);
-
-                for (; j < layers[l].weights.GetLength(0); j++)
+                for (int j = ((l != layers.Length - 1) ? 1 : 0); j < layers[l].weights.GetLength(0); j++)
                 {
                     for (int i = 0; i < layers[l].weights.GetLength(1); i++)
                     {
