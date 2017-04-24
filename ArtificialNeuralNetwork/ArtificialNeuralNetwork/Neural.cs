@@ -8,17 +8,18 @@ using static System.Math;
 namespace ArtificialNeuralNetwork
 {
     //make layers a class consturct med activering og størrelse
-    //
     class NeuralNetwork
     {
-        //Variables
+        #region Variables
         public Layer[] layers;
         public int inputSize;
         private TranferFunction _activationFunction;
         private TranferFunction _outputFunction;
         private Random rand = new Random();
+        #endregion
 
-        //Constructor
+        #region Constructors
+        //neuralt netværk constructor med bestemt størrelse
         public NeuralNetwork(int[] size, TranferFunction activationFunction, TranferFunction outputFunction)
         {
             _activationFunction = activationFunction;
@@ -31,11 +32,22 @@ namespace ArtificialNeuralNetwork
             }
         }
 
-        //Functions
-
-        public void AddLayer(Layer lay)
-        //Work in progress
+        //Tomt neuralt netværk constructor til objectorienteret/dynamisk skabelse
+        public NeuralNetwork(TranferFunction activationFunction, TranferFunction outputFunction)
         {
+            _activationFunction = activationFunction;
+            _outputFunction = outputFunction;
+            layers = new Layer[0];
+        }
+        #endregion
+
+        #region Functions
+        
+        public delegate double[] TranferFunction(double[] input);
+        
+        public void AddLayer(Layer lay)
+        {
+            //Work in progress
             Layer[] newLayers = new Layer[layers.Length + 1];
             for (int i = 0; i < newLayers.Length; i++)
             {
@@ -51,58 +63,160 @@ namespace ArtificialNeuralNetwork
             layers = newLayers;
         }
         
-        public delegate double[] TranferFunction(double[] input);
+        //maybie not have this?
+        public void ChangeTranferFunction(TranferFunction newTransfer)
+        {
+            _activationFunction = newTransfer;
+        }
 
-        public void Training ()
+        public void Training(double[][] inputData, double[][] outputData) // All training data as input
         {
             //Cycle
             //Learning Function
+
+            // layers[i].weight.GetLength(0); row
+            // layers[i].weight.GetLength(1); column
+
+            double totalErrorTerm = 0.0, trainingsRate = 0.001, weightDecay = 0.5;
+
+            double[][] errorTerm = new double[layers.Length][];
+            double[][,] sumOfOutputError = new double[layers.Length][,];
+
+            for (int l = 0; l < layers.GetLength(0); l++)
+            {
+                errorTerm[l] = new double[layers[l].weights.GetLength(0)];
+                sumOfOutputError[l] = new double[layers[l].weights.GetLength(0), layers[l].weights.GetLength(0)];
+            }
+
+            do
+            {
+                Array.Clear(errorTerm, 0, errorTerm.Length);
+                Array.Clear(sumOfOutputError, 0, sumOfOutputError.Length);
+
+                for (int k = 0; k < inputData.Length; k++)
+                {
+                    Cycle(inputData[k]);
+
+                    CalculateErrorTerm(errorTerm, outputData[k]); // CycleInfo = neuron output, zum, matchResult ...
+                    CalculateSumError(errorTerm, sumOfOutputError);
+                }
+
+                UpdateWeights(sumOfOutputError, trainingsRate, weightDecay, inputData.Length);
+
+                // find totalErrorTerm ...
+
+            } while (totalErrorTerm > 0.2); // Changeable Error term
+        }
+
+        private void CalculateErrorTerm(double[][] errorTerm, double[] outputData)
+        {
+            double sumError = 0.0;
+
+            for (int l = layers.Length; l >= 0; l--)
+            {
+                for (int i = 0; i < layers[l].weights.GetLength(1); i++)
+                {
+                    if (l != layers.Length)
+                    {
+                        sumError = 0.0;
+                        for (int j = 1; j < layers[l].weights.GetLength(0); j++)    // bias update ??
+                        {
+                            sumError += layers[l].weights[j, i] * errorTerm[l + 1][j];
+                        }
+
+                        errorTerm[l][i] += sumError * gradientDescent_Of_Zum_i;
+                    }
+                    else
+                    {
+                        // Last layer
+                        for (int j = 0; j < layers[l].activations.Length; j++)
+                        {
+                            errorTerm[l][j] -= (outputData[j] - layers[l].activations[j]) * gradientDescent_Of_Zum_i;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void CalculateSumError(double[][] errorTerm, double[][,] sumOfOutputError)
+        {
+            for (int l = 0; l < layers.Length; l++)
+            {
+                for (int j = 1; j < layers[l].weights.GetLength(0); j++)        // bias update ??
+                {
+                    for (int i = 0; i < layers[l].weights.GetLength(1); i++)
+                    {
+                        sumOfOutputError[l][j, i] += layers[l].activations[i] * errorTerm[l + 1][j];
+                    }
+                }
+            }
+        }
+
+        private void UpdateWeights(double[][,] sumOfOutputError, double trainingsRate, double weightDecay, int trainingsDataLength)
+        {
+            for (int l = 0; l < layers.Length; l++)
+            {
+                for (int j = 0; j < layers[j].weights.GetLength(0); j++)
+                {
+                    for (int i = 0; i < layers[j].weights.GetLength(1); i++)
+                    {
+                        if (i != 0)
+                        {
+                            layers[l].weights[j, i] -= trainingsRate * (1 / trainingsDataLength * sumOfOutputError[l][j, i] + weightDecay * layers[l].weights[j, i]);
+                        }
+                        else
+                        {
+                            // Bias
+                            layers[l].weights[j, i] -= trainingsRate * 1 / trainingsDataLength * sumOfOutputError[l][j, i];
+                        }
+                    }
+                }
+            }
         }
 
         public double[] Cycle (double[] input)
         {
-            //double check if bias works!
             if (input.Length != inputSize)
             {
                 throw new Exception($"Wrong input array size, expected {inputSize}, but got {input.Length}.");
             }
             else
             {
-                //Set up bias node for input
-                double[] data = new double[input.Length + 1];
-                for (int i = 0; i < data.Length; i++)
-                {
-                    if (i == 0)
-                    {
-                        data[i] = 1;
-                    }
-                    else
-                    {
-                        data[i] = input[i-1];
-                    }
-                }
-                PrintArray("Data:",data);
+                double[] data = input;
                 //Cycle through network
                 for (int i = 0; i < layers.Length; i++)
                 {
-                    //Use Transferfunction on all layers except the last
-                    if (i != layers.Length - 1)
+                    //Set up bias node for input
+                    //make into function
+                    double[] newdata = new double[data.Length + 1];
+                    for (int j = 0; j < newdata.Length; j++)
                     {
-                        PrintArray($"Pre-Data Layer {i}:", data);
-                        //Find sums for each neuron
-                        data = Sum(data, layers[i].weights);
-                        //Use Transferfunction on each sum
-                        data = _activationFunction(data);
-                        PrintArray($"Data Layer {i}:", data);
+                        if (j == 0)
+                        {
+                            newdata[j] = 1;
+                        }
+                        else
+                        {
+                            newdata[j] = data[j - 1];
+                        }
                     }
-                    //Use Softmax on last layer
+                    data = newdata;
+                    PrintArray($"Data Layer {i} Input:", data);
+                    //Find sums for each neuron
+                    data = Sum(data, layers[i].weights);
+                    layers[i].sums = Sum(data, layers[i].weights);
+                    //Use Transferfunction / Outputfunction on each sum
+                    if(i != layers.Length-1)
+                    {
+                        data = _activationFunction(data);
+                        layers[i].activations = _activationFunction(data);
+                    }
                     else
                     {
-                        data = Sum(data, layers[i].weights);
                         data = _outputFunction(data);
-                        PrintArray("Data output:", data);
-                        Console.WriteLine($"Softmax: {data[0]+data[1]}");
+                        layers[i].activations = _outputFunction(data);
                     }
+                    PrintArray($"Data Layer {i} Output:", data);
                 }
                 //Possibility Tree
                 return data;
@@ -138,6 +252,6 @@ namespace ArtificialNeuralNetwork
             }
             return returnArray;
         }
-
+        #endregion
     }
 }
