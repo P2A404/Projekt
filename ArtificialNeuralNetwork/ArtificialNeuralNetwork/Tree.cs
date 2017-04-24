@@ -35,10 +35,13 @@ namespace ArtificialNeuralNetwork
             else if (OutWon == (BestOf / 2) + 1 || Round == BestOf) { return 0; }
             else
             {
-                double ReturnValue = ChanceHome * GetSingleTeamChance(HomeWon, OutWon, BestOf, ChanceHome, ChanceOut, Round);
-            }
+                double ReturnValue = ChanceHome * GetSingleTeamChance(HomeWon + 1 , OutWon, BestOf, ChanceHome, ChanceOut, Round)
+                    + ChanceOut * GetSingleTeamChance(HomeWon + 1, OutWon, BestOf, ChanceHome, ChanceOut, Round);
 
-            return 0;
+
+
+                return ReturnValue;
+            }
         }
     }
 }
