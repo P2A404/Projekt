@@ -116,7 +116,7 @@ namespace ArtificialNeuralNetwork
         {
             double sumError = 0.0;
 
-            for (int l = layers.Length; l >= 0; l--)
+            for (int l = layers.Length - 1; l >= 0; l--)
             {
                 for (int i = 0; i < layers[l].weights.GetLength(1); i++)
                 {
