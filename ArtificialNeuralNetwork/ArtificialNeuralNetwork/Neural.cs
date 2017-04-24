@@ -138,7 +138,7 @@ namespace ArtificialNeuralNetwork
                         // Last layer
                         for (int j = 0; j < layers[l].activations.Length; j++)
                         {
-                            errorTerm[l][j] -= (resultMatch[j] - layers[l].activations[j]) * gradientDescent_Of_Zum_i;
+                            errorTerm[l][j] -= (resultMatch[j] - layers[l].activations[j]) * _derivativeOutputFunction(layers[l].sums)[i];
                         }
                     }
                 }
