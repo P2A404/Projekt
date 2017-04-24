@@ -73,13 +73,17 @@ namespace ArtificialNeuralNetwork
             _activationFunction = newTransfer;
         }
 
-        public void Training(double[][] inputData, double[][] outputData) // All training data as input
+        public void Training(double[][] inputData, double[][] matchResults)
         {
             // layers[i].weight.GetLength(0); row
             // layers[i].weight.GetLength(1); column
 
-            double totalErrorTerm = 0.0, trainingsRate = 0.001, weightDecay = 0.5;
+            if (inputData.GetLength(1) != inputSize)
+            {
+                throw new Exception($"wrong input size, expected {inputSize} but was given {inputData.GetLength(1)}");
+            }
 
+            double totalErrorTerm = 0.0, trainingsRate = 0.001, weightDecay = 0.5;
             double[][] errorTerm = new double[layers.Length][];
             double[][,] sumOfOutputError = new double[layers.Length][,];
 
@@ -98,7 +102,7 @@ namespace ArtificialNeuralNetwork
                 {
                     Cycle(inputData[k]);
 
-                    CalculateErrorTerm(errorTerm, outputData[k]); // CycleInfo = neuron output, zum, matchResult ...
+                    CalculateErrorTerm(errorTerm, matchResults[k]);
                     CalculateSumError(errorTerm, sumOfOutputError);
                 }
 
@@ -116,7 +120,7 @@ namespace ArtificialNeuralNetwork
             } while (totalErrorTerm > 0.2); // Changeable Error term
         }
 
-        private void CalculateErrorTerm(double[][] errorTerm, double[] resultMatch)
+        private void CalculateErrorTerm(double[][] errorTerm, double[] matchResult)
         {
             double sumError = 0.0;
 
@@ -138,7 +142,7 @@ namespace ArtificialNeuralNetwork
                         // Last layer
                         for (int j = 0; j < layers[l].activations.Length; j++)
                         {
-                            errorTerm[l][j] -= (resultMatch[j] - layers[l].activations[j]) * _derivativeOutputFunction(layers[l].sums)[i];
+                            errorTerm[l][j] -= (matchResult[j] - layers[l].activations[j]) * _derivativeOutputFunction(layers[l].sums)[i];
                         }
                     }
                 }
