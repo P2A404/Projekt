@@ -37,9 +37,6 @@ namespace ArtificialNeuralNetwork
             {
                 double ReturnValue = ChanceHome * GetSingleTeamChance(HomeWon + 1 , OutWon, BestOf, ChanceHome, ChanceOut, Round)
                     + ChanceOut * GetSingleTeamChance(HomeWon + 1, OutWon, BestOf, ChanceHome, ChanceOut, Round);
-
-
-
                 return ReturnValue;
             }
         }
