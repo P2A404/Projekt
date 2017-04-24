@@ -62,7 +62,7 @@ namespace ArtificialNeuralNetwork
             return input;
         }
         #endregion
-
+        
         #region Derivatives
         public double[] LogistikDerivative(double[] inputArray)
         {
@@ -73,7 +73,7 @@ namespace ArtificialNeuralNetwork
             }
             return result;
         }
-        
+
         public double[] TahnDerivative(double[] inputArray)
         {
             double[] result = new double[inputArray.Length];
@@ -83,7 +83,7 @@ namespace ArtificialNeuralNetwork
             }
             return result;
         }
-        
+
         public double[] HyperbolicDeivative(double[] inputArray)
         {
             double[] result = new double[inputArray.Length];
@@ -93,7 +93,7 @@ namespace ArtificialNeuralNetwork
             }
             return result;
         }
-        
+
         public double[] LinearDeivative(double[] inputArray)
         {
             double[] result = new double[inputArray.Length];
