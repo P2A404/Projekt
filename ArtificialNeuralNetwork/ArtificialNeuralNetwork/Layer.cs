@@ -29,8 +29,8 @@ namespace ArtificialNeuralNetwork
             {
                 for (int i2 = 0; i2 < weights.GetLength(1); i2++)
                 {
-                    //weights[i,i2] = rand.NextDouble();
-                    weights[i, i2] = 1;
+                    weights[i, i2] = (rand.NextDouble() / 5) - 0.1;
+                    //weights[i, i2] = 1;
                 }
             }
         }

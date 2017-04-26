@@ -46,6 +46,7 @@ namespace ArtificialNeuralNetwork
         #endregion
 
         #region Functions
+        public delegate double[] TranferFunction(double[] input);
 
         double[] PossiblityTree(int BestOf, int[] handicap, double[] chances)
         {
@@ -71,8 +72,6 @@ namespace ArtificialNeuralNetwork
                     + ChanceOut * PossibilityTreeTeamChance(HomeWon, OutWon + 1, BestOf, ChanceHome, ChanceOut, Round);
             }
         }
-
-        public delegate double[] TranferFunction(double[] input);
         
         public void AddLayer(Layer lay)
         {
