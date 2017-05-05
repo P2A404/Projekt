@@ -90,59 +90,89 @@ namespace LoadDataTest
             return values;
         }
 
+        public string[,] LoadCsvFromResources(string file)
+        {
+
+            // Get the file's text.
+            string CurrentFile = file;
+
+            // Split into lines.
+            CurrentFile = CurrentFile.Replace('\n', '\r');
+            string[] lines = CurrentFile.Split(new char[] { '\r' },
+                StringSplitOptions.RemoveEmptyEntries);
+
+            // See how many rows and columns there are.
+            int num_rows = lines.Length;
+            int num_cols = lines[0].Split(';').Length;
+
+
+            // Allocate the data array.
+            string[,] values = new string[num_rows, num_cols];
+
+            // Load the array.
+            for (int r = 0; r < num_rows; r++)
+            {
+                string[] line_r = lines[r].Split(';');
+                for (int c = 0; c < num_cols; c++)
+                {
+                    values[r, c] = line_r[c];
+                }
+            }
+
+            // Return the values.
+            return values;
+        }
+
         // Still not done
         public void ReadJson(string path)
         {
-            string PlayerPool = File.ReadAllText(path);
-            int NumberOfPlayers = Regex.Matches(PlayerPool, "player").Count;
+            
 
-            string[][,] PlayerPoolData = new string[NumberOfPlayers][,];
-            string[] UnConvertedPool = new string[NumberOfPlayers];
-
-            //int StartOfCurrentPlayer = Regex.Match(PlayerPool, "[{").Index;
-            int EndOfCurrentPlayer = Regex.Match(PlayerPool, "}]").Index;
-
-
-            UnConvertedPool = Regex.Split(PlayerPool, "2016");
-
-            for (int i = 0; i < 1; i++)
-            {
-                Console.WriteLine(UnConvertedPool[i]);
-            }
+            
         }
 
         public string GetLocalDirectory()
         {
             string LocalDirectory = Assembly.GetExecutingAssembly().Location;
-            LocalDirectory = LocalDirectory.Remove(Regex.Match(LocalDirectory,"LoadDataTest").Index);
+            LocalDirectory = LocalDirectory.Remove(Regex.Match(LocalDirectory, "LoadDataTest").Index);
             return LocalDirectory;
         }
 
         public double[][,] ConvertToIntArray(string[][,] array)
         {
+            int NumberOfFiles = array.GetLength(0);
+            double[][,] ConvertedArray = new double[NumberOfFiles][,];
 
-            double[][,] ConvertedArray = new double[array.GetLength(0)][,];
-            
-            for (int CurrentFile = 0; CurrentFile < array.GetLength(0); CurrentFile++)
+            for (int CurrentFile = 0; CurrentFile < NumberOfFiles; CurrentFile++)
             {
-                ConvertedArray[CurrentFile] = new double[array[CurrentFile].GetLength(0), array[CurrentFile].GetLength(1)];
+                int NumberOfRows = array[CurrentFile].GetLength(0);
+                int NumberOfCollums = array[CurrentFile].GetLength(1);
+                ConvertedArray[CurrentFile] = new double[NumberOfRows, NumberOfCollums];
 
-                for (int First2D = 1; First2D < array[CurrentFile].GetLength(0); First2D++)
+                for (int First2D = 1; First2D < NumberOfRows; First2D++)
                 {
-                    for (int Second2D = 1; Second2D < array[CurrentFile].GetLength(1); Second2D++)
+                    for (int Second2D = 1; Second2D < NumberOfCollums; Second2D++)
                     {
 
-                        double Test;
-
+                        double TempVariable;
                         var currentCulture = System.Globalization.CultureInfo.InstalledUICulture;
                         var numberFormat = (System.Globalization.NumberFormatInfo)currentCulture.NumberFormat.Clone();
-                        numberFormat.NumberDecimalSeparator = ".";
+                        numberFormat.NumberDecimalSeparator = ",";
 
-                        bool isNumeric = double.TryParse(array[CurrentFile][First2D, Second2D], System.Globalization.NumberStyles.Any, numberFormat, out Test);
+                        bool isNumeric = double.TryParse(array[CurrentFile][First2D, Second2D], System.Globalization.NumberStyles.Any, numberFormat, out TempVariable);
+                        bool Contains2Dots = array[CurrentFile][First2D, Second2D].IndexOf('.') != array[CurrentFile][First2D, Second2D].LastIndexOf('.');
 
                         if (isNumeric)
-                        {                        
-                            ConvertedArray[CurrentFile][First2D, Second2D] = Test;
+                        {
+                            ConvertedArray[CurrentFile][First2D, Second2D] = TempVariable;
+                        }
+                        else if (Contains2Dots)
+                        {
+                            string tempString = array[CurrentFile][First2D, Second2D].Remove(array[CurrentFile][First2D, Second2D].Length - 3);
+                            array[CurrentFile][First2D, Second2D] = tempString;
+
+                            double.TryParse(tempString, out TempVariable);
+                            ConvertedArray[CurrentFile][First2D, Second2D] = TempVariable;
                         }
                         else
                         {
@@ -152,16 +182,12 @@ namespace LoadDataTest
                             if (isNumeric)
                             {
                                 ConvertedArray[CurrentFile][First2D, Second2D] = ConvertedNumber;
-                            }            
-                        }                
+                            }
+                        }
                     }
                 }
             }
-            Console.WriteLine("Converted");
-            
-
             return ConvertedArray;
         }
-
     }
 }
