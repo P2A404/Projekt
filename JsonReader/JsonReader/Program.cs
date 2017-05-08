@@ -21,21 +21,24 @@ namespace JsonReader
             return LocalDirectory;
         }
 
-
         static void Main(string[] args)
         {
-            GameInfo GameReader = new GameInfo();
-            List<JObject> matches = new List<JObject>();
+            List<JObject> Matches = new List<JObject>();
 
             string LocalPath = GetLocalDirectory() + @"Data\Matches\";
 
             for (int index = 1; index < 2827; index++)
             {
-                using (StreamReader r = new StreamReader(LocalPath + $@"{index}.json"))
+                using (StreamReader Reader = new StreamReader(LocalPath + $@"{index}.json"))
                 {
-                    string json = r.ReadToEnd();
+                    // Current file read to the end
+                    string json = Reader.ReadToEnd();
+                    
+                    //Dynamic = Json Object and loading things into object
                     dynamic array = JsonConvert.DeserializeObject(json);
-                    matches.Add(array);
+
+                    // Adding to final list of matches
+                    Matches.Add(array);
                     Console.WriteLine(index + " done");
                 }
             }
