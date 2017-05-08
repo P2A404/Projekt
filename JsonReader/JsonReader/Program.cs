@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -13,28 +14,32 @@ namespace JsonReader
 {
     class Program
     {
+        static public string GetLocalDirectory()
+        {
+            string LocalDirectory = Assembly.GetExecutingAssembly().Location;
+            LocalDirectory = LocalDirectory.Remove(Regex.Match(LocalDirectory, "JsonReader").Index);
+            return LocalDirectory;
+        }
+
+
         static void Main(string[] args)
         {
             GameInfo GameReader = new GameInfo();
             List<JObject> matches = new List<JObject>();
 
-            for (int i = 0; i < 2827; i++)
+            string LocalPath = GetLocalDirectory() + @"Data\Matches\";
+
+            for (int index = 1; index < 2827; index++)
             {
-                using (StreamReader r = new StreamReader($@"C:\Users\Rasmus\Desktop\{i}.json"))
+                using (StreamReader r = new StreamReader(LocalPath + $@"{index}.json"))
                 {
                     string json = r.ReadToEnd();
                     dynamic array = JsonConvert.DeserializeObject(json);
                     matches.Add(array);
-                    Console.WriteLine("{0} {1} {2}", array[0].gameId, array.mapId, array.GetType());
-
-                    Console.Read();
+                    Console.WriteLine(index + " done");
                 }
             }
-
+            Console.Read();
         }
-
-
-
-
     }
 }
