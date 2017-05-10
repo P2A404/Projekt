@@ -110,7 +110,7 @@ class TransferFunction
 		return result;
 	}*/
 
-	public double[] SoftMax(double[] inputArray, double[,] weightArray)
+	/*public double[] SoftMax(double[] inputArray, double[,] weightArray)
 	{
 		double[] result = new double[weightArray.GetLength(0)];
 
@@ -142,7 +142,7 @@ class TransferFunction
 
 		return result;
 	}
-
+*/
 	//Deretive
 
 	public double[] LogistikDerivative(double[] inputArray, double[,] weightArray)
