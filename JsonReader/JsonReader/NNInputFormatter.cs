@@ -21,6 +21,7 @@ namespace JsonReader
 
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
+        public Dictionary<int, int[]> championIds = new Dictionary<int, int[]>();
 
         private string GetLocalDirectory()
         {
@@ -60,7 +61,7 @@ namespace JsonReader
             matches = null;
         }
 
-        public void Vilhelm ()
+        public void LoadChampionIdDictionary ()
         {
             List<int> uniqueChampionId = new List<int>();
 
@@ -83,6 +84,14 @@ namespace JsonReader
                         }
                     }
                 }
+            }
+            int num = uniqueChampionId.Count();
+            for (int i = 0; i < num; i++)
+            {
+                int[] WilhelmArray = new int[uniqueChampionId.Count];
+                Array.Clear(WilhelmArray, 0, uniqueChampionId.Count);
+                WilhelmArray[i] = 1;
+                championIds.Add(uniqueChampionId[i], WilhelmArray);
             }
         }
 
