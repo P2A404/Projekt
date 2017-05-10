@@ -66,13 +66,12 @@ namespace JsonReader
             {
                 returnGame.teams[i] = new SaveGameInfo.Team();
                 returnGame.teams[i].players = new SaveGameInfo.Player[5];
-                for (int j = 0; i < returnGame.teams[i].players.Length; i++)
+                for (int j = 0; j < returnGame.teams[i].players.Length; j++)
                 {
                     returnGame.teams[i].players[j] = new SaveGameInfo.Player();
                     returnGame.teams[i].players[j].championId = game.participants[(i * 5) + j].championId;
                 }
             }
-
             return null;
         }
     }
