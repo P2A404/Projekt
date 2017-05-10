@@ -23,7 +23,7 @@ namespace JsonReader
 
         static void Main(string[] args)
         {
-            List<JObject> Matches = new List<JObject>();
+            List<GameInfo.Match> Matches = new List<GameInfo.Match>();
 
             string LocalPath = GetLocalDirectory() + @"Data\Matches\";
 
@@ -35,16 +35,15 @@ namespace JsonReader
                     string json = Reader.ReadToEnd();
 
                     //Dynamic = Json Object and loading things into object
-                    dynamic array = JsonConvert.DeserializeObject(json);
-                    var result = JsonConvert.DeserializeObject<GameInfo>(json);
-                    Console.WriteLine(result);
+                    var result = JsonConvert.DeserializeObject<GameInfo.Match>(json);
+                    
+                    
 
                     // Adding to final list of matches
-                    Matches.Add(array);
+                    Matches.Add(result);
                     Console.WriteLine(index + " done");
                 }
             }
-            JObject test = Matches[5];
             
             Console.Read();
         }
