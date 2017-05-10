@@ -44,7 +44,8 @@ namespace JsonReader
                     Console.WriteLine(index + " done");
                 }
             }
-            
+            NNInputFormatter formatter = new NNInputFormatter();
+            formatter.Vilhelm();
             Console.Read();
         }
     }
