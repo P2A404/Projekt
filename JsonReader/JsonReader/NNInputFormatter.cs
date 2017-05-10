@@ -1,15 +1,50 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace JsonReader
 {
     class NNInputFormatter
     {
+        public NNInputFormatter()
+        {
+            JSONLoad();
+            ConvertGames();
+
+        }
+
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
+
+        private string GetLocalDirectory()
+        {
+            string LocalDirectory = Assembly.GetExecutingAssembly().Location;
+            LocalDirectory = LocalDirectory.Remove(Regex.Match(LocalDirectory, "JsonReader").Index);
+            return LocalDirectory;
+        }
+
+        public void JSONLoad()
+        {
+            string LocalPath = GetLocalDirectory() + @"Data\Matches\";
+            for (int index = 1; index < 2827; index++)
+            {
+                using (StreamReader Reader = new StreamReader(LocalPath + $@"{index}.json"))
+                {
+                    // Current file read to the end
+                    string json = Reader.ReadToEnd();
+                    var result = JsonConvert.DeserializeObject<GameInfo.Match>(json);
+                    // Adding to final list of matches
+                    matches.Add(result);
+                    Console.WriteLine(index + " done");
+                }
+            }
+        }
 
         public double Normalization (double currentValue, double minValue, double maxValue)
         {
