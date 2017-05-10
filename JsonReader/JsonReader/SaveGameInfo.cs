@@ -142,7 +142,7 @@ namespace JsonReader
 
         public class Timeline
         {
-            public int participantId { get; set; }
+            public int participantId { get; set; } //1 = top, 2 = jungle, 3 = mid, 4 = adc, 5 = support
             public Differencial creepsPerMinDeltas { get; set; }
             public Differencial xpPerMinDeltas { get; set; }
             public Differencial goldPerMinDeltas { get; set; }

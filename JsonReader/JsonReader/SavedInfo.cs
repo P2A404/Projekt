@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace JsonReader
 {
-    //might not be the best
-    enum teamName
-    { }
 
     class Team
     {
         string TeamName { get; set; }
-        SaveGameInfo[] lastestGames;
+        SaveGameInfo.Game[] lastest3Games = new SaveGameInfo.Game[5];
+        SaveGameInfo.Game averageGame = new SaveGameInfo.Game();
         Dictionary<string, SaveGameInfo> vsGames = new Dictionary<string, SaveGameInfo>();
 
     }

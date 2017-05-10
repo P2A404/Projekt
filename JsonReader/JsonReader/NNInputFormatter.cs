@@ -22,6 +22,8 @@ namespace JsonReader
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
         public Dictionary<int, int[]> championIds = new Dictionary<int, int[]>();
+        public Dictionary<string, Team> teams = new Dictionary<string, Team>();
+
 
         private string GetLocalDirectory()
         {
