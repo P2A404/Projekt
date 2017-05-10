@@ -25,6 +25,32 @@ namespace JsonReader
             matches = null;
         }
 
+        public void Vilhelm ()
+        {
+            List<int> uniqueChampionId = new List<int>();
+
+            foreach (SaveGameInfo.Game game in games)
+            {
+                foreach (SaveGameInfo.Team team in game.teams)
+                {
+                    foreach (SaveGameInfo.Player player in team.players)
+                    {
+                        if (!uniqueChampionId.Contains(player.championId))
+                        {
+                            uniqueChampionId.Add(player.championId);
+                        }
+                    }
+                    foreach (int id in team.bannedChampionId)
+                    {
+                        if (!uniqueChampionId.Contains(id))
+                        {
+                            uniqueChampionId.Add(id);
+                        }
+                    }
+                }
+            }
+        }
+
         double[] SaveGameToInputNeurons(SaveGameInfo.Game game)
         {
             
