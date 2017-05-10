@@ -11,6 +11,11 @@ namespace JsonReader
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
 
+        public double Normalization (double currentValue, double minValue, double maxValue)
+        {
+            return (2*((currentValue - minValue) / (maxValue - minValue))-1);
+        }
+
         public void ConvertGames ()
         {
             foreach(GameInfo.Match match in matches)
