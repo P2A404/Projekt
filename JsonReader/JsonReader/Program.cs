@@ -33,15 +33,19 @@ namespace JsonReader
                 {
                     // Current file read to the end
                     string json = Reader.ReadToEnd();
-                    
+
                     //Dynamic = Json Object and loading things into object
                     dynamic array = JsonConvert.DeserializeObject(json);
+                    var result = JsonConvert.DeserializeObject<GameInfo>(json);
+                    Console.WriteLine(result);
 
                     // Adding to final list of matches
                     Matches.Add(array);
                     Console.WriteLine(index + " done");
                 }
             }
+            JObject test = Matches[5];
+            
             Console.Read();
         }
     }
