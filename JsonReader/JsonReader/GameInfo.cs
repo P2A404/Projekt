@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace JsonReader
 {
-     public class GameInfo
+    public class GameInfo
     {
         public class Match
         {
