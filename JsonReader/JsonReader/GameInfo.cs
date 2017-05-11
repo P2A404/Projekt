@@ -152,58 +152,93 @@ namespace JsonReader
 
         public class Creepspermindeltas
         {
+            public float _40end { get; set; }
+            public float _3040 { get; set; }
             public float _30end { get; set; }
             public float _1020 { get; set; }
+            public float _20end { get; set; }
             public float _2030 { get; set; }
+            public float _10end { get; set; }
             public float _010 { get; set; }
+            public float _0end { get; set; }
         }
 
         public class Xppermindeltas
         {
+            public float _40end { get; set; }
+            public float _3040 { get; set; }
             public float _30end { get; set; }
             public float _1020 { get; set; }
+            public float _20end { get; set; }
             public float _2030 { get; set; }
+            public float _10end { get; set; }
             public float _010 { get; set; }
+            public float _0end { get; set; }
         }
 
         public class Goldpermindeltas
         {
+            public float _40end { get; set; }
+            public float _3040 { get; set; }
             public float _30end { get; set; }
             public float _1020 { get; set; }
+            public float _20end { get; set; }
             public float _2030 { get; set; }
+            public float _10end { get; set; }
             public float _010 { get; set; }
+            public float _0end { get; set; }
         }
 
         public class Csdiffpermindeltas
         {
+            public float _40end { get; set; }
+            public float _3040 { get; set; }
             public float _30end { get; set; }
             public float _1020 { get; set; }
+            public float _20end { get; set; }
             public float _2030 { get; set; }
+            public float _10end { get; set; }
             public float _010 { get; set; }
+            public float _0end { get; set; }
         }
 
         public class Xpdiffpermindeltas
         {
+            public float _40end { get; set; }
+            public float _3040 { get; set; }
             public float _30end { get; set; }
             public float _1020 { get; set; }
+            public float _20end { get; set; }
             public float _2030 { get; set; }
+            public float _10end { get; set; }
             public float _010 { get; set; }
+            public float _0end { get; set; }
         }
 
         public class Damagetakenpermindeltas
         {
+            public float _40end { get; set; }
+            public float _3040 { get; set; }
             public float _30end { get; set; }
             public float _1020 { get; set; }
+            public float _20end { get; set; }
             public float _2030 { get; set; }
+            public float _10end { get; set; }
             public float _010 { get; set; }
+            public float _0end { get; set; }
         }
 
         public class Damagetakendiffpermindeltas
         {
+            public float _40end { get; set; }
+            public float _3040 { get; set; }
             public float _30end { get; set; }
             public float _1020 { get; set; }
+            public float _20end { get; set; }
             public float _2030 { get; set; }
+            public float _10end { get; set; }
             public float _010 { get; set; }
+            public float _0end { get; set; }
         }
 
         public class Mastery
