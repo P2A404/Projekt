@@ -122,7 +122,8 @@ namespace JsonReader
         public class Differencial
         {
             //has diffrent amount of variables based on time.
-            public float _30end { get; set; }
+            public float _40end { get; set; }
+            public float _3040 { get; set; }
             public float _1020 { get; set; }
             public float _2030 { get; set; }
             public float _010 { get; set; }
