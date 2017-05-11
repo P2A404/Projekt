@@ -16,6 +16,7 @@ namespace JsonReader
         {
             JSONLoad();
             ConvertGames();
+            LoadChampionIdDictionary();
 
         }
 
@@ -23,7 +24,6 @@ namespace JsonReader
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
         public Dictionary<int, int[]> championIds = new Dictionary<int, int[]>();
         public Dictionary<string, Team> teams = new Dictionary<string, Team>();
-
 
         private string GetLocalDirectory()
         {
@@ -49,21 +49,21 @@ namespace JsonReader
             }
         }
 
-        public double Normalization (double currentValue, double minValue, double maxValue)
+        public double Normalization(double currentValue, double minValue, double maxValue)
         {
-            return (2*((currentValue - minValue) / (maxValue - minValue))-1);
+            return (2 * ((currentValue - minValue) / (maxValue - minValue)) - 1);
         }
 
-        public void ConvertGames ()
+        public void ConvertGames()
         {
-            foreach(GameInfo.Match match in matches)
+            foreach (GameInfo.Match match in matches)
             {
                 games.Add(GameToSaveGame(match));
             }
             matches = null;
         }
 
-        public void LoadChampionIdDictionary ()
+        public void LoadChampionIdDictionary()
         {
             List<int> uniqueChampionId = new List<int>();
 
@@ -99,7 +99,13 @@ namespace JsonReader
 
         double[] SaveGameToInputNeurons(SaveGameInfo.Game game)
         {
-            
+
+            return null;
+        }
+
+        double[] CombineArrays(double[][] arrays)
+        {
+
             return null;
         }
 
