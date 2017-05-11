@@ -117,14 +117,15 @@ namespace JsonReader
                 totalArrayLength += jaggedArray[i].Length;
             }
             double[] returnArray = new double[totalArrayLength];
-            for (int i = 0; i < jaggedArray.GetLength(0); i++)
+            int currentId = 0;
+            for (int i = 0; i < jaggedArray.GetLength(0); i++, currentId++)
             {
-                for (int j = 0; j < jaggedArray[i].GetLength(1); j++)
+                for (int j = 0; j < jaggedArray[i].Length; j++, currentId++)
                 {
-
+                    returnArray[currentId] = jaggedArray[i][j];
                 }
             }
-            return null;
+            return returnArray;
         }
 
         SaveGameInfo.Game GameToSaveGame(GameInfo.Match game)
