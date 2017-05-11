@@ -18,6 +18,7 @@ namespace JsonReader
             ConvertGames();
             LoadChampionIdDictionary();
             LoadTeamsDictionary();
+            LoadPlayerNamesDictionary();
         }
 
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
