@@ -16,6 +16,7 @@ namespace JsonReader
         {
             JSONLoad();
             ConvertGames();
+            LoadChampionIdDictionary();
 
         }
 
@@ -122,6 +123,12 @@ namespace JsonReader
         }
 
         double[] SaveGameToInputNeurons(SaveGameInfo.Game game)
+        {
+
+            return null;
+        }
+
+        double[] CombineArrays(double[][] arrays)
         {
 
             return null;
