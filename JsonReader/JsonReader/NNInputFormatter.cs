@@ -17,12 +17,13 @@ namespace JsonReader
             JSONLoad();
             ConvertGames();
             LoadChampionIdDictionary();
-
+            LoadTeamsDictionary();
         }
 
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
         public Dictionary<int, int[]> championIds = new Dictionary<int, int[]>();
+        public Dictionary<string, int[]> teamNames = new Dictionary<string, int[]>();
         public Dictionary<string, Team> teams = new Dictionary<string, Team>();
 
         private string GetLocalDirectory()
@@ -63,6 +64,31 @@ namespace JsonReader
             matches = null;
         }
 
+        public void LoadTeamsDictionary()
+        {
+            List<string> uniqueTeamNames = new List<string>();
+
+            foreach (SaveGameInfo.Game game in games)
+            {
+                foreach (SaveGameInfo.Team team in game.teams)
+                {
+                    string teamName = team.players[0].summonerName.Substring(0, team.players[0].summonerName.IndexOf(' '));
+                    if (!uniqueTeamNames.Contains(teamName))
+                    {
+                        uniqueTeamNames.Add(teamName);
+                    }
+                }
+            }
+            int num = uniqueTeamNames.Count();
+            for (int i = 0; i < num; i++)
+            {
+                int[] uniqueTeamNameArray = new int[uniqueTeamNames.Count];
+                Array.Clear(uniqueTeamNameArray, 0, uniqueTeamNames.Count);
+                uniqueTeamNameArray[i] = 1;
+                teams.Add(uniqueTeamNames[i], new Team(uniqueTeamNames[i], uniqueTeamNameArray));
+            }
+        }
+
         public void LoadChampionIdDictionary()
         {
             List<int> uniqueChampionId = new List<int>();
@@ -90,10 +116,10 @@ namespace JsonReader
             int num = uniqueChampionId.Count();
             for (int i = 0; i < num; i++)
             {
-                int[] WilhelmArray = new int[uniqueChampionId.Count];
-                Array.Clear(WilhelmArray, 0, uniqueChampionId.Count);
-                WilhelmArray[i] = 1;
-                championIds.Add(uniqueChampionId[i], WilhelmArray);
+                int[] uniqueChampionIdArray = new int[uniqueChampionId.Count];
+                Array.Clear(uniqueChampionIdArray, 0, uniqueChampionId.Count);
+                uniqueChampionIdArray[i] = 1;
+                championIds.Add(uniqueChampionId[i], uniqueChampionIdArray);
             }
         }
 
