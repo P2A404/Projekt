@@ -137,15 +137,22 @@ namespace JsonReader
         double[] SaveGameToInputNeurons(SaveGameInfo.Game game)
         {
             double[][] inputNeuronArray = new double[12][];
-            inputNeuronArray[0] = teams[GetTeamName(game, true)].TeamNeuronInput;
-            inputNeuronArray[1] = teams[GetTeamName(game, false)].TeamNeuronInput;
-            return null;
+            for (int i = 0; i < 5; i++)
+            {
+                inputNeuronArray[i] = SaveGameToPlayerInputNeurons(game.teams[0].players[i]);
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                inputNeuronArray[i + 5] = SaveGameToPlayerInputNeurons(game.teams[1].players[i]);
+            }
+            inputNeuronArray[10] = teams[GetTeamName(game, true)].TeamNeuronInput;
+            inputNeuronArray[11] = teams[GetTeamName(game, false)].TeamNeuronInput;
+            return CombineArrays(inputNeuronArray);
         }
 
-        double[] SaveGameToPlayerInputNeurons(SaveGameInfo.Game game)
+        double[] SaveGameToPlayerInputNeurons(SaveGameInfo.Player player)
         {
-
-            return null;
+            return championIds[player.championId];
         }
 
         double[] CombineArrays(double[][] jaggedArray)
