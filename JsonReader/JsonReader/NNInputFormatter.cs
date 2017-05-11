@@ -22,8 +22,7 @@ namespace JsonReader
 
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
-        public Dictionary<int, int[]> championIds = new Dictionary<int, int[]>();
-        public Dictionary<string, int[]> teamNames = new Dictionary<string, int[]>();
+        public Dictionary<int, double[]> championIds = new Dictionary<int, double[]>();
         public Dictionary<string, Team> teams = new Dictionary<string, Team>();
 
         private string GetLocalDirectory()
@@ -82,7 +81,7 @@ namespace JsonReader
             int num = uniqueTeamNames.Count();
             for (int i = 0; i < num; i++)
             {
-                int[] uniqueTeamNameArray = new int[uniqueTeamNames.Count];
+                double[] uniqueTeamNameArray = new double[uniqueTeamNames.Count];
                 Array.Clear(uniqueTeamNameArray, 0, uniqueTeamNames.Count);
                 uniqueTeamNameArray[i] = 1;
                 teams.Add(uniqueTeamNames[i], new Team(uniqueTeamNames[i], uniqueTeamNameArray));
@@ -116,16 +115,30 @@ namespace JsonReader
             int num = uniqueChampionId.Count();
             for (int i = 0; i < num; i++)
             {
-                int[] uniqueChampionIdArray = new int[uniqueChampionId.Count];
+                double[] uniqueChampionIdArray = new double[uniqueChampionId.Count];
                 Array.Clear(uniqueChampionIdArray, 0, uniqueChampionId.Count);
                 uniqueChampionIdArray[i] = 1;
                 championIds.Add(uniqueChampionId[i], uniqueChampionIdArray);
             }
         }
 
+        public string GetTeamName(SaveGameInfo.Game game, bool blueTeam)
+        {
+            if (blueTeam)
+            {
+                return game.teams[0].players[0].summonerName.Substring(0, game.teams[0].players[0].summonerName.IndexOf(' '));
+            }
+            else
+            {
+                return game.teams[1].players[0].summonerName.Substring(0, game.teams[1].players[0].summonerName.IndexOf(' '));
+            }
+        }
+
         double[] SaveGameToInputNeurons(SaveGameInfo.Game game)
         {
-
+            double[][] inputNeuronArray = new double[12][];
+            inputNeuronArray[0] = teams[GetTeamName(game, true)].TeamNeuronInput;
+            inputNeuronArray[1] = teams[GetTeamName(game, false)].TeamNeuronInput;
             return null;
         }
 
@@ -156,6 +169,7 @@ namespace JsonReader
 
         SaveGameInfo.Game GameToSaveGame(GameInfo.Match game)
         {
+            //still missing some stuff
             SaveGameInfo.Game returnGame = new SaveGameInfo.Game();
             returnGame.gameCreation = game.gameCreation;
             returnGame.teams = new SaveGameInfo.Team[2];
