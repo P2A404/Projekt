@@ -25,7 +25,7 @@ namespace JsonReader
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
         public Dictionary<int, double[]> championIds = new Dictionary<int, double[]>();
         public Dictionary<string, Team> teams = new Dictionary<string, Team>();
-        public Dictionary<string, int[]> playerNames = new Dictionary<string, int[]>();
+        public Dictionary<string, double[]> playerNames = new Dictionary<string, double[]>();
 
         public double[] loadSaveInfo(SaveGameInfo.Game game)
         {
@@ -243,7 +243,7 @@ namespace JsonReader
             int num = uniquePlayerNames.Count;
             for (int i = 0; i < num; i++)
             {
-                int[] uniquePlayerNamesArray = new int[uniquePlayerNames.Count];
+                double[] uniquePlayerNamesArray = new double[uniquePlayerNames.Count];
                 Array.Clear(uniquePlayerNamesArray, 0, uniquePlayerNames.Count);
                 uniquePlayerNamesArray[i] = 1;
                 playerNames.Add(uniquePlayerNames[i], uniquePlayerNamesArray);
@@ -273,6 +273,28 @@ namespace JsonReader
                 uniqueTeamNameArray[i] = 1;
                 teams.Add(uniqueTeamNames[i], new Team(uniqueTeamNames[i], uniqueTeamNameArray));
             }
+        }
+
+        public double[] GetAllPlayersInTeam(SaveGameInfo.Team team)
+        {
+            double[][] players = new double[5][];
+            double[] allTeamPlayers;
+            for (int i = 0; i < players.GetLength(0); i++)
+            {
+                players[i] = playerNames[team.players[i].summonerName];
+            }
+            allTeamPlayers = players[0];
+            for (int i = 1; i < players.GetLength(0); i++)
+            {
+                for (int j = 0; j < players[i].Length; j++)
+                {
+                    if (players[i][j] == 1)
+                    {
+                        allTeamPlayers[j] = 1;
+                    }
+                }
+            }
+            return allTeamPlayers;
         }
 
         public void LoadChampionIdDictionary()
