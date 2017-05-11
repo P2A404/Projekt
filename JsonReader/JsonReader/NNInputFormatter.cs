@@ -17,13 +17,14 @@ namespace JsonReader
             JSONLoad();
             ConvertGames();
             LoadChampionIdDictionary();
-
+            LoadTeamsDictionary();
         }
 
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
         public Dictionary<int, int[]> championIds = new Dictionary<int, int[]>();
         public Dictionary<string, int[]> teamNames = new Dictionary<string, int[]>();
+        public Dictionary<string, Team> teams = new Dictionary<string, Team>();
 
         private string GetLocalDirectory()
         {
@@ -62,7 +63,8 @@ namespace JsonReader
             }
             matches = null;
         }
-        public void LoadTeamNamesDictionary()
+
+        public void LoadTeamsDictionary()
         {
             List<string> uniqueTeamNames = new List<string>();
 
@@ -83,9 +85,8 @@ namespace JsonReader
                 int[] uniqueTeamNameArray = new int[uniqueTeamNames.Count];
                 Array.Clear(uniqueTeamNameArray, 0, uniqueTeamNames.Count);
                 uniqueTeamNameArray[i] = 1;
-                teamNames.Add(uniqueTeamNames[i], uniqueTeamNameArray);
+                teams.Add(uniqueTeamNames[i], new Team(uniqueTeamNames[i], uniqueTeamNameArray));
             }
-
         }
 
         public void LoadChampionIdDictionary()
