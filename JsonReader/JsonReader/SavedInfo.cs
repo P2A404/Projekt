@@ -9,10 +9,15 @@ namespace JsonReader
 
     class Team
     {
-        string TeamName { get; set; }
+        public Team (string teamName, double[] teamNeuronInput)
+        {
+            TeamName = teamName;
+            TeamNeuronInput = teamNeuronInput;
+        }
+        public string TeamName { get; set; }
+        public double[] TeamNeuronInput { get; set; }
         SaveGameInfo.Game[] lastest3Games = new SaveGameInfo.Game[5];
         SaveGameInfo.Game averageGame = new SaveGameInfo.Game();
-        Dictionary<string, SaveGameInfo> vsGames = new Dictionary<string, SaveGameInfo>();
-
+        //Dictionary<string, SaveGameInfo> vsGames = new Dictionary<string, SaveGameInfo>();
     }
 }

@@ -17,11 +17,13 @@ namespace JsonReader
             JSONLoad();
             ConvertGames();
             LoadChampionIdDictionary();
-
+            LoadTeamsDictionary();
         }
 
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
+        public Dictionary<int, double[]> championIds = new Dictionary<int, double[]>();
+        public Dictionary<string, Team> teams = new Dictionary<string, Team>();
         public Dictionary<int, int[]> championIds = new Dictionary<int, int[]>();
         public Dictionary<string, int[]> teamNames = new Dictionary<string, int[]>();
         public Dictionary<string, int[]> playerNames = new Dictionary<string, int[]>();
@@ -109,12 +111,11 @@ namespace JsonReader
             int num = uniqueTeamNames.Count();
             for (int i = 0; i < num; i++)
             {
-                int[] uniqueTeamNameArray = new int[uniqueTeamNames.Count];
+                double[] uniqueTeamNameArray = new double[uniqueTeamNames.Count];
                 Array.Clear(uniqueTeamNameArray, 0, uniqueTeamNames.Count);
                 uniqueTeamNameArray[i] = 1;
-                teamNames.Add(uniqueTeamNames[i], uniqueTeamNameArray);
+                teams.Add(uniqueTeamNames[i], new Team(uniqueTeamNames[i], uniqueTeamNameArray));
             }
-
         }
 
         public void LoadChampionIdDictionary()
@@ -144,27 +145,68 @@ namespace JsonReader
             int num = uniqueChampionId.Count();
             for (int i = 0; i < num; i++)
             {
-                int[] uniqueChampionIdArray = new int[uniqueChampionId.Count];
+                double[] uniqueChampionIdArray = new double[uniqueChampionId.Count];
                 Array.Clear(uniqueChampionIdArray, 0, uniqueChampionId.Count);
                 uniqueChampionIdArray[i] = 1;
                 championIds.Add(uniqueChampionId[i], uniqueChampionIdArray);
             }
         }
 
-        double[] SaveGameToInputNeurons(SaveGameInfo.Game game)
+        public string GetTeamName(SaveGameInfo.Game game, bool blueTeam)
         {
-
-            return null;
+            if (blueTeam)
+            {
+                return game.teams[0].players[0].summonerName.Substring(0, game.teams[0].players[0].summonerName.IndexOf(' '));
+            }
+            else
+            {
+                return game.teams[1].players[0].summonerName.Substring(0, game.teams[1].players[0].summonerName.IndexOf(' '));
+            }
         }
 
-        double[] CombineArrays(double[][] arrays)
+        double[] SaveGameToInputNeurons(SaveGameInfo.Game game)
         {
+            double[][] inputNeuronArray = new double[12][];
+            for (int i = 0; i < 5; i++)
+            {
+                inputNeuronArray[i] = SaveGameToPlayerInputNeurons(game.teams[0].players[i]);
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                inputNeuronArray[i + 5] = SaveGameToPlayerInputNeurons(game.teams[1].players[i]);
+            }
+            inputNeuronArray[10] = teams[GetTeamName(game, true)].TeamNeuronInput;
+            inputNeuronArray[11] = teams[GetTeamName(game, false)].TeamNeuronInput;
+            return CombineArrays(inputNeuronArray);
+        }
 
-            return null;
+        double[] SaveGameToPlayerInputNeurons(SaveGameInfo.Player player)
+        {
+            return championIds[player.championId];
+        }
+
+        double[] CombineArrays(double[][] jaggedArray)
+        {
+            int totalArrayLength = 0;
+            for (int i = 0; i < jaggedArray.GetLength(0); i++)
+            {
+                totalArrayLength += jaggedArray[i].Length;
+            }
+            double[] returnArray = new double[totalArrayLength];
+            int currentId = 0;
+            for (int i = 0; i < jaggedArray.GetLength(0); i++, currentId++)
+            {
+                for (int j = 0; j < jaggedArray[i].Length; j++, currentId++)
+                {
+                    returnArray[currentId] = jaggedArray[i][j];
+                }
+            }
+            return returnArray;
         }
 
         SaveGameInfo.Game GameToSaveGame(GameInfo.Match game)
         {
+            //still missing some stuff
             SaveGameInfo.Game returnGame = new SaveGameInfo.Game();
             returnGame.gameCreation = game.gameCreation;
             returnGame.teams = new SaveGameInfo.Team[2];
