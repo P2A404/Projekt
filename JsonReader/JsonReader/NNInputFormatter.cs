@@ -15,8 +15,6 @@ namespace JsonReader
         public NNInputFormatter()
         {
             JSONLoad();
-            longestGame();
-            Console.Read();
             ConvertGames();
             LoadChampionIdDictionary();
             LoadTeamsDictionary();
@@ -185,23 +183,6 @@ namespace JsonReader
             input = gameData.ToArray();
             return input;
 
-        }
-
-        public void longestGame()
-        {
-            int high = -1;
-            foreach (GameInfo.Match match in matches)
-            {
-                if (match.participants[0].timeline.creepsPerMinDeltas._010 != 0)
-                {
-                    Console.WriteLine(match.participants[0].timeline.creepsPerMinDeltas._010.ToString() + " cs per minute.");
-                }
-                if (match.gameDuration > high)
-                {
-                    high = match.gameDuration;
-                }
-            }
-            Console.WriteLine($"highest duration is {high}");
         }
 
         private string GetLocalDirectory()
