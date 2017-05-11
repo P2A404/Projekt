@@ -22,6 +22,7 @@ namespace JsonReader
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
         public Dictionary<int, int[]> championIds = new Dictionary<int, int[]>();
+        public Dictionary<string, int[]> teamNames = new Dictionary<string, int[]>();
 
         private string GetLocalDirectory()
         {
@@ -47,21 +48,46 @@ namespace JsonReader
             }
         }
 
-        public double Normalization (double currentValue, double minValue, double maxValue)
+        public double Normalization(double currentValue, double minValue, double maxValue)
         {
-            return (2*((currentValue - minValue) / (maxValue - minValue))-1);
+            return (2 * ((currentValue - minValue) / (maxValue - minValue)) - 1);
         }
 
-        public void ConvertGames ()
+        public void ConvertGames()
         {
-            foreach(GameInfo.Match match in matches)
+            foreach (GameInfo.Match match in matches)
             {
                 games.Add(GameToSaveGame(match));
             }
             matches = null;
         }
+        public void LoadTeamNamesDictionary()
+        {
+            List<string> uniqueTeamNames = new List<string>();
 
-        public void LoadChampionIdDictionary ()
+            foreach (SaveGameInfo.Game game in games)
+            {
+                foreach (SaveGameInfo.Team team in game.teams)
+                {
+                    string teamName = team.players[0].summonerName.Substring(0, team.players[0].summonerName.IndexOf(' '));
+                    if (!uniqueTeamNames.Contains(teamName))
+                    {
+                        uniqueTeamNames.Add(teamName);
+                    }
+                }
+            }
+            int num = uniqueTeamNames.Count();
+            for (int i = 0; i < num; i++)
+            {
+                int[] uniqueTeamNameArray = new int[uniqueTeamNames.Count];
+                Array.Clear(uniqueTeamNameArray, 0, uniqueTeamNames.Count);
+                uniqueTeamNameArray[i] = 1;
+                teamNames.Add(uniqueTeamNames[i], uniqueTeamNameArray);
+            }
+
+        }
+
+        public void LoadChampionIdDictionary()
         {
             List<int> uniqueChampionId = new List<int>();
 
@@ -88,16 +114,16 @@ namespace JsonReader
             int num = uniqueChampionId.Count();
             for (int i = 0; i < num; i++)
             {
-                int[] WilhelmArray = new int[uniqueChampionId.Count];
-                Array.Clear(WilhelmArray, 0, uniqueChampionId.Count);
-                WilhelmArray[i] = 1;
-                championIds.Add(uniqueChampionId[i], WilhelmArray);
+                int[] uniqueChampionIdArray = new int[uniqueChampionId.Count];
+                Array.Clear(uniqueChampionIdArray, 0, uniqueChampionId.Count);
+                uniqueChampionIdArray[i] = 1;
+                championIds.Add(uniqueChampionId[i], uniqueChampionIdArray);
             }
         }
 
         double[] SaveGameToInputNeurons(SaveGameInfo.Game game)
         {
-            
+
             return null;
         }
 
