@@ -103,9 +103,27 @@ namespace JsonReader
             return null;
         }
 
-        double[] CombineArrays(double[][] arrays)
+        double[] SaveGameToPlayerInputNeurons(SaveGameInfo.Game game)
         {
 
+            return null;
+        }
+
+        double[] CombineArrays(double[][] jaggedArray)
+        {
+            int totalArrayLength = 0;
+            for (int i = 0; i < jaggedArray.GetLength(0); i++)
+            {
+                totalArrayLength += jaggedArray[i].Length;
+            }
+            double[] returnArray = new double[totalArrayLength];
+            for (int i = 0; i < jaggedArray.GetLength(0); i++)
+            {
+                for (int j = 0; j < jaggedArray[i].GetLength(1); j++)
+                {
+
+                }
+            }
             return null;
         }
 
