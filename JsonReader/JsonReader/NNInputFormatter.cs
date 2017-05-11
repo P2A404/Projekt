@@ -24,8 +24,6 @@ namespace JsonReader
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
         public Dictionary<int, double[]> championIds = new Dictionary<int, double[]>();
         public Dictionary<string, Team> teams = new Dictionary<string, Team>();
-        public Dictionary<int, int[]> championIds = new Dictionary<int, int[]>();
-        public Dictionary<string, int[]> teamNames = new Dictionary<string, int[]>();
         public Dictionary<string, int[]> playerNames = new Dictionary<string, int[]>();
 
         private string GetLocalDirectory()
@@ -93,7 +91,7 @@ namespace JsonReader
             }
         }
 
-        public void LoadTeamNamesDictionary()
+        public void LoadTeamsDictionary()
         {
             List<string> uniqueTeamNames = new List<string>();
 
