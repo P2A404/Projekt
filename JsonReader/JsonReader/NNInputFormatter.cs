@@ -15,6 +15,8 @@ namespace JsonReader
         public NNInputFormatter()
         {
             JSONLoad();
+            longestGame();
+            Console.Read();
             ConvertGames();
             LoadChampionIdDictionary();
             LoadTeamsDictionary();
@@ -26,6 +28,181 @@ namespace JsonReader
         public Dictionary<int, double[]> championIds = new Dictionary<int, double[]>();
         public Dictionary<string, Team> teams = new Dictionary<string, Team>();
         public Dictionary<string, int[]> playerNames = new Dictionary<string, int[]>();
+
+        public double[] loadSaveInfo(SaveGameInfo.Game game)
+        {
+            List<double> gameData = new List<double>();
+            double[] input;
+
+            foreach (SaveGameInfo.Team team in game.teams)
+            {
+
+                gameData.Add(team.towerKills);
+                gameData.Add(team.inhibitorKills);
+                gameData.Add(team.baronKills);
+                gameData.Add(team.dragonKills);
+                gameData.Add(team.riftHeraldKills);
+
+                if (team.firstBlood)
+                { gameData.Add(1); }
+                else { gameData.Add(0); }
+
+                if (team.firstTower)
+                { gameData.Add(1); }
+                else { gameData.Add(0); }
+
+                if (team.firstInhibitor)
+                { gameData.Add(1); }
+                else { gameData.Add(0); }
+
+                if (team.firstBaron)
+                { gameData.Add(1); }
+                else { gameData.Add(0); }
+
+                if (team.firstDragon)
+                { gameData.Add(1); }
+                else { gameData.Add(0); }
+
+                if(team.firstRiftHerald)
+                { gameData.Add(1); }
+                else { gameData.Add(0); }
+
+                foreach (SaveGameInfo.Player player in team.players)
+                {
+                    gameData.Add(player.stats.kills);
+                    gameData.Add(player.stats.deaths);
+                    gameData.Add(player.stats.assists);
+                    gameData.Add(player.stats.largestKillingSpree);
+                    gameData.Add(player.stats.largestMultiKill);
+                    gameData.Add(player.stats.killingSprees);
+                    gameData.Add(player.stats.longestTimeSpentLiving);
+                    gameData.Add(player.stats.doubleKills);
+                    gameData.Add(player.stats.tripleKills);
+                    gameData.Add(player.stats.quadraKills);
+                    gameData.Add(player.stats.pentaKills);
+                    gameData.Add(player.stats.unrealKills);
+                    gameData.Add(player.stats.totalDamageDealt);
+                    gameData.Add(player.stats.magicDamageDealt);
+                    gameData.Add(player.stats.physicalDamageDealt);
+                    gameData.Add(player.stats.trueDamageDealt);
+                    gameData.Add(player.stats.largestCriticalStrike);
+                    gameData.Add(player.stats.totalDamageDealtToChampions);
+                    gameData.Add(player.stats.magicDamageDealtToChampions);
+                    gameData.Add(player.stats.physicalDamageDealtToChampions);
+                    gameData.Add(player.stats.trueDamageDealtToChampions);
+                    gameData.Add(player.stats.totalHeal);
+                    gameData.Add(player.stats.totalUnitsHealed);
+                    gameData.Add(player.stats.damageSelfMitigated);
+                    gameData.Add(player.stats.damageDealtToObjectives);
+                    gameData.Add(player.stats.damageDealtToTurrets);
+                    gameData.Add(player.stats.timeCCingOthers);
+                    gameData.Add(player.stats.totalDamageTaken);
+                    gameData.Add(player.stats.magicalDamageTaken);
+                    gameData.Add(player.stats.physicalDamageTaken);
+                    gameData.Add(player.stats.trueDamageTaken);
+                    gameData.Add(player.stats.goldEarned);
+                    gameData.Add(player.stats.goldSpent);
+                    gameData.Add(player.stats.turretKills);
+                    gameData.Add(player.stats.inhibitorKills);
+                    gameData.Add(player.stats.totalMinionsKilled);
+                    gameData.Add(player.stats.neutralMinionsKilled);
+                    gameData.Add(player.stats.neutralMinionsKilledTeamJungle);
+                    gameData.Add(player.stats.neutralMinionsKilledEnemyJungle);
+                    gameData.Add(player.stats.totalTimeCrowdControlDealt);
+                    gameData.Add(player.stats.champLevel);
+                    gameData.Add(player.stats.visionWardsBoughtInGame);
+                    gameData.Add(player.stats.wardsPlaced);
+                    gameData.Add(player.stats.wardsKilled);
+
+                    if (player.stats.firstBloodKill)
+                    { gameData.Add(1); }
+                    else { gameData.Add(0); }
+
+                    if (player.stats.firstBloodAssist)
+                    { gameData.Add(1); }
+                    else { gameData.Add(0); }
+
+                    if (player.stats.firstTowerKill)
+                    { gameData.Add(1); }
+                    else { gameData.Add(0); }
+
+                    if (player.stats.firstTowerAssist)
+                    { gameData.Add(1); }
+                    else { gameData.Add(0); };
+
+                    if (player.stats.firstInhibitorKill)
+                    { gameData.Add(1); }
+                    else { gameData.Add(0); }
+
+                    if (player.stats.firstInhibitorAssist)
+                    { gameData.Add(1); }
+                    else { gameData.Add(0); }
+
+                    gameData.Add(player.timeline.creepsPerMinDeltas._010);
+                    gameData.Add(player.timeline.creepsPerMinDeltas._1020);
+                    gameData.Add(player.timeline.creepsPerMinDeltas._2030);
+                    gameData.Add(player.timeline.creepsPerMinDeltas._3040);
+                    gameData.Add(player.timeline.creepsPerMinDeltas._40end);
+
+                    gameData.Add(player.timeline.xpPerMinDeltas._010);
+                    gameData.Add(player.timeline.xpPerMinDeltas._1020);
+                    gameData.Add(player.timeline.xpPerMinDeltas._3040);
+                    gameData.Add(player.timeline.xpPerMinDeltas._2030);
+                    gameData.Add(player.timeline.xpPerMinDeltas._40end);
+
+                    gameData.Add(player.timeline.goldPerMinDeltas._010);
+                    gameData.Add(player.timeline.goldPerMinDeltas._1020);
+                    gameData.Add(player.timeline.goldPerMinDeltas._2030);
+                    gameData.Add(player.timeline.goldPerMinDeltas._3040);
+                    gameData.Add(player.timeline.goldPerMinDeltas._40end);
+
+                    gameData.Add(player.timeline.csDiffPerMinDeltas._010);
+                    gameData.Add(player.timeline.csDiffPerMinDeltas._1020);
+                    gameData.Add(player.timeline.csDiffPerMinDeltas._2030);
+                    gameData.Add(player.timeline.csDiffPerMinDeltas._3040);
+                    gameData.Add(player.timeline.csDiffPerMinDeltas._40end);
+
+                    gameData.Add(player.timeline.xpDiffPerMinDeltas._010);
+                    gameData.Add(player.timeline.xpDiffPerMinDeltas._1020);
+                    gameData.Add(player.timeline.xpDiffPerMinDeltas._2030);
+                    gameData.Add(player.timeline.xpDiffPerMinDeltas._3040);
+                    gameData.Add(player.timeline.xpDiffPerMinDeltas._40end);
+
+                    gameData.Add(player.timeline.damageTakenPerMinDeltas._010);
+                    gameData.Add(player.timeline.damageTakenPerMinDeltas._1020);
+                    gameData.Add(player.timeline.damageTakenPerMinDeltas._2030);
+                    gameData.Add(player.timeline.damageTakenPerMinDeltas._3040);
+                    gameData.Add(player.timeline.damageTakenPerMinDeltas._40end);
+
+                    gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._010);
+                    gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._1020);
+                    gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._2030);
+                    gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._3040);
+                    gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._40end);
+                }
+            }
+
+            input = gameData.ToArray();
+            return input;
+
+        }
+
+        public void longestGame()
+        {
+            int high = -1;
+            foreach (GameInfo.Match match in matches)
+            {
+                if (match.participants[0].timeline.creepsPerMinDeltas._010 != 0)
+                {
+                    Console.WriteLine(match.participants[0].timeline.creepsPerMinDeltas._010.ToString() + " cs per minute.");
+                }
+                if (match.gameDuration > high)
+                {
+                    high = match.gameDuration;
+                }
+            }
+            Console.WriteLine($"highest duration is {high}");
+        }
 
         private string GetLocalDirectory()
         {
@@ -208,6 +385,7 @@ namespace JsonReader
             //still missing some stuff
             SaveGameInfo.Game returnGame = new SaveGameInfo.Game();
             returnGame.gameCreation = game.gameCreation;
+            returnGame.gameDuration = game.gameDuration;
             returnGame.teams = new SaveGameInfo.Team[2];
             for (int i = 0; i < returnGame.teams.Length; i++)
             {
@@ -217,6 +395,9 @@ namespace JsonReader
                 {
                     returnGame.teams[i].players[j] = new SaveGameInfo.Player();
                     returnGame.teams[i].players[j].championId = game.participants[(i * 5) + j].championId;
+                    returnGame.teams[i].players[j].playerId = game.participants[(i * 5) + j].championId;
+                    returnGame.teams[i].players[j].summonerName = game.participantIdentities[(i * 5 + j)].player.summonerName;
+
                 }
             }
             return null;
