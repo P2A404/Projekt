@@ -9,6 +9,7 @@ namespace ArtificialNeuralNetwork
 {
     class TransferFunctions
     {
+        #region Activations
         public double[] Logistic (double[] input)
         {
             double[] ret = new double[input.Length];
@@ -60,5 +61,49 @@ namespace ArtificialNeuralNetwork
 
             return input;
         }
+        #endregion
+
+        #region Derivatives
+        //softmax derivative is still a problem
+        public double[] LogistikDerivative(double[] inputArray)
+        {
+            double[] result = new double[inputArray.Length];
+            for (int i = 0; i < inputArray.Length; i++)
+            {
+                result[i] = -Exp(inputArray[i]) / Pow((1 + Exp(inputArray[i])), 2);
+            }
+            return result;
+        }
+
+        public double[] TahnDerivative(double[] inputArray)
+        {
+            double[] result = new double[inputArray.Length];
+            for (int i = 0; i < inputArray.Length; i++)
+            {
+                result[i] = -(4 * Exp(-2 * inputArray[i])) / (Pow((1 + Exp(-2 * inputArray[i])), 2));
+            }
+            return result;
+        }
+
+        public double[] HyperbolicDeivative(double[] inputArray)
+        {
+            double[] result = new double[inputArray.Length];
+            for (int i = 0; i < inputArray.Length; i++)
+            {
+                result[i] = 4 * Exp(inputArray[i]) / Pow((Exp(2 * inputArray[i]) + 1), 2);
+            }
+            return result;
+        }
+
+        public double[] LinearDeivative(double[] inputArray)
+        {
+            double[] result = new double[inputArray.Length];
+            for (int i = 0; i < inputArray.Length; i++)
+            {
+                result[i] = 1;
+            }
+            return result;
+        }
+        #endregion
     }
 }

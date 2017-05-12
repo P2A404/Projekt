@@ -15,15 +15,19 @@ namespace ArtificialNeuralNetwork
         public int inputSize;
         private TranferFunction _activationFunction;
         private TranferFunction _outputFunction;
+        private TranferFunction _derivativeActivationFunction;
+        private TranferFunction _derivativeOutputFunction;
         private Random rand = new Random();
         #endregion
 
         #region Constructors
         //neuralt netværk constructor med bestemt størrelse
-        public NeuralNetwork(int[] size, TranferFunction activationFunction, TranferFunction outputFunction)
+        public NeuralNetwork(int[] size, TranferFunction activationFunction, TranferFunction outputFunction, TranferFunction derivativeActivationFunction, TranferFunction derivativeOutputFunction)
         {
             _activationFunction = activationFunction;
             _outputFunction = outputFunction;
+            _derivativeActivationFunction = derivativeActivationFunction;
+            _derivativeOutputFunction = derivativeOutputFunction;
             inputSize = size[0];
             layers = new Layer[size.Length-1];
             for (int i = 0; i < layers.Length; i++)
@@ -127,15 +131,14 @@ namespace ArtificialNeuralNetwork
                         {
                             sumError += layers[l].weights[j, i] * errorTerm[l + 1][j];
                         }
-
-                        errorTerm[l][i] += sumError * gradientDescent_Of_Zum_i;
+                        errorTerm[l][i] += sumError * _derivativeActivationFunction(layers[l].sums)[i];
                     }
                     else
                     {
                         // Last layer
                         for (int j = 0; j < layers[l].activations.Length; j++)
                         {
-                            errorTerm[l][j] -= (resultMatch[j] - layers[l].activations[j]) * gradientDescent_Of_Zum_i;
+                            errorTerm[l][j] -= (resultMatch[j] - layers[l].activations[j]) * _derivativeOutputFunction(layers[l].sums)[i];
                         }
                     }
                 }
