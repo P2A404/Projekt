@@ -148,6 +148,7 @@ namespace ArtificialNeuralNetwork
 
         public void CalculateUpdateSumError(double[][] neuronErrorTerm, double[][,] updateSumError)
         {
+            // More bugs with the length and to get the input_neuron/data ...
             for (int l = 0; l < layers.Length; l++)
             {
                 for (int j = ((l != layers.Length - 1) ? 1 : 0); j < layers[l].weights.GetLength(0); j++)
