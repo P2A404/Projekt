@@ -19,6 +19,7 @@ namespace JsonReader
             LoadChampionIdDictionary();
             LoadTeamsDictionary();
             LoadPlayerNamesDictionary();
+            PrintDoubleArray(SaveGameToTeamNeurons(games[0]));
         }
 
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
@@ -26,6 +27,14 @@ namespace JsonReader
         public Dictionary<int, double[]> championIds = new Dictionary<int, double[]>();
         public Dictionary<string, Team> teams = new Dictionary<string, Team>();
         public Dictionary<string, double[]> playerNames = new Dictionary<string, double[]>();
+
+        public void PrintDoubleArray(double[] array)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                Console.WriteLine(array[i].ToString());
+            }
+        }
 
         private string GetLocalDirectory()
         {
@@ -58,9 +67,10 @@ namespace JsonReader
 
         private void ConvertGames()
         {
-            foreach (GameInfo.Match match in matches)
+            for (int i = 0; i < matches.Count; i++)
             {
-                games.Add(MatchToSaveGame(match));
+                Console.WriteLine($"Match: {i}");
+                games.Add(MatchToSaveGame(matches[i]));
             }
             matches = null;
         }
@@ -371,6 +381,7 @@ namespace JsonReader
 
         double[] CombineArrays(double[][] jaggedArray)
         {
+            //goes out of range
             int totalArrayLength = 0;
             for (int i = 0; i < jaggedArray.GetLength(0); i++)
             {
@@ -394,18 +405,27 @@ namespace JsonReader
             SaveGameInfo.Game returnGame = new SaveGameInfo.Game();
             returnGame.gameCreation = match.gameCreation;
             returnGame.gameDuration = match.gameDuration;
+            returnGame.gameVersion = match.gameVersion;
             returnGame.teams = new SaveGameInfo.Team[2];
             for (int i = 0; i < returnGame.teams.Length; i++)
             {
                 returnGame.teams[i] = new SaveGameInfo.Team();
+                returnGame.teams[i].teamId = match.teams[i].teamId;
                 returnGame.teams[i].players = new SaveGameInfo.Player[5];
-                returnGame.teams[i].teamName = match.participantIdentities[i * 5].player.summonerName;
-                //returnGame.teams[i].win = match.teams[i].win;
+                returnGame.teams[i].teamName = match.participantIdentities[i * 5].player.summonerName.Substring(0, match.participantIdentities[i * 5].player.summonerName.IndexOf(' '));
+                returnGame.teams[i].win = match.participants[i * 5].stats.win;
                 returnGame.teams[i].firstBlood = match.teams[i].firstBlood;
                 returnGame.teams[i].firstTower = match.teams[i].firstTower;
                 returnGame.teams[i].firstInhibitor = match.teams[i].firstInhibitor;
                 returnGame.teams[i].firstBaron = match.teams[i].firstBaron;
-                //conteniue here. also do timeline
+                returnGame.teams[i].bannedChampionId = new int[3];
+                for (int j = 0; j < 3; j++)
+                {
+                    if (j < match.teams[i].bans.Length)
+                    { returnGame.teams[i].bannedChampionId[j] = match.teams[i].bans[j].championId; }
+                    else
+                    { returnGame.teams[i].bannedChampionId[j] = 0; }
+                }
                 for (int j = 0; j < returnGame.teams[i].players.Length; j++)
                 {
                     returnGame.teams[i].players[j] = new SaveGameInfo.Player();
@@ -413,10 +433,12 @@ namespace JsonReader
                     returnGame.teams[i].players[j].playerId = match.participants[(i * 5) + j].championId;
                     returnGame.teams[i].players[j].summonerName = match.participantIdentities[(i * 5 + j)].player.summonerName;
                     returnGame.teams[i].players[j].stats = StatsToSaveStats(match.participants[(i * 5) + j].stats);
-
+                    returnGame.teams[i].players[j].playerId = match.participantIdentities[j].participantId;
+                    //spells here if needed
+                    //timeline here if needed
                 }
             }
-            return null;
+            return returnGame;
         }
 
         SaveGameInfo.Stats StatsToSaveStats(GameInfo.Stats stats)
