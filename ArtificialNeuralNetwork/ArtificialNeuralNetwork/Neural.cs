@@ -73,79 +73,80 @@ namespace ArtificialNeuralNetwork
             _activationFunction = newTransfer;
         }
 
-        public void Training(double[][] inputData, double[][] outputData) // All training data as input
+        public void Training(double[][] inputData, double[][] resultMatch)
         {
             // layers[i].weight.GetLength(0); row
             // layers[i].weight.GetLength(1); column
 
-            double totalErrorTerm = 0.0, trainingsRate = 0.001, weightDecay = 0.5;
+            double totalErrorTerm = 0.0, trainingsRate = 0.01, weightDecay = 0.5;
 
-            double[][] errorTerm = new double[layers.Length][];
-            double[][,] sumOfOutputError = new double[layers.Length][,];
+            double[][] neuronErrorTerm = new double[layers.Length][];
+            double[][,] updateSumError = new double[layers.Length][,];
 
             for (int l = 0; l < layers.GetLength(0); l++)
             {
-                errorTerm[l] = new double[layers[l].weights.GetLength(0)];
-                sumOfOutputError[l] = new double[layers[l].weights.GetLength(0), layers[l].weights.GetLength(0)];
+                neuronErrorTerm[l] = new double[layers[l].weights.GetLength(0)];
+                updateSumError[l] = new double[layers[l].weights.GetLength(0), layers[l].weights.GetLength(0)];
             }
 
             do
             {
-                Array.Clear(errorTerm, 0, errorTerm.Length);
-                Array.Clear(sumOfOutputError, 0, sumOfOutputError.Length);
+                // Clear the neuronErrorTerm and sumOfOutputError
+                Array.Clear(neuronErrorTerm, 0, neuronErrorTerm.Length);
+                Array.Clear(updateSumError, 0, updateSumError.Length);
 
                 for (int k = 0; k < inputData.Length; k++)
                 {
                     Cycle(inputData[k]);
 
-                    CalculateErrorTerm(errorTerm, outputData[k]); // CycleInfo = neuron output, zum, matchResult ...
-                    CalculateSumError(errorTerm, sumOfOutputError);
+                    CalculateErrorTerm(neuronErrorTerm, resultMatch[k]);
+                    CalculateUpdateSumError(neuronErrorTerm, updateSumError);
                 }
 
-                UpdateWeights(sumOfOutputError, trainingsRate, weightDecay, inputData.Length);
+                UpdateWeights(updateSumError, trainingsRate, weightDecay, inputData.Length);
 
                 // Find totalErrorTerm
                 for (int l = 0; l < layers.GetLength(0); l++)
                 {
                     for (int i = 0; i < layers[l].weights.GetLength(0); i++)
                     {
-                        totalErrorTerm += errorTerm[l][i];
+                        totalErrorTerm += neuronErrorTerm[l][i];
                     }
                 }
 
             } while (totalErrorTerm > 0.2); // Changeable Error term
         }
 
-        private void CalculateErrorTerm(double[][] errorTerm, double[] resultMatch)
+        public void CalculateErrorTerm(double[][] neuronErrorTerm, double[] resultMatch)
         {
             double sumError = 0.0;
 
             for (int l = layers.Length - 1; l >= 0; l--)
             {
-                for (int i = 0; i < layers[l].weights.GetLength(1); i++)
+                for (int j = 1; j < layers[l].weights.GetLength(1); j++)
                 {
                     if (l != layers.Length - 1)
                     {
                         sumError = 0.0;
-                        for (int j = 1; j < layers[l].weights.GetLength(0); j++)    // bias update ??
+                        for (int k = 1; k < layers[l].weights.GetLength(0); k++)
                         {
-                            sumError += layers[l].weights[j, i] * errorTerm[l + 1][j];
+                            sumError += neuronErrorTerm[l + 1][k] * layers[l].weights[k, j];
                         }
-                        errorTerm[l][i] += sumError * _derivativeActivationFunction(layers[l].sums)[i];
+                        neuronErrorTerm[l][j] += sumError * _derivativeActivationFunction(layers[l].sums)[j];
                     }
                     else
                     {
                         // Last layer
-                        for (int j = 0; j < layers[l].activations.Length; j++)
+                        for (int k = 0; k < layers[l].activations.Length; k++)
                         {
-                            errorTerm[l][j] -= (resultMatch[j] - layers[l].activations[j]) * _derivativeOutputFunction(layers[l].sums)[i];
+                            neuronErrorTerm[l][k] += (resultMatch[k] - layers[l].activations[k]) * _derivativeOutputFunction(layers[l].sums)[j];
                         }
                     }
                 }
             }
         }
 
-        private void CalculateSumError(double[][] errorTerm, double[][,] sumOfOutputError)
+        public void CalculateUpdateSumError(double[][] neuronErrorTerm, double[][,] updateSumError)
         {
             for (int l = 0; l < layers.Length; l++)
             {
@@ -153,13 +154,13 @@ namespace ArtificialNeuralNetwork
                 {
                     for (int i = 0; i < layers[l].weights.GetLength(1); i++)
                     {
-                        sumOfOutputError[l][j, i] += layers[l].activations[i] * errorTerm[l + 1][j];
+                        updateSumError[l][j, i] += neuronErrorTerm[l + 1][j] * layers[l].activations[i];
                     }
                 }
             }
         }
 
-        private void UpdateWeights(double[][,] sumOfOutputError, double trainingsRate, double weightDecay, int trainingsDataLength)
+        public void UpdateWeights(double[][,] updateSumError, double trainingsRate, double weightDecay, int trainingsDataLength)
         {
             for (int l = 0; l < layers.Length; l++)
             {
@@ -169,12 +170,12 @@ namespace ArtificialNeuralNetwork
                     {
                         if (i != 0)
                         {
-                            layers[l].weights[j, i] -= trainingsRate * (1 / trainingsDataLength * sumOfOutputError[l][j, i] + weightDecay * layers[l].weights[j, i]);
+                            layers[l].weights[j, i] += trainingsRate * (1.0 / trainingsDataLength * updateSumError[l][j, i] + weightDecay / trainingsDataLength * layers[l].weights[j, i]);
                         }
                         else
                         {
                             // Bias
-                            layers[l].weights[j, i] -= trainingsRate * 1 / trainingsDataLength * sumOfOutputError[l][j, i];
+                            layers[l].weights[j, i] += trainingsRate * (1.0 / trainingsDataLength * updateSumError[l][j, i]);
                         }
                     }
                 }
