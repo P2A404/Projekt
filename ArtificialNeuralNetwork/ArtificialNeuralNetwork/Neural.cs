@@ -13,6 +13,7 @@ namespace ArtificialNeuralNetwork
         #region Variables
         public Layer[] layers;
         public int inputSize;
+        private double[] lastestInput;
         private TranferFunction _activationFunction;
         private TranferFunction _outputFunction;
         private TranferFunction _derivativeActivationFunction;
@@ -189,6 +190,7 @@ namespace ArtificialNeuralNetwork
             }
             else
             {
+                lastestInput = input;
                 double[] data = input;
                 //Cycle through network
                 for (int i = 0; i < layers.Length; i++)
