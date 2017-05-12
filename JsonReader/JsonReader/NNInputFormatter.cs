@@ -27,7 +27,191 @@ namespace JsonReader
         public Dictionary<string, Team> teams = new Dictionary<string, Team>();
         public Dictionary<string, double[]> playerNames = new Dictionary<string, double[]>();
 
-        public double[] loadSaveInfo(SaveGameInfo.Game game)
+        private string GetLocalDirectory()
+        {
+            string LocalDirectory = Assembly.GetExecutingAssembly().Location;
+            LocalDirectory = LocalDirectory.Remove(Regex.Match(LocalDirectory, "JsonReader").Index);
+            return LocalDirectory;
+        }
+
+        private void JSONLoad()
+        {
+            string LocalPath = GetLocalDirectory() + @"Data\Matches\";
+            for (int index = 1; index < 2827; index++)
+            {
+                using (StreamReader Reader = new StreamReader(LocalPath + $@"{index}.json"))
+                {
+                    // Current file read to the end
+                    string json = Reader.ReadToEnd();
+                    var result = JsonConvert.DeserializeObject<GameInfo.Match>(json);
+                    // Adding to final list of matches
+                    matches.Add(result);
+                    Console.WriteLine(index + " done");
+                }
+            }
+        }
+
+        public double Normalization(double currentValue, double minValue, double maxValue)
+        {
+            return (2 * ((currentValue - minValue) / (maxValue - minValue)) - 1);
+        }
+
+        private void ConvertGames()
+        {
+            foreach (GameInfo.Match match in matches)
+            {
+                games.Add(MatchToSaveGame(match));
+            }
+            matches = null;
+        }
+
+        public void LoadPlayerNamesDictionary()
+        {
+            List<string> uniquePlayerNames = new List<string>();
+
+            foreach (SaveGameInfo.Game game in games)
+            {
+                foreach (SaveGameInfo.Team team in game.teams)
+                {
+                    foreach (SaveGameInfo.Player player in team.players)
+                    {
+                        if (!uniquePlayerNames.Contains(player.summonerName))
+                        {
+                            uniquePlayerNames.Add(player.summonerName);
+                        }
+                    }
+                }
+            }
+            int num = uniquePlayerNames.Count;
+            for (int i = 0; i < num; i++)
+            {
+                double[] uniquePlayerNamesArray = new double[uniquePlayerNames.Count];
+                Array.Clear(uniquePlayerNamesArray, 0, uniquePlayerNames.Count);
+                uniquePlayerNamesArray[i] = 1;
+                playerNames.Add(uniquePlayerNames[i], uniquePlayerNamesArray);
+            }
+        }
+
+        public void LoadTeamsDictionary()
+        {
+            List<string> uniqueTeamNames = new List<string>();
+
+            foreach (SaveGameInfo.Game game in games)
+            {
+                foreach (SaveGameInfo.Team team in game.teams)
+                {
+                    string teamName = team.players[0].summonerName.Substring(0, team.players[0].summonerName.IndexOf(' '));
+                    if (!uniqueTeamNames.Contains(teamName))
+                    {
+                        uniqueTeamNames.Add(teamName);
+                    }
+                }
+            }
+            int num = uniqueTeamNames.Count();
+            for (int i = 0; i < num; i++)
+            {
+                double[] uniqueTeamNameArray = new double[uniqueTeamNames.Count];
+                Array.Clear(uniqueTeamNameArray, 0, uniqueTeamNames.Count);
+                uniqueTeamNameArray[i] = 1;
+                teams.Add(uniqueTeamNames[i], new Team(uniqueTeamNames[i], uniqueTeamNameArray));
+            }
+        }
+
+        public double[] GetAllPlayersInTeam(SaveGameInfo.Team team)
+        {
+            double[][] players = new double[5][];
+            double[] allTeamPlayers;
+            for (int i = 0; i < players.GetLength(0); i++)
+            {
+                players[i] = playerNames[team.players[i].summonerName];
+            }
+            allTeamPlayers = players[0];
+            for (int i = 1; i < players.GetLength(0); i++)
+            {
+                for (int j = 0; j < players[i].Length; j++)
+                {
+                    if (players[i][j] == 1)
+                    {
+                        allTeamPlayers[j] = 1;
+                    }
+                }
+            }
+            return allTeamPlayers;
+        }
+
+        public void LoadChampionIdDictionary()
+        {
+            List<int> uniqueChampionId = new List<int>();
+
+            foreach (SaveGameInfo.Game game in games)
+            {
+                foreach (SaveGameInfo.Team team in game.teams)
+                {
+                    foreach (SaveGameInfo.Player player in team.players)
+                    {
+                        if (!uniqueChampionId.Contains(player.championId))
+                        {
+                            uniqueChampionId.Add(player.championId);
+                        }
+                    }
+                    foreach (int id in team.bannedChampionId)
+                    {
+                        if (!uniqueChampionId.Contains(id))
+                        {
+                            uniqueChampionId.Add(id);
+                        }
+                    }
+                }
+            }
+            int num = uniqueChampionId.Count();
+            for (int i = 0; i < num; i++)
+            {
+                double[] uniqueChampionIdArray = new double[uniqueChampionId.Count];
+                Array.Clear(uniqueChampionIdArray, 0, uniqueChampionId.Count);
+                uniqueChampionIdArray[i] = 1;
+                championIds.Add(uniqueChampionId[i], uniqueChampionIdArray);
+            }
+        }
+
+        private string GetTeamName(SaveGameInfo.Game game, bool blueTeam)
+        {
+            if (blueTeam)
+            {
+                return game.teams[0].players[0].summonerName.Substring(0, game.teams[0].players[0].summonerName.IndexOf(' '));
+            }
+            else
+            {
+                return game.teams[1].players[0].summonerName.Substring(0, game.teams[1].players[0].summonerName.IndexOf(' '));
+            }
+        }
+
+        public double[] SaveGameToNeurons(SaveGameInfo.Game game)
+        {
+            return CombineArrays(new double[][] { SaveGameToTeamNeurons(game), SaveGameToMiscNeurons(game) });
+        }
+
+        private double[] SaveGameToTeamNeurons(SaveGameInfo.Game game)
+        {
+            double[][] inputNeuronArray = new double[12][];
+            for (int i = 0; i < 5; i++)
+            {
+                inputNeuronArray[i] = SaveGameToPlayerNeurons(game.teams[0].players[i]);
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                inputNeuronArray[i + 5] = SaveGameToPlayerNeurons(game.teams[1].players[i]);
+            }
+            inputNeuronArray[10] = teams[GetTeamName(game, true)].TeamNeuronInput;
+            inputNeuronArray[11] = teams[GetTeamName(game, false)].TeamNeuronInput;
+            return CombineArrays(inputNeuronArray);
+        }
+
+        private double[] SaveGameToPlayerNeurons(SaveGameInfo.Player player)
+        {
+            return championIds[player.championId];
+        }
+
+        private double[] SaveGameToMiscNeurons(SaveGameInfo.Game game)
         {
             List<double> gameData = new List<double>();
             double[] input;
@@ -61,7 +245,7 @@ namespace JsonReader
                 { gameData.Add(1); }
                 else { gameData.Add(0); }
 
-                if(team.firstRiftHerald)
+                if (team.firstRiftHerald)
                 { gameData.Add(1); }
                 else { gameData.Add(0); }
 
@@ -185,185 +369,6 @@ namespace JsonReader
 
         }
 
-        private string GetLocalDirectory()
-        {
-            string LocalDirectory = Assembly.GetExecutingAssembly().Location;
-            LocalDirectory = LocalDirectory.Remove(Regex.Match(LocalDirectory, "JsonReader").Index);
-            return LocalDirectory;
-        }
-
-        public void JSONLoad()
-        {
-            string LocalPath = GetLocalDirectory() + @"Data\Matches\";
-            for (int index = 1; index < 2827; index++)
-            {
-                using (StreamReader Reader = new StreamReader(LocalPath + $@"{index}.json"))
-                {
-                    // Current file read to the end
-                    string json = Reader.ReadToEnd();
-                    var result = JsonConvert.DeserializeObject<GameInfo.Match>(json);
-                    // Adding to final list of matches
-                    matches.Add(result);
-                    Console.WriteLine(index + " done");
-                }
-            }
-        }
-
-        public double Normalization(double currentValue, double minValue, double maxValue)
-        {
-            return (2 * ((currentValue - minValue) / (maxValue - minValue)) - 1);
-        }
-
-        public void ConvertGames()
-        {
-            foreach (GameInfo.Match match in matches)
-            {
-                games.Add(GameToSaveGame(match));
-            }
-            matches = null;
-        }
-
-        public void LoadPlayerNamesDictionary()
-        {
-            List<string> uniquePlayerNames = new List<string>();
-
-            foreach (SaveGameInfo.Game game in games)
-            {
-                foreach (SaveGameInfo.Team team in game.teams)
-                {
-                    foreach (SaveGameInfo.Player player in team.players)
-                    {
-                        if (!uniquePlayerNames.Contains(player.summonerName))
-                        {
-                            uniquePlayerNames.Add(player.summonerName);
-                        }
-                    }
-                }
-            }
-            int num = uniquePlayerNames.Count;
-            for (int i = 0; i < num; i++)
-            {
-                double[] uniquePlayerNamesArray = new double[uniquePlayerNames.Count];
-                Array.Clear(uniquePlayerNamesArray, 0, uniquePlayerNames.Count);
-                uniquePlayerNamesArray[i] = 1;
-                playerNames.Add(uniquePlayerNames[i], uniquePlayerNamesArray);
-            }
-        }
-
-        public void LoadTeamsDictionary()
-        {
-            List<string> uniqueTeamNames = new List<string>();
-
-            foreach (SaveGameInfo.Game game in games)
-            {
-                foreach (SaveGameInfo.Team team in game.teams)
-                {
-                    string teamName = team.players[0].summonerName.Substring(0, team.players[0].summonerName.IndexOf(' '));
-                    if (!uniqueTeamNames.Contains(teamName))
-                    {
-                        uniqueTeamNames.Add(teamName);
-                    }
-                }
-            }
-            int num = uniqueTeamNames.Count();
-            for (int i = 0; i < num; i++)
-            {
-                double[] uniqueTeamNameArray = new double[uniqueTeamNames.Count];
-                Array.Clear(uniqueTeamNameArray, 0, uniqueTeamNames.Count);
-                uniqueTeamNameArray[i] = 1;
-                teams.Add(uniqueTeamNames[i], new Team(uniqueTeamNames[i], uniqueTeamNameArray));
-            }
-        }
-
-        public double[] GetAllPlayersInTeam(SaveGameInfo.Team team)
-        {
-            double[][] players = new double[5][];
-            double[] allTeamPlayers;
-            for (int i = 0; i < players.GetLength(0); i++)
-            {
-                players[i] = playerNames[team.players[i].summonerName];
-            }
-            allTeamPlayers = players[0];
-            for (int i = 1; i < players.GetLength(0); i++)
-            {
-                for (int j = 0; j < players[i].Length; j++)
-                {
-                    if (players[i][j] == 1)
-                    {
-                        allTeamPlayers[j] = 1;
-                    }
-                }
-            }
-            return allTeamPlayers;
-        }
-
-        public void LoadChampionIdDictionary()
-        {
-            List<int> uniqueChampionId = new List<int>();
-
-            foreach (SaveGameInfo.Game game in games)
-            {
-                foreach (SaveGameInfo.Team team in game.teams)
-                {
-                    foreach (SaveGameInfo.Player player in team.players)
-                    {
-                        if (!uniqueChampionId.Contains(player.championId))
-                        {
-                            uniqueChampionId.Add(player.championId);
-                        }
-                    }
-                    foreach (int id in team.bannedChampionId)
-                    {
-                        if (!uniqueChampionId.Contains(id))
-                        {
-                            uniqueChampionId.Add(id);
-                        }
-                    }
-                }
-            }
-            int num = uniqueChampionId.Count();
-            for (int i = 0; i < num; i++)
-            {
-                double[] uniqueChampionIdArray = new double[uniqueChampionId.Count];
-                Array.Clear(uniqueChampionIdArray, 0, uniqueChampionId.Count);
-                uniqueChampionIdArray[i] = 1;
-                championIds.Add(uniqueChampionId[i], uniqueChampionIdArray);
-            }
-        }
-
-        public string GetTeamName(SaveGameInfo.Game game, bool blueTeam)
-        {
-            if (blueTeam)
-            {
-                return game.teams[0].players[0].summonerName.Substring(0, game.teams[0].players[0].summonerName.IndexOf(' '));
-            }
-            else
-            {
-                return game.teams[1].players[0].summonerName.Substring(0, game.teams[1].players[0].summonerName.IndexOf(' '));
-            }
-        }
-
-        double[] SaveGameToInputNeurons(SaveGameInfo.Game game)
-        {
-            double[][] inputNeuronArray = new double[12][];
-            for (int i = 0; i < 5; i++)
-            {
-                inputNeuronArray[i] = SaveGameToPlayerInputNeurons(game.teams[0].players[i]);
-            }
-            for (int i = 0; i < 5; i++)
-            {
-                inputNeuronArray[i + 5] = SaveGameToPlayerInputNeurons(game.teams[1].players[i]);
-            }
-            inputNeuronArray[10] = teams[GetTeamName(game, true)].TeamNeuronInput;
-            inputNeuronArray[11] = teams[GetTeamName(game, false)].TeamNeuronInput;
-            return CombineArrays(inputNeuronArray);
-        }
-
-        double[] SaveGameToPlayerInputNeurons(SaveGameInfo.Player player)
-        {
-            return championIds[player.championId];
-        }
-
         double[] CombineArrays(double[][] jaggedArray)
         {
             int totalArrayLength = 0;
@@ -383,27 +388,91 @@ namespace JsonReader
             return returnArray;
         }
 
-        SaveGameInfo.Game GameToSaveGame(GameInfo.Match game)
+        SaveGameInfo.Game MatchToSaveGame(GameInfo.Match match)
         {
             //still missing some stuff
             SaveGameInfo.Game returnGame = new SaveGameInfo.Game();
-            returnGame.gameCreation = game.gameCreation;
-            returnGame.gameDuration = game.gameDuration;
+            returnGame.gameCreation = match.gameCreation;
+            returnGame.gameDuration = match.gameDuration;
             returnGame.teams = new SaveGameInfo.Team[2];
             for (int i = 0; i < returnGame.teams.Length; i++)
             {
                 returnGame.teams[i] = new SaveGameInfo.Team();
                 returnGame.teams[i].players = new SaveGameInfo.Player[5];
+                returnGame.teams[i].teamName = match.participantIdentities[i * 5].player.summonerName;
+                //returnGame.teams[i].win = match.teams[i].win;
+                returnGame.teams[i].firstBlood = match.teams[i].firstBlood;
+                returnGame.teams[i].firstTower = match.teams[i].firstTower;
+                returnGame.teams[i].firstInhibitor = match.teams[i].firstInhibitor;
+                returnGame.teams[i].firstBaron = match.teams[i].firstBaron;
+                //conteniue here. also do timeline
                 for (int j = 0; j < returnGame.teams[i].players.Length; j++)
                 {
                     returnGame.teams[i].players[j] = new SaveGameInfo.Player();
-                    returnGame.teams[i].players[j].championId = game.participants[(i * 5) + j].championId;
-                    returnGame.teams[i].players[j].playerId = game.participants[(i * 5) + j].championId;
-                    returnGame.teams[i].players[j].summonerName = game.participantIdentities[(i * 5 + j)].player.summonerName;
+                    returnGame.teams[i].players[j].championId = match.participants[(i * 5) + j].championId;
+                    returnGame.teams[i].players[j].playerId = match.participants[(i * 5) + j].championId;
+                    returnGame.teams[i].players[j].summonerName = match.participantIdentities[(i * 5 + j)].player.summonerName;
+                    returnGame.teams[i].players[j].stats = StatsToSaveStats(match.participants[(i * 5) + j].stats);
 
                 }
             }
             return null;
+        }
+
+        SaveGameInfo.Stats StatsToSaveStats(GameInfo.Stats stats)
+        {
+            SaveGameInfo.Stats returnStats = new SaveGameInfo.Stats();
+            returnStats.participantId = stats.participantId;
+            returnStats.win = stats.win;
+            returnStats.kills = stats.kills;
+            returnStats.deaths = stats.deaths;
+            returnStats.assists = stats.assists;
+            returnStats.largestKillingSpree = stats.largestKillingSpree;
+            returnStats.largestMultiKill = stats.largestMultiKill;
+            returnStats.killingSprees = stats.killingSprees;
+            returnStats.longestTimeSpentLiving = stats.longestTimeSpentLiving;
+            returnStats.doubleKills = stats.doubleKills;
+            returnStats.tripleKills = stats.tripleKills;
+            returnStats.quadraKills = stats.quadraKills;
+            returnStats.pentaKills = stats.pentaKills;
+            returnStats.unrealKills = stats.unrealKills;
+            returnStats.totalDamageDealt = stats.totalDamageDealt;
+            returnStats.magicDamageDealt = stats.magicDamageDealt;
+            returnStats.physicalDamageDealt = stats.physicalDamageDealt;
+            returnStats.trueDamageDealt = stats.physicalDamageDealt;
+            returnStats.largestCriticalStrike = stats.largestCriticalStrike;
+            returnStats.totalDamageDealtToChampions = stats.totalDamageDealtToChampions;
+            returnStats.magicDamageDealtToChampions = stats.magicDamageDealtToChampions;
+            returnStats.physicalDamageDealtToChampions = stats.physicalDamageDealtToChampions;
+            returnStats.trueDamageDealtToChampions = stats.trueDamageDealtToChampions;
+            returnStats.totalHeal = stats.totalHeal;
+            returnStats.totalUnitsHealed = stats.totalUnitsHealed;
+            returnStats.damageSelfMitigated = stats.damageSelfMitigated;
+            returnStats.damageDealtToObjectives = stats.damageDealtToObjectives;
+            returnStats.damageDealtToTurrets = stats.damageDealtToTurrets;
+            returnStats.timeCCingOthers = stats.timeCCingOthers;
+            returnStats.totalUnitsHealed = stats.totalDamageTaken = stats.totalDamageTaken;
+            returnStats.magicalDamageTaken = stats.magicalDamageTaken;
+            returnStats.physicalDamageTaken = stats.physicalDamageTaken;
+            returnStats.trueDamageTaken = stats.trueDamageTaken;
+            returnStats.goldEarned = stats.goldEarned;
+            returnStats.goldSpent = stats.goldSpent;
+            returnStats.turretKills = stats.turretKills;
+            returnStats.inhibitorKills = stats.inhibitorKills;
+            returnStats.totalMinionsKilled = stats.totalMinionsKilled;
+            returnStats.neutralMinionsKilled = stats.neutralMinionsKilled;
+            returnStats.neutralMinionsKilledTeamJungle = stats.neutralMinionsKilledTeamJungle;
+            returnStats.neutralMinionsKilledEnemyJungle = stats.neutralMinionsKilledEnemyJungle;
+            returnStats.totalTimeCrowdControlDealt = stats.totalTimeCrowdControlDealt;
+            returnStats.champLevel = stats.champLevel;
+            returnStats.visionWardsBoughtInGame = stats.visionWardsBoughtInGame;
+            returnStats.firstBloodKill = stats.firstBloodKill;
+            returnStats.firstBloodAssist = stats.firstBloodAssist;
+            returnStats.firstTowerKill = stats.firstTowerKill;
+            returnStats.firstTowerAssist = stats.firstTowerAssist;
+            returnStats.firstInhibitorKill = stats.firstInhibitorKill;
+            returnStats.firstInhibitorAssist = stats.firstInhibitorAssist;
+            return returnStats;
         }
     }
 }
