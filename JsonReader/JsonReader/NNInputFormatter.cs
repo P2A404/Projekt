@@ -19,7 +19,7 @@ namespace JsonReader
             LoadChampionIdDictionary();
             LoadTeamsDictionary();
             LoadPlayerNamesDictionary();
-            PrintDoubleArray(SaveGameToTeamNeurons(games[0]));
+            PrintDoubleArrayIgnoreZero(SaveGameToTeamNeurons(games[0]));
         }
 
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
@@ -28,11 +28,14 @@ namespace JsonReader
         public Dictionary<string, Team> teams = new Dictionary<string, Team>();
         public Dictionary<string, double[]> playerNames = new Dictionary<string, double[]>();
 
-        public void PrintDoubleArray(double[] array)
+        public void PrintDoubleArrayIgnoreZero(double[] array)
         {
             for (int i = 0; i < array.Length; i++)
             {
-                Console.WriteLine(array[i].ToString());
+                if (array[i] != 0)
+                {
+                    Console.WriteLine(array[i].ToString());
+                }
             }
         }
 
