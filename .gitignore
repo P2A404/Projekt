@@ -1,0 +1,45 @@
+﻿<<<<<<< HEAD
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug/ArtificialNeuralNetwork.csproj.FileListAbsolute.txt
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug/DesignTimeResolveAssemblyReferences.cache
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug/ArtificialNeuralNetwork.pdb
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug/ArtificialNeuralNetwork.exe
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug/ArtificialNeuralNetwork.csprojResolveAssemblyReference.cache
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/bin/Debug/ArtificialNeuralNetwork.vshost.exe.manifest
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/bin/Debug/ArtificialNeuralNetwork.vshost.exe.config
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/bin/Debug/ArtificialNeuralNetwork.vshost.exe
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/bin/Debug/ArtificialNeuralNetwork.pdb
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/bin/Debug/ArtificialNeuralNetwork.exe.config
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/bin/Debug/ArtificialNeuralNetwork.exe
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/bin/Debug
+/ArtificialNeuralNetwork/.vs/ArtificialNeuralNetwork/v14/.suo
+=======
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/bin/Debug/ArtificialNeuralNetwork.exe
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/bin/Debug/ArtificialNeuralNetwork.exe.config
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/bin/Debug/ArtificialNeuralNetwork.vshost.exe
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug/DesignTimeResolveAssemblyReferences.cache
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug/ArtificialNeuralNetwork.pdb
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug/ArtificialNeuralNetwork.exe
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug/ArtificialNeuralNetwork.csprojResolveAssemblyReference.cache
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug/ArtificialNeuralNetwork.csproj.FileListAbsolute.txt
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/obj/Debug
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/bin/Debug/ArtificialNeuralNetwork.vshost.exe.manifest
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/bin/Debug/ArtificialNeuralNetwork.vshost.exe.config
+/ArtificialNeuralNetwork/ArtificialNeuralNetwork/bin/Debug/ArtificialNeuralNetwork.pdb
+/ArtificialNeuralNetwork/.vs/ArtificialNeuralNetwork/v14/.suo
+>>>>>>> 588247ed47f2e803c7a1b3318e9aef5431598be3
+/LoadDataTest/LoadDataTest/obj/Debug/CoreCompileInputs.cache
+*.cache
+*.cache
+*.cache

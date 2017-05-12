@@ -1,9 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\ArtificialNeuralNetwork",
-    "\\ArtificialNeuralNetwork\\ArtificialNeuralNetwork"
+    "\\LoadDataTest",
+    "\\LoadDataTest\\LoadDataTest"
   ],
-  "SelectedNode": "\\ArtificialNeuralNetwork\\ArtificialNeuralNetwork\\Tree.cs",
+  "SelectedNode": "\\LoadDataTest\\LoadDataTest.sln",
   "PreviewInSolutionExplorer": false
 }

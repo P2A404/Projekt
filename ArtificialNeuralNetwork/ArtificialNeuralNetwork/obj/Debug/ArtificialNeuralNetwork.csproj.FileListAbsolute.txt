@@ -1,6 +1,1 @@
-C:\Users\ebbel\Source\Repos\Projekt\ArtificialNeuralNetwork\ArtificialNeuralNetwork\obj\Debug\ArtificialNeuralNetwork.csprojResolveAssemblyReference.cache
-C:\Users\ebbel\Source\Repos\Projekt\ArtificialNeuralNetwork\ArtificialNeuralNetwork\bin\Debug\ArtificialNeuralNetwork.exe.config
-C:\Users\ebbel\Source\Repos\Projekt\ArtificialNeuralNetwork\ArtificialNeuralNetwork\bin\Debug\ArtificialNeuralNetwork.exe
-C:\Users\ebbel\Source\Repos\Projekt\ArtificialNeuralNetwork\ArtificialNeuralNetwork\bin\Debug\ArtificialNeuralNetwork.pdb
-C:\Users\ebbel\Source\Repos\Projekt\ArtificialNeuralNetwork\ArtificialNeuralNetwork\obj\Debug\ArtificialNeuralNetwork.exe
-C:\Users\ebbel\Source\Repos\Projekt\ArtificialNeuralNetwork\ArtificialNeuralNetwork\obj\Debug\ArtificialNeuralNetwork.pdb
+C:\Users\ebbel\Source\Repos\Projekt4\ArtificialNeuralNetwork\ArtificialNeuralNetwork\obj\Debug\ArtificialNeuralNetwork.csprojResolveAssemblyReference.cache
