@@ -13,7 +13,7 @@ namespace ArtificialNeuralNetwork
         #region Variables
         public Layer[] layers;
         public int inputSize;
-        private double[] lastestInput;
+        private double[] latestInput;
         private TranferFunction _activationFunction;
         private TranferFunction _outputFunction;
         private TranferFunction _derivativeActivationFunction;
@@ -30,10 +30,10 @@ namespace ArtificialNeuralNetwork
             _derivativeActivationFunction = derivativeActivationFunction;
             _derivativeOutputFunction = derivativeOutputFunction;
             inputSize = size[0];
-            layers = new Layer[size.Length-1];
+            layers = new Layer[size.Length - 1];
             for (int i = 0; i < layers.Length; i++)
             {
-                layers[i] = new Layer(size[i+1], size[i], rand);
+                layers[i] = new Layer(size[i + 1], size[i], rand);
             }
         }
 
@@ -47,16 +47,16 @@ namespace ArtificialNeuralNetwork
         #endregion
 
         #region Functions
-        
+
         public delegate double[] TranferFunction(double[] input);
-        
+
         public void AddLayer(Layer lay)
         {
             //Work in progress
             Layer[] newLayers = new Layer[layers.Length + 1];
             for (int i = 0; i < newLayers.Length; i++)
             {
-                if (i == newLayers.Length-1)
+                if (i == newLayers.Length - 1)
                 {
                     newLayers[i] = lay;
                 }
@@ -67,7 +67,7 @@ namespace ArtificialNeuralNetwork
             }
             layers = newLayers;
         }
-        
+
         //maybie not have this?
         public void ChangeTranferFunction(TranferFunction newTransfer)
         {
@@ -149,14 +149,25 @@ namespace ArtificialNeuralNetwork
 
         public void CalculateUpdateSumError(double[][] neuronErrorTerm, double[][,] updateSumError)
         {
-            // More bugs with the length and to get the input_neuron/data ...
             for (int l = 0; l < layers.Length; l++)
             {
                 for (int j = ((l != layers.Length - 1) ? 1 : 0); j < layers[l].weights.GetLength(0); j++)
                 {
-                    for (int i = 0; i < layers[l].weights.GetLength(1); i++)
+                    if (l != 0)
                     {
-                        updateSumError[l][j, i] += neuronErrorTerm[l + 1][j] * layers[l].activations[i];
+                        for (int i = 0; i < layers[l].weights.GetLength(1); i++)
+                        {
+                            updateSumError[l][j, i] += neuronErrorTerm[l][j] * layers[l].activations[i];
+                        }
+                    }
+                    else
+                    {
+                        // Input layer
+                        for (int i = 0; i < latestInput.Length; i++)
+                        {
+                            updateSumError[l][j, i] += neuronErrorTerm[l][j] * latestInput.[i];
+                        }
+
                     }
                 }
             }
@@ -184,7 +195,7 @@ namespace ArtificialNeuralNetwork
             }
         }
 
-        public double[] Cycle (double[] input)
+        public double[] Cycle(double[] input)
         {
             if (input.Length != inputSize)
             {
@@ -192,7 +203,7 @@ namespace ArtificialNeuralNetwork
             }
             else
             {
-                lastestInput = input;
+                latestInput = input;
                 double[] data = input;
                 //Cycle through network
                 for (int i = 0; i < layers.Length; i++)
@@ -217,7 +228,7 @@ namespace ArtificialNeuralNetwork
                     data = Sum(data, layers[i].weights);
                     layers[i].sums = Sum(data, layers[i].weights);
                     //Use Transferfunction / Outputfunction on each sum
-                    if(i != layers.Length-1)
+                    if (i != layers.Length - 1)
                     {
                         data = _activationFunction(data);
                         layers[i].activations = _activationFunction(data);
@@ -237,9 +248,9 @@ namespace ArtificialNeuralNetwork
         public void PrintArray(string message, double[] input)
         {
             Console.Write(message + " ");
-            for(int i = 0; i < input.Length; i++)
+            for (int i = 0; i < input.Length; i++)
             {
-                if (i == input.Length-1)
+                if (i == input.Length - 1)
                 {
                     Console.Write(input[i].ToString() + ".");
                 }
@@ -251,7 +262,7 @@ namespace ArtificialNeuralNetwork
             Console.Write("\n");
         }
 
-        public double[] Sum (double[] input, double[,] weights)
+        public double[] Sum(double[] input, double[,] weights)
         {
             double[] returnArray = new double[weights.GetLength(0)];
             for (int outputIndex = 0; outputIndex < returnArray.Length; outputIndex++)
