@@ -389,7 +389,7 @@ namespace JsonReader
             }
             double[] returnArray = new double[totalArrayLength];
             int currentId = 0;
-            for (int i = 0; i < jaggedArray.GetLength(0); i++, currentId++)
+            for (int i = 0; i < jaggedArray.GetLength(0); i++)
             {
                 for (int j = 0; j < jaggedArray[i].Length; j++, currentId++)
                 {
