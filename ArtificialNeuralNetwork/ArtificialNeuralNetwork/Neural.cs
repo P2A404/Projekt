@@ -98,8 +98,10 @@ namespace ArtificialNeuralNetwork
 
                 for (int k = 0; k < inputData.Length; k++)
                 {
+                    // Run the neuron network
                     Cycle(inputData[k]);
 
+                    // Calculate the errors
                     CalculateErrorTerm(neuronErrorTerm, resultMatch[k]);
                     CalculateUpdateSumError(neuronErrorTerm, updateSumError);
                 }
@@ -115,7 +117,7 @@ namespace ArtificialNeuralNetwork
                     }
                 }
 
-            } while (totalErrorTerm > 0.2); // Changeable Error term
+            } while (totalErrorTerm > 0.2); // Changeable total error term
         }
 
         public void CalculateErrorTerm(double[][] neuronErrorTerm, double[] resultMatch)
@@ -124,12 +126,16 @@ namespace ArtificialNeuralNetwork
 
             for (int l = layers.Length - 1; l >= 0; l--)
             {
+                // j start at 1 because bias neuron don't have an error
                 for (int j = 1; j < layers[l].weights.GetLength(1); j++)
                 {
                     if (l != layers.Length - 1)
                     {
                         sumError = 0.0;
-                        for (int k = 1; k < layers[l].weights.GetLength(0); k++)
+
+                        // Check for not second last layer
+                        int k = l != layers.Length -2 ? 1 : 0;
+                        for (; k < layers[l].weights.GetLength(0); k++)
                         {
                             sumError += neuronErrorTerm[l + 1][k] * layers[l].weights[k, j];
                         }
@@ -151,7 +157,8 @@ namespace ArtificialNeuralNetwork
         {
             for (int l = 0; l < layers.Length; l++)
             {
-                for (int j = ((l != layers.Length - 1) ? 1 : 0); j < layers[l].weights.GetLength(0); j++)
+                int j = ((l != layers.Length - 1) ? 1 : 0);
+                for (; j < layers[l].weights.GetLength(0); j++)
                 {
                     if (l != 0)
                     {
@@ -165,9 +172,8 @@ namespace ArtificialNeuralNetwork
                         // Input layer
                         for (int i = 0; i < latestInput.Length; i++)
                         {
-                            updateSumError[l][j, i] += neuronErrorTerm[l][j] * latestInput.[i];
+                            updateSumError[l][j, i] += neuronErrorTerm[l][j] * latestInput[i];
                         }
-
                     }
                 }
             }
@@ -175,6 +181,7 @@ namespace ArtificialNeuralNetwork
 
         public void UpdateWeights(double[][,] updateSumError, double trainingsRate, double weightDecay, int trainingsDataLength)
         {
+            double failRate;
             for (int l = 0; l < layers.Length; l++)
             {
                 for (int j = 1; j < layers[j].weights.GetLength(0); j++)
@@ -183,13 +190,14 @@ namespace ArtificialNeuralNetwork
                     {
                         if (i != 0)
                         {
-                            layers[l].weights[j, i] += trainingsRate * (1.0 / trainingsDataLength * updateSumError[l][j, i] + weightDecay / trainingsDataLength * layers[l].weights[j, i]);
+                            failRate = updateSumError[l][j, i] + weightDecay * layers[l].weights[j, i];
                         }
                         else
                         {
                             // Bias
-                            layers[l].weights[j, i] += trainingsRate * (1.0 / trainingsDataLength * updateSumError[l][j, i]);
+                            failRate = updateSumError[l][j, i];
                         }
+                        layers[l].weights[j, i] += trainingsRate * failRate / trainingsDataLength;
                     }
                 }
             }
