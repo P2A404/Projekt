@@ -86,7 +86,7 @@ namespace ArtificialNeuralNetwork
                 }
             }
 
-            double totalErrorTerm = 0.0, trainingsRate = 0.01, weightDecay = 0.5;
+            double totalErrorTerm = 0.0, trainingsRate = 0.001, weightDecay = 0.1;
             double[][] neuronErrorTerm = new double[layers.Length][];
             double[][,] updateSumError = new double[layers.Length][,];
 
@@ -119,12 +119,13 @@ namespace ArtificialNeuralNetwork
                     // Calculate the errors
                     CalculateErrorTerm(neuronErrorTerm, testCases[k].winningTeam);
                     CalculateUpdateSumError(neuronErrorTerm, updateSumError);
-                    Console.WriteLine($"test case {k}.");
+                    //Console.WriteLine($"test case {k}.");
                 }
 
                 UpdateWeights(updateSumError, trainingsRate, weightDecay, inputSize);
 
                 // Find totalErrorTerm
+                totalErrorTerm = 0;
                 for (int l = 0; l < layers.GetLength(0); l++)
                 {
                     for (int i = 0; i < layers[l].weights.GetLength(0); i++)
