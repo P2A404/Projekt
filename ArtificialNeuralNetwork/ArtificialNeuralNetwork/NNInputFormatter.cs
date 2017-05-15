@@ -17,45 +17,100 @@ namespace ArtificialNeuralNetwork
             LoadChampionIdDictionary();
             LoadTeamsDictionary();
             LoadPlayerNamesDictionary();
-            bufferGamesLength = FindBufferGamesLength();
+            bufferGames = FindBufferGames();
             MakeTestCases();
         }
-        public int bufferGamesLength = 0;
+
         public List<NNTestCase> testCases = new List<NNTestCase>();
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
+        public List<SaveGameInfo.Game> bufferGames = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
         public Dictionary<int, double[]> championIds = new Dictionary<int, double[]>();
         public Dictionary<string, Team> teams = new Dictionary<string, Team>();
         public Dictionary<string, double[]> playerNames = new Dictionary<string, double[]>();
 
-        public int FindBufferGamesLength ()
+        public List<SaveGameInfo.Game> FindBufferGames()
         {
-            Console.WriteLine($"Number of teams: {teams.Count}");
-            int[] teamGames = new int[teams.Count];
-            Array.Clear(teamGames, 0, teamGames.Length);
-            int max = 0;
-            for(int i = 0; i < teamGames.Length; i++)
+            List<SaveGameInfo.Game> saveGames = new List<SaveGameInfo.Game>();
+            int[] gamesSavedByTeam = new int[teams.Count];
+            for (int i = 0; i < gamesSavedByTeam.Length; i++)
             {
-                for (int j = 0; teamGames[i] < 3 ; j++)
+                for (int j = 0; gamesSavedByTeam[i] < 3; j++)
                 {
-                    if (games[j].teams[0].teamName == teams.ElementAt(i).Key || games[j].teams[1].teamName == teams.ElementAt(i).Key)
+                    if (games[j].teams[0].teamName == teams.ElementAt(i).Key)
                     {
-                        teamGames[i]++;
-                        if (j > max)
-                        { max = j; }
+                        saveGames.Add(games[j]);
+                        gamesSavedByTeam[i]++;
                     }
                 }
-                Console.WriteLine($"Team {i} ({teams.ElementAt(i).Key}) max: {max}.");
             }
-            Console.WriteLine($"Buffer Games: {max}.");
-            return max;
+            Console.WriteLine($"Done finding {saveGames.Count} Buffer Games.");
+            return saveGames;
         }
 
         public void MakeTestCases()
         {
-            foreach(SaveGameInfo.Game game in games)
+            //foreach non-buffer game make a testcase with previous 3 games from same team
+            for (int i = 0; i < games.Count; i++)
             {
-                testCases.Add(SaveGameToTestCase(game));
+                //check if the current game is a buffer game
+                bool isBuffer = false;
+                for (int j = 0; j < bufferGames.Count; j++)
+                {
+                    if (games[i].Equals(bufferGames[j]))
+                    {
+                        isBuffer = true;
+                    }
+                }
+                if (!isBuffer)
+                {
+                    //FAILS! sometimes only finds 2 games but 3 exist
+                    for(int j = 0; j < bufferGames.Count; j++)
+                    {
+                        if (bufferGames[j].teams[0].teamName == "SSB" || bufferGames[j].teams[1].teamName == "SSB")
+                        { Console.WriteLine($"Found one! buffer game {j}"); }
+                    }
+                    string blueTeamName = games[i].teams[0].teamName;
+                    string redTeamName = games[i].teams[1].teamName;
+                    List<SaveGameInfo.Team> recentBlueGames = new List<SaveGameInfo.Team>();
+                    List<SaveGameInfo.Team> recentRedGames = new List<SaveGameInfo.Team>();
+                    //Find previous 3 games for each team
+                    for (int j = i-1; /*j >= 0 &&*/ recentBlueGames.Count < 3; j--)
+                    {
+                        if (games[j].teams[0].teamName == blueTeamName)
+                        { recentBlueGames.Add(games[j].teams[0]); }
+                        if (games[j].teams[1].teamName == blueTeamName)
+                        { recentBlueGames.Add(games[j].teams[1]); }
+                    }
+                    for (int j = i - 1; /*j >= 0 &&*/ recentRedGames.Count < 3; j--)
+                    {
+                        if (games[j].teams[0].teamName == redTeamName)
+                        { recentRedGames.Add(games[j].teams[0]); }
+                        if (games[j].teams[1].teamName == redTeamName)
+                        { recentRedGames.Add(games[j].teams[1]); }
+                    }
+                    //add the new testCase to the list of testcases
+                    testCases.Add(new NNTestCase(recentBlueGames.ToArray(), recentRedGames.ToArray(), games[i]));
+                }
+            }
+            CalculateTestCasesInputNeurons();
+            Console.WriteLine($"Done making {testCases.Count} Test Cases.");
+        }
+
+        private void CalculateTestCasesInputNeurons()
+        {
+            for(int i = 0; i < testCases.Count; i++)
+            {
+                double[][] recentGamesNeurons = new double[6][];
+                for (int j = 0; j < 3; j++)
+                {
+                    recentGamesNeurons[j] = SaveTeamToTeamNeurons(testCases[i].blueTeamLatestGames[j]);
+                }
+                for (int j = 0; j < 3; j++)
+                {
+                    recentGamesNeurons[j+3] = SaveTeamToTeamNeurons(testCases[i].redTeamLatestGames[j]);
+                }
+                testCases[i].inputNeurons = CombineArrays(recentGamesNeurons);
             }
         }
 
@@ -89,9 +144,9 @@ namespace ArtificialNeuralNetwork
                     var result = JsonConvert.DeserializeObject<GameInfo.Match>(json);
                     // Adding to final list of matches
                     matches.Add(result);
-                    Console.WriteLine(index + " done");
                 }
             }
+            Console.WriteLine("Done loading JSON Files into JSON Class");
         }
 
         public double Normalization(double currentValue, double minValue, double maxValue)
@@ -106,8 +161,8 @@ namespace ArtificialNeuralNetwork
                 games.Add(MatchToSaveGame(matches[i]));
             }
             matches = null;
+            games = games.OrderByDescending(x => x.gameDuration).ToList();
             Console.WriteLine($"Done converting from JSON Class to Game Class");
-            games.Sort();
         }
 
         public void LoadPlayerNamesDictionary()
@@ -235,15 +290,31 @@ namespace ArtificialNeuralNetwork
             return CombineArrays(new double[][] { SaveGameToTeamNeurons(game), SaveGameToMiscNeurons(game) });
         }
 
-        public NNTestCase SaveGameToTestCase(SaveGameInfo.Game game)
+        /*public NNTestCase SaveGameToTestCase(SaveGameInfo.Game game)
         {
             NNTestCase testCase = new NNTestCase();
             if(game.teams[0].win == true) { testCase.winningTeam = 0; }
             else { testCase.winningTeam = 1; }
             testCase.inputNeurons = SaveGameToTeamNeurons(game);
             return testCase;
+        }*/
+
+        private double[] SaveTeamToTeamNeurons(SaveGameInfo.Team team)
+        {
+            double[][] inputNeuronArray = new double[6][];
+            inputNeuronArray[0] = teams[team.teamName].TeamNeuronInput;
+            for (int i = 0; i < 5; i++)
+            {
+                inputNeuronArray[i+1] = SaveGameToPlayerNeurons(team.players[i]);
+            }
+            return CombineArrays(inputNeuronArray);
         }
 
+        private double[] SavePlayerToPlayerNeurons(SaveGameInfo.Player player)
+        {
+            return championIds[player.championId];
+        }
+        
         private double[] SaveGameToTeamNeurons(SaveGameInfo.Game game)
         {
             double[][] inputNeuronArray = new double[12][];

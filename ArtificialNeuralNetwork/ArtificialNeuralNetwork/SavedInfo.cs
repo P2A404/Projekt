@@ -16,7 +16,7 @@ namespace ArtificialNeuralNetwork
         }
         public string TeamName { get; set; }
         public double[] TeamNeuronInput { get; set; }
-        SaveGameInfo.Game[] lastest3Games = new SaveGameInfo.Game[5];
+        SaveGameInfo.Game[] lastest3Games = new SaveGameInfo.Game[3];
         SaveGameInfo.Game averageGame = new SaveGameInfo.Game();
         //Dictionary<string, SaveGameInfo> vsGames = new Dictionary<string, SaveGameInfo>();
     }
