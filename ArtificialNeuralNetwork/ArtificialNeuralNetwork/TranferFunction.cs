@@ -32,7 +32,7 @@ class TransferFunction
 		return result;
 	}
 
-	public double[] Tahn(double[] inputArray, double[,] weightArray)
+	/*public double[] Tahn(double[] inputArray, double[,] weightArray)
 	{
 		double[] result = new double[weightArray.GetLength(0)];
 
@@ -56,7 +56,7 @@ class TransferFunction
 		}
 
 		return result;
-	}
+	}*/
 
 	public double[] Hyperbolic(double[] inputArray, double[,] weightArray)
 	{
@@ -84,7 +84,7 @@ class TransferFunction
 		return result;
 	}
 
-	public double[] Linear(double[] inputArray, double[,] weightArray)
+	/*public double[] Linear(double[] inputArray, double[,] weightArray)
 	{
 		double[] result = new double[weightArray.GetLength(0)];
 
@@ -105,12 +105,12 @@ class TransferFunction
 			k = 0;
 			result[k] = 1 / (1 + Exp(-res));
 			k++;
-		}*/
+		}
 
 		return result;
-	}
+	}*/
 
-	public double[] SoftMax(double[] inputArray, double[,] weightArray)
+	/*public double[] SoftMax(double[] inputArray, double[,] weightArray)
 	{
 		double[] result = new double[weightArray.GetLength(0)];
 
@@ -142,7 +142,7 @@ class TransferFunction
 
 		return result;
 	}
-
+*/
 	//Deretive
 
 	public double[] LogistikDerivative(double[] inputArray, double[,] weightArray)
@@ -170,7 +170,7 @@ class TransferFunction
 		return result;
 	}
 
-	public double[] TahnDerivative(double[] inputArray, double[,] weightArray)
+	/*public double[] TahnDerivative(double[] inputArray, double[,] weightArray)
 	{
 		double[] result = new double[weightArray.GetLength(0)];
 
@@ -193,7 +193,7 @@ class TransferFunction
 		}
 
 		return result;
-	}
+	}*/
 
 	public double[] HyperbolicDeivative(double[] inputArray, double[,] weightArray)
 	{
@@ -220,7 +220,7 @@ class TransferFunction
 		return result;
 	}
 
-	public double[] LinearDeivative(double[] inputArray, double[,] weightArray)
+	/*public double[] LinearDeivative(double[] inputArray, double[,] weightArray)
 	{
 		double[] result = new double[weightArray.GetLength(0)];
 
@@ -243,5 +243,5 @@ class TransferFunction
 		}
 
 		return result;
-	}
+	}*/
 }

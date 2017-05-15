@@ -1,0 +1,34 @@
+Book keeping:
+gametime
+patch
+win/lose
+player names
+team name
+player roles
+team side
+
+Team Features:
+First X
+Num Kill X
+kill participation
+{avg KDA}
+[winning/losing game time]
+[BANS]
+
+Player Features:
+[Champion]
+(Summoner Spells)
+{KDA}
+{Multikill stuff}
+{Time spendt living/dead}
+{Damages}
+{Heal / damage negation / damage taken}
+{objective damage}
+{Vision}
+total time cc dealt
+champion level
+{gold}
+{num kills X}
+{first X}
+{cs/nm stuff}
+kill participation
