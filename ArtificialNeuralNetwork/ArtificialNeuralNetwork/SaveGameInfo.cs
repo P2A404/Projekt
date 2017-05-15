@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace ArtificialNeuralNetwork
 {
+    public class NNTestCase
+    {
+        public double[] inputNeurons { set; get; }
+        public int winningTeam { set; get; }
+    }
+
     public class SaveGameInfo
     {
         public class Game
