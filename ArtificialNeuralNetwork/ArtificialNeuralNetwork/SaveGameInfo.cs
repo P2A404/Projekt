@@ -8,6 +8,8 @@ namespace ArtificialNeuralNetwork
 {
     public class NNTestCase
     {
+        SaveGameInfo[] blueTeamLatestGames;
+        SaveGameInfo[] redTeamLatestGames;
         public double[] inputNeurons { set; get; }
         public int winningTeam { set; get; }
     }
