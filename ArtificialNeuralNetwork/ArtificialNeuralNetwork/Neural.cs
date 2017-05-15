@@ -74,7 +74,7 @@ namespace ArtificialNeuralNetwork
             _activationFunction = newTransfer;
         }
 
-        public void Training(double[][] inputData, double[][] resultMatch)
+        public void Training(double[][] inputData, int[] resultMatch)
         {
             // layers[i].weight.GetLength(0); row
             // layers[i].weight.GetLength(1); column
@@ -120,7 +120,7 @@ namespace ArtificialNeuralNetwork
             } while (totalErrorTerm > 0.2); // Changeable total error term
         }
 
-        public void CalculateErrorTerm(double[][] neuronErrorTerm, double[] resultMatch)
+        public void CalculateErrorTerm(double[][] neuronErrorTerm, int resultMatch)
         {
             double sumError = 0.0;
 
@@ -144,10 +144,7 @@ namespace ArtificialNeuralNetwork
                     else
                     {
                         // Last layer
-                        for (int k = 0; k < layers[l].activations.Length; k++)
-                        {
-                            neuronErrorTerm[l][k] += (resultMatch[k] - layers[l].activations[k]) * _derivativeOutputFunction(layers[l].sums)[j];
-                        }
+                        neuronErrorTerm[l][0] += (resultMatch - layers[l].activations[0]) * _derivativeOutputFunction(layers[l].sums)[j];
                     }
                 }
             }
