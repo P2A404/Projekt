@@ -40,7 +40,7 @@ namespace ArtificialNeuralNetwork
         private string GetLocalDirectory()
         {
             string LocalDirectory = Assembly.GetExecutingAssembly().Location;
-            LocalDirectory = LocalDirectory.Remove(Regex.Match(LocalDirectory, "JsonReader").Index);
+            LocalDirectory = LocalDirectory.Remove(Regex.Match(LocalDirectory, "ArtificialNeuralNetwork").Index);
             return LocalDirectory;
         }
 
