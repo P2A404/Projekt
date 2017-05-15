@@ -66,7 +66,6 @@ namespace ArtificialNeuralNetwork
                     var result = JsonConvert.DeserializeObject<GameInfo.Match>(json);
                     // Adding to final list of matches
                     matches.Add(result);
-                    Console.WriteLine(index + " done");
                 }
             }
         }
@@ -80,7 +79,6 @@ namespace ArtificialNeuralNetwork
         {
             for (int i = 0; i < matches.Count; i++)
             {
-                Console.WriteLine($"Match: {i}");
                 games.Add(MatchToSaveGame(matches[i]));
             }
             matches = null;
