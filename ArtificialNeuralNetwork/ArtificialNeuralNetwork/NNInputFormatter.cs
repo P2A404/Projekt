@@ -17,14 +17,23 @@ namespace ArtificialNeuralNetwork
             LoadChampionIdDictionary();
             LoadTeamsDictionary();
             LoadPlayerNamesDictionary();
-            PrintDoubleArrayIgnoreZero(SaveGameToTeamNeurons(games[0]));
+            MakeTestCases();
         }
 
+        public List<NNTestCase> testCases = new List<NNTestCase>();
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
         public Dictionary<int, double[]> championIds = new Dictionary<int, double[]>();
         public Dictionary<string, Team> teams = new Dictionary<string, Team>();
         public Dictionary<string, double[]> playerNames = new Dictionary<string, double[]>();
+
+        public void MakeTestCases()
+        {
+            foreach(SaveGameInfo.Game game in games)
+            {
+                testCases.Add(SaveGameToTestCase(game));
+            }
+        }
 
         public void PrintDoubleArrayIgnoreZero(double[] array)
         {
@@ -199,6 +208,15 @@ namespace ArtificialNeuralNetwork
         public double[] SaveGameToNeurons(SaveGameInfo.Game game)
         {
             return CombineArrays(new double[][] { SaveGameToTeamNeurons(game), SaveGameToMiscNeurons(game) });
+        }
+
+        public NNTestCase SaveGameToTestCase(SaveGameInfo.Game game)
+        {
+            NNTestCase testCase = new NNTestCase();
+            if(game.teams[0].win == true) { testCase.winningTeam = 0; }
+            else { testCase.winningTeam = 1; }
+            testCase.inputNeurons = SaveGameToTeamNeurons(game);
+            return testCase;
         }
 
         private double[] SaveGameToTeamNeurons(SaveGameInfo.Game game)
