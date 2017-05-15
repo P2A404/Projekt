@@ -103,10 +103,11 @@ namespace ArtificialNeuralNetwork
         {
             for (int i = 0; i < matches.Count; i++)
             {
-                Console.WriteLine($"Match: {i}");
                 games.Add(MatchToSaveGame(matches[i]));
             }
             matches = null;
+            Console.WriteLine($"Done converting from JSON Class to Game Class");
+            games.Sort();
         }
 
         public void LoadPlayerNamesDictionary()
