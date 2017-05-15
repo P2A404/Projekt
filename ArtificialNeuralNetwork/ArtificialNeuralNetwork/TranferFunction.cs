@@ -163,7 +163,7 @@ class TransferFunction
 		foreach (double res in result)
 		{
 			k = 0;
-			result[k] = -Exp(res) / Pow((1 + Exp(res)), 2);
+			result[k] = Exp(res) / Pow((1 + Exp(res)), 2);
 			k++;
 		}
 

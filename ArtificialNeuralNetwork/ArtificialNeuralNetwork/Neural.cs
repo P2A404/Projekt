@@ -86,7 +86,7 @@ namespace ArtificialNeuralNetwork
                 }
             }
 
-            double totalErrorTerm = 0.0, trainingsRate = 0.001, weightDecay = 0.1;
+            double totalErrorTerm = 0.0, trainingsRate = 0.0001, weightDecay = 0.1;
             double[][] neuronErrorTerm = new double[layers.Length][];
             double[][,] updateSumError = new double[layers.Length][,];
 
@@ -126,13 +126,9 @@ namespace ArtificialNeuralNetwork
 
                 // Find totalErrorTerm
                 totalErrorTerm = 0;
-                for (int l = 0; l < layers.GetLength(0); l++)
-                {
-                    for (int i = 0; i < layers[l].weights.GetLength(0); i++)
-                    {
-                        totalErrorTerm += neuronErrorTerm[l][i];
-                    }
-                }
+
+                totalErrorTerm = neuronErrorTerm[layers.Length - 1][0];
+
                 Console.WriteLine(totalErrorTerm);
             } while (totalErrorTerm > 0.2 || totalErrorTerm < -0.2); // Changeable total error term
         }
@@ -146,16 +142,16 @@ namespace ArtificialNeuralNetwork
                 if (l != layers.Length - 1)
                 {
                     // j start at 1 because bias neuron don't have an error
-                    for (int j = 1; j < layers[l].weights.GetLength(0); j++)
+                    for (int j = 0; j < layers[l].weights.GetLength(0); j++)
                     {
                         sumError = 0.0;
                         // Check for not second last layer
-                        int k = l != layers.Length - 2 ? 1 : 0;
-                        for (; k < layers[l+1].weights.GetLength(0); k++)
+                        // int k = l != layers.Length - 2 ? 1 : 0;
+                        for (int k = 0; k < layers[l+1].weights.GetLength(0); k++)
                         {
                             sumError += neuronErrorTerm[l + 1][k] * layers[l+1].weights[k, j];
                         }
-                        neuronErrorTerm[l][j] += sumError * _derivativeActivationFunction(layers[l].sums)[j - 1];
+                        neuronErrorTerm[l][j] += sumError * _derivativeActivationFunction(layers[l].sums)[j];
                     }
                 }
                 else
@@ -210,7 +206,7 @@ namespace ArtificialNeuralNetwork
                     {
                         if (i != 0)
                         {
-                            failRate = updateSumError[l][j, i] + weightDecay * layers[l].weights[j, i];
+                            failRate = updateSumError[l][j, i]; // updateSumError[l][j, i] + weightDecay * layers[l].weights[j, i];
                         }
                         else
                         {

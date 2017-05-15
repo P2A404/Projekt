@@ -69,7 +69,7 @@ namespace ArtificialNeuralNetwork
             double[] result = new double[inputArray.Length];
             for (int i = 0; i < inputArray.Length; i++)
             {
-                result[i] = -Exp(inputArray[i]) / Pow((1 + Exp(inputArray[i])), 2);
+                result[i] = Exp(inputArray[i]) / Pow((1 + Exp(inputArray[i])), 2);
             }
             return result;
         }
