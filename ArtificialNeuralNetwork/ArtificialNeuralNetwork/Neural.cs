@@ -84,9 +84,9 @@ namespace ArtificialNeuralNetwork
                 throw new Exception($"wrong input size, expected {inputSize} but was given {inputData.GetLength(1)}");
             }
 
-            double totalErrorTerm = 0.0, trainingsRate = 0.001, weightDecay = 0.5;
-            double[][] errorTerm = new double[layers.Length][];
-            double[][,] sumOfOutputError = new double[layers.Length][,];
+            double totalErrorTerm = 0.0, trainingsRate = 0.01, weightDecay = 0.5;
+            double[][] neuronErrorTerm = new double[layers.Length][];
+            double[][,] updateSumError = new double[layers.Length][,];
 
             for (int l = 0; l < layers.GetLength(0); l++)
             {
