@@ -38,7 +38,7 @@ namespace ArtificialNeuralNetwork
         }
 
         //Tomt neuralt netværk constructor til objectorienteret/dynamisk skabelse
-        public NeuralNetwork(TranferFunction activationFunction, TranferFunction outputFunction)
+        public NeuralNetwork(TranferFunction activationFunction, TranferFunction activationFunctionDerivative, TranferFunction outputFunction, TranferFunction outputFunctionDerivative)
         {
             _activationFunction = activationFunction;
             _outputFunction = outputFunction;
@@ -74,14 +74,16 @@ namespace ArtificialNeuralNetwork
             _activationFunction = newTransfer;
         }
 
-        public void Training(double[][] inputData, int[] resultMatch)
+        public void Training(NNTestCase[] testCases)
         {
             // layers[i].weight.GetLength(0); row
             // layers[i].weight.GetLength(1); column
-
-            if (inputData.GetLength(1) != inputSize)
+            foreach (NNTestCase testCase in testCases)
             {
-                throw new Exception($"wrong input size, expected {inputSize} but was given {inputData.GetLength(1)}");
+                if (testCase.inputNeurons.GetLength(1) != inputSize)
+                {
+                    throw new Exception($"wrong input size, expected {inputSize} but was given {testCase.inputNeurons.GetLength(1)}");
+                }
             }
 
             double totalErrorTerm = 0.0, trainingsRate = 0.01, weightDecay = 0.5;
@@ -100,17 +102,17 @@ namespace ArtificialNeuralNetwork
                 Array.Clear(neuronErrorTerm, 0, neuronErrorTerm.Length);
                 Array.Clear(updateSumError, 0, updateSumError.Length);
 
-                for (int k = 0; k < inputData.Length; k++)
+                for (int k = 0; k < testCases.Length; k++)
                 {
                     // Run the neuron network
-                    Cycle(inputData[k]);
+                    Cycle(testCases[k].inputNeurons);
 
                     // Calculate the errors
-                    CalculateErrorTerm(neuronErrorTerm, resultMatch[k]);
+                    CalculateErrorTerm(neuronErrorTerm, testCases[k].winningTeam);
                     CalculateUpdateSumError(neuronErrorTerm, updateSumError);
                 }
 
-                UpdateWeights(updateSumError, trainingsRate, weightDecay, inputData.Length);
+                UpdateWeights(updateSumError, trainingsRate, weightDecay, inputSize);
 
                 // Find totalErrorTerm
                 for (int l = 0; l < layers.GetLength(0); l++)
