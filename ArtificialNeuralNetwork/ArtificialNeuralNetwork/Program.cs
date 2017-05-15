@@ -17,7 +17,7 @@ namespace ArtificialNeuralNetwork
             NNInputFormatter formatter = new NNInputFormatter();
             TransferFunctions tf = new TransferFunctions();
             NeuralNetwork Shrek = new NeuralNetwork(new int[] { 1268, 2536, 1268, 634, 1 }, tf.Hyperbolic, tf.Logistic, tf.HyperbolicDeivative, tf.LogistikDerivative);
-            Shrek.Training(formatter.testCases.ToArray());
+            Shrek.Training(formatter.testCases.GetRange(0,50).ToArray());
             #region end
             Console.WriteLine("Goodbye Cruel World.");
             Console.ReadLine();
