@@ -17,15 +17,39 @@ namespace ArtificialNeuralNetwork
             LoadChampionIdDictionary();
             LoadTeamsDictionary();
             LoadPlayerNamesDictionary();
+            bufferGamesLength = FindBufferGamesLength();
             MakeTestCases();
         }
-
+        public int bufferGamesLength = 0;
         public List<NNTestCase> testCases = new List<NNTestCase>();
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
         public Dictionary<int, double[]> championIds = new Dictionary<int, double[]>();
         public Dictionary<string, Team> teams = new Dictionary<string, Team>();
         public Dictionary<string, double[]> playerNames = new Dictionary<string, double[]>();
+
+        public int FindBufferGamesLength ()
+        {
+            Console.WriteLine($"Number of teams: {teams.Count}");
+            int[] teamGames = new int[teams.Count];
+            Array.Clear(teamGames, 0, teamGames.Length);
+            int max = 0;
+            for(int i = 0; i < teamGames.Length; i++)
+            {
+                for (int j = 0; teamGames[i] < 3 ; j++)
+                {
+                    if (games[j].teams[0].teamName == teams.ElementAt(i).Key || games[j].teams[1].teamName == teams.ElementAt(i).Key)
+                    {
+                        teamGames[i]++;
+                        if (j > max)
+                        { max = j; }
+                    }
+                }
+                Console.WriteLine($"Team {i} ({teams.ElementAt(i).Key}) max: {max}.");
+            }
+            Console.WriteLine($"Buffer Games: {max}.");
+            return max;
+        }
 
         public void MakeTestCases()
         {
