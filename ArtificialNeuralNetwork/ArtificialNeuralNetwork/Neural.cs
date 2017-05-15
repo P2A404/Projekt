@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -124,16 +124,22 @@ namespace ArtificialNeuralNetwork
 
                 UpdateWeights(updateSumError, trainingsRate, weightDecay, inputSize);
 
+                int numberOfNeurons = 0;
+                for (int l = 0; l < layers.GetLength(0); l++)
+                {
+                    numberOfNeurons += layers[l].weights.GetLength(0);
+                }
                 // Find totalErrorTerm
                 totalErrorTerm = 0;
                 for (int l = 0; l < layers.GetLength(0); l++)
                 {
                     for (int i = 0; i < layers[l].weights.GetLength(0); i++)
                     {
-                        totalErrorTerm += neuronErrorTerm[l][i];
+                        totalErrorTerm += neuronErrorTerm[l][i]/numberOfNeurons;
                     }
                 }
                 Console.WriteLine(totalErrorTerm);
+                Console.WriteLine(neuronErrorTerm[layers.Length - 1][0]);
             } while (totalErrorTerm > 0.2 || totalErrorTerm < -0.2); // Changeable total error term
         }
 
