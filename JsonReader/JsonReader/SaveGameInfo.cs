@@ -6,17 +6,16 @@ using System.Threading.Tasks;
 
 namespace JsonReader
 {
+    public class InputNeuronTestLayer
+    {
+        public SaveGameInfo.Game game { set; get; }
+        public int win { set; get; }
+    }
+
     public class SaveGameInfo
     {
         public class Game
         {
-            /*public Match(long _gameCreation, int _gameDuration, string _gameVersion, Team[] _teams)
-            {
-                gameCreation = _gameCreation;
-                gameDuration = _gameDuration;
-                gameVersion = _gameVersion;
-                teams = _teams;
-            }*/
             public long gameCreation { get; set; }
             public int gameDuration { get; set; }
             public string gameVersion { get; set; }
@@ -25,25 +24,6 @@ namespace JsonReader
 
         public class Team
         {
-            /*public Team(int _teamId, bool _win, bool[] firsts, int[] XKills, int[] _bannedChampionId, Player[] _players)
-            {
-                //firsts should be 6 in length, XKills should be 5 in length, _bannedChampionId should be 3 in length
-                teamId = _teamId;
-                win = _win;
-                firstBlood = firsts[0];
-                firstTower = firsts[1];
-                firstInhibitor = firsts[2];
-                firstBaron = firsts[3];
-                firstDragon = firsts[4];
-                firstRiftHerald = firsts[5];
-                towerKills = XKills[0];
-                inhibitorKills = XKills[1];
-                baronKills = XKills[2];
-                dragonKills = XKills[3];
-                riftHeraldKills = XKills[4];
-                bannedChampionId = _bannedChampionId;
-                players = _players;
-            }*/
             public int teamId { get; set; }
             public string teamName { get; set; }
             public bool win { get; set; }
@@ -64,16 +44,6 @@ namespace JsonReader
 
         public class Player
         {
-            /*public Player(string _summonerName, int _playerId, int _teamId, int _champonId, int _spell1Id, int _spell2Id, Stats _stats, Timeline _timeline)
-            {
-                summonerName = _summonerName;
-                playerId = _playerId;
-                championId = _champonId;
-                spell1Id = _spell1Id;
-                spell2Id = _spell2Id;
-                stats = _stats;
-                timeline = _timeline;
-            }*/
             public string summonerName { get; set; }
             public int playerId { get; set; }
             public int teamId { get; set; }
@@ -142,7 +112,7 @@ namespace JsonReader
 
         public class Timeline
         {
-            public int participantId { get; set; }
+            public int participantId { get; set; } //1 = top, 2 = jungle, 3 = mid, 4 = adc, 5 = support
             public Differencial creepsPerMinDeltas { get; set; }
             public Differencial xpPerMinDeltas { get; set; }
             public Differencial goldPerMinDeltas { get; set; }
@@ -158,7 +128,8 @@ namespace JsonReader
         public class Differencial
         {
             //has diffrent amount of variables based on time.
-            public float _30end { get; set; }
+            public float _40end { get; set; }
+            public float _3040 { get; set; }
             public float _1020 { get; set; }
             public float _2030 { get; set; }
             public float _010 { get; set; }
