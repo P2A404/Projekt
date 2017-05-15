@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace JsonReader
 {
+    public class InputNeuronTestLayer
+    {
+        public SaveGameInfo.Game game { set; get; }
+        public int win { set; get; }
+    }
+
     public class SaveGameInfo
     {
         public class Game
