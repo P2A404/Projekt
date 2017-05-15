@@ -84,7 +84,7 @@ class TransferFunction
 		return result;
 	}
 
-	p/*ublic double[] Linear(double[] inputArray, double[,] weightArray)
+	/*public double[] Linear(double[] inputArray, double[,] weightArray)
 	{
 		double[] result = new double[weightArray.GetLength(0)];
 
