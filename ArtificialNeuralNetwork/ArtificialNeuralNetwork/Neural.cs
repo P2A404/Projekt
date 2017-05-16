@@ -74,11 +74,11 @@ namespace ArtificialNeuralNetwork
             _activationFunction = newTransfer;
         }
 
-        public void Training(NNTestCase[] testCases)
+        public void Training(TestCase[] testCases)
         {
             // layers[i].weight.GetLength(0); row
             // layers[i].weight.GetLength(1); column
-            foreach (NNTestCase testCase in testCases)
+            foreach (TestCase testCase in testCases)
             {
                 if (testCase.inputNeurons.Length != inputSize)
                 {

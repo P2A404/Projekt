@@ -6,25 +6,6 @@ using System.Threading.Tasks;
 
 namespace ArtificialNeuralNetwork
 {
-    public class NNTestCase
-    {
-        public NNTestCase(SaveGameInfo.Team[] blueRecent, SaveGameInfo.Team[] redRecent, SaveGameInfo.Game current)
-        {
-            actualGame = current;
-            if (current.teams[0].win)
-            { winningTeam = 1; }
-            else
-            { winningTeam = 0; }
-            blueTeamLatestGames = blueRecent;
-            redTeamLatestGames = redRecent;
-        }
-        public SaveGameInfo.Game actualGame;
-        public SaveGameInfo.Team[] blueTeamLatestGames;
-        public SaveGameInfo.Team[] redTeamLatestGames;
-        public double[] inputNeurons { set; get; }
-        public int winningTeam { set; get; }
-    }
-
     public class SaveGameInfo
     {
         public class Game : IComparable<Game>

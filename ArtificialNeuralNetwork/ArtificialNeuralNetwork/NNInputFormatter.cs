@@ -22,7 +22,7 @@ namespace ArtificialNeuralNetwork
             MakeTestCases();
         }
 
-        public List<NNTestCase> testCases = new List<NNTestCase>();
+        public List<TestCase> testCases = new List<TestCase>();
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
         public List<SaveGameInfo.Game> bufferGames = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
@@ -85,7 +85,7 @@ namespace ArtificialNeuralNetwork
                         { recentRedGames.Add(games[j].teams[1]); }
                     }
                     //add the new testCase to the list of testcases
-                    testCases.Add(new NNTestCase(recentBlueGames.ToArray(), recentRedGames.ToArray(), games[i]));
+                    testCases.Add(new TestCase(recentBlueGames.ToArray(), recentRedGames.ToArray(), games[i]));
                 }
             }
             //make recent games for each test case into input neurons

@@ -54,6 +54,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SaveGameInfo.cs" />
+    <Compile Include="TestCase.cs" />
     <Compile Include="TranferFunction.cs" />
     <Compile Include="TransferFunctions.cs" />
   </ItemGroup>
