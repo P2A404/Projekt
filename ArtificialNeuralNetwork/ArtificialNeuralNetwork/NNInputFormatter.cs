@@ -14,6 +14,7 @@ namespace ArtificialNeuralNetwork
         {
             JSONLoad();
             ConvertGames();
+            games = games.OrderByDescending(x => x.gameDuration).ToList();
             LoadChampionIdDictionary();
             LoadTeamsDictionary();
             LoadPlayerNamesDictionary();

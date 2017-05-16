@@ -62,9 +62,8 @@ namespace ArtificialNeuralNetwork
             return input;
         }
         #endregion
-
+        
         #region Derivatives
-        //softmax derivative is still a problem
         public double[] LogistikDerivative(double[] inputArray)
         {
             double[] result = new double[inputArray.Length];
