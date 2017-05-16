@@ -18,21 +18,97 @@ namespace ArtificialNeuralNetwork
             LoadChampionIdDictionary();
             LoadTeamsDictionary();
             LoadPlayerNamesDictionary();
+            bufferGames = FindBufferGames();
             MakeTestCases();
+            InputNeuronSize = testCases[0].inputNeurons.Length;
         }
 
-        public List<NNTestCase> testCases = new List<NNTestCase>();
+        public List<TestCase> testCases = new List<TestCase>();
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
+        public List<SaveGameInfo.Game> bufferGames = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
         public Dictionary<int, double[]> championIds = new Dictionary<int, double[]>();
-        public Dictionary<string, Team> teams = new Dictionary<string, Team>();
+        public Dictionary<string, double[]> teams = new Dictionary<string, double[]>();
         public Dictionary<string, double[]> playerNames = new Dictionary<string, double[]>();
+        public int InputNeuronSize;
+
+        public List<SaveGameInfo.Game> FindBufferGames()
+        {
+            List<SaveGameInfo.Game> saveGames = new List<SaveGameInfo.Game>();
+            int[] gamesSavedByTeam = new int[teams.Count];
+            for (int i = 0; i < gamesSavedByTeam.Length; i++)
+            {
+                for (int j = 0; gamesSavedByTeam[i] < 3; j++)
+                {
+                    if (games[j].teams[0].teamName == teams.ElementAt(i).Key || games[j].teams[1].teamName == teams.ElementAt(i).Key)
+                    {
+                        saveGames.Add(games[j]);
+                        gamesSavedByTeam[i]++;
+                    }
+                }
+            }
+            Console.WriteLine($"Done finding {saveGames.Count} Buffer Games.");
+            return saveGames;
+        }
 
         public void MakeTestCases()
         {
-            foreach(SaveGameInfo.Game game in games)
+            //foreach non-buffer game make a testcase with previous 3 games from same team
+            for (int i = 0; i < games.Count; i++)
             {
-                testCases.Add(SaveGameToTestCase(game));
+                //check if the current game is a buffer game
+                bool isBuffer = false;
+                for (int j = 0; j < bufferGames.Count; j++)
+                {
+                    if (games[i].Equals(bufferGames[j]))
+                    {
+                        isBuffer = true;
+                    }
+                }
+                if (!isBuffer)
+                {
+                    string blueTeamName = games[i].teams[0].teamName;
+                    string redTeamName = games[i].teams[1].teamName;
+                    List<SaveGameInfo.Team> recentBlueGames = new List<SaveGameInfo.Team>();
+                    List<SaveGameInfo.Team> recentRedGames = new List<SaveGameInfo.Team>();
+                    //Find previous 3 games for each team
+                    for (int j = i - 1; recentBlueGames.Count < 3; j--)
+                    {
+                        if (games[j].teams[0].teamName == blueTeamName)
+                        { recentBlueGames.Add(games[j].teams[0]); }
+                        if (games[j].teams[1].teamName == blueTeamName)
+                        { recentBlueGames.Add(games[j].teams[1]); }
+                    }
+                    for (int j = i - 1; recentRedGames.Count < 3; j--)
+                    {
+                        if (games[j].teams[0].teamName == redTeamName)
+                        { recentRedGames.Add(games[j].teams[0]); }
+                        if (games[j].teams[1].teamName == redTeamName)
+                        { recentRedGames.Add(games[j].teams[1]); }
+                    }
+                    //add the new testCase to the list of testcases
+                    testCases.Add(new TestCase(recentBlueGames.ToArray(), recentRedGames.ToArray(), games[i]));
+                }
+            }
+            //make recent games for each test case into input neurons
+            CalculateTestCasesInputNeurons();
+            Console.WriteLine($"Done making {testCases.Count} Test Cases.");
+        }
+
+        private void CalculateTestCasesInputNeurons()
+        {
+            for (int i = 0; i < testCases.Count; i++)
+            {
+                double[][] recentGamesNeurons = new double[6][];
+                for (int j = 0; j < 3; j++)
+                {
+                    recentGamesNeurons[j] = SaveTeamToTeamNeurons(testCases[i].blueTeamLatestGames[j]);
+                }
+                for (int j = 0; j < 3; j++)
+                {
+                    recentGamesNeurons[j + 3] = SaveTeamToTeamNeurons(testCases[i].redTeamLatestGames[j]);
+                }
+                testCases[i].inputNeurons = CombineArrays(recentGamesNeurons);
             }
         }
 
@@ -66,9 +142,9 @@ namespace ArtificialNeuralNetwork
                     var result = JsonConvert.DeserializeObject<GameInfo.Match>(json);
                     // Adding to final list of matches
                     matches.Add(result);
-                    Console.WriteLine(index + " done");
                 }
             }
+            Console.WriteLine("Done loading JSON Files into JSON Class");
         }
 
         public double Normalization(double currentValue, double minValue, double maxValue)
@@ -80,10 +156,11 @@ namespace ArtificialNeuralNetwork
         {
             for (int i = 0; i < matches.Count; i++)
             {
-                Console.WriteLine($"Match: {i}");
                 games.Add(MatchToSaveGame(matches[i]));
             }
             matches = null;
+            games = games.OrderByDescending(x => x.gameDuration).ToList();
+            Console.WriteLine($"Done converting from JSON Class to Game Class");
         }
 
         public void LoadPlayerNamesDictionary()
@@ -134,7 +211,7 @@ namespace ArtificialNeuralNetwork
                 double[] uniqueTeamNameArray = new double[uniqueTeamNames.Count];
                 Array.Clear(uniqueTeamNameArray, 0, uniqueTeamNames.Count);
                 uniqueTeamNameArray[i] = 1;
-                teams.Add(uniqueTeamNames[i], new Team(uniqueTeamNames[i], uniqueTeamNameArray));
+                teams.Add(uniqueTeamNames[i], uniqueTeamNameArray);
             }
         }
 
@@ -206,21 +283,38 @@ namespace ArtificialNeuralNetwork
             }
         }
 
-        public double[] SaveGameToNeurons(SaveGameInfo.Game game)
+        private double[] SaveTeamToTeamNeurons(SaveGameInfo.Team team)
         {
-            return CombineArrays(new double[][] { SaveGameToTeamNeurons(game), SaveGameToMiscNeurons(game) });
+            double[][] inputNeuronArray = new double[7][];
+            inputNeuronArray[0] = teams[team.teamName];
+            inputNeuronArray[1] = SaveTeamToMiscNeurons(team);
+            for (int i = 0; i < 5; i++)
+            {
+                inputNeuronArray[i + 2] = SavePlayerToPlayerNeurons(team.players[i]);
+            }
+            return CombineArrays(inputNeuronArray);
         }
 
-        public NNTestCase SaveGameToTestCase(SaveGameInfo.Game game)
+        private double[] SavePlayerToPlayerNeurons(SaveGameInfo.Player player)
+        {
+            return championIds[player.championId];
+        }
+
+        /*public NNTestCase SaveGameToTestCase(SaveGameInfo.Game game)
         {
             NNTestCase testCase = new NNTestCase();
             if(game.teams[0].win == true) { testCase.winningTeam = 0; }
             else { testCase.winningTeam = 1; }
             testCase.inputNeurons = SaveGameToTeamNeurons(game);
             return testCase;
-        }
+        }*/
 
-        private double[] SaveGameToTeamNeurons(SaveGameInfo.Game game)
+        /*public double[] SaveGameToNeurons(SaveGameInfo.Game game)
+        {
+            return CombineArrays(new double[][] { SaveGameToTeamNeurons(game), SaveGameToMiscNeurons(game) });
+        }*/
+
+        /*private double[] SaveGameToTeamNeurons(SaveGameInfo.Game game)
         {
             double[][] inputNeuronArray = new double[12][];
             for (int i = 0; i < 5; i++)
@@ -234,165 +328,157 @@ namespace ArtificialNeuralNetwork
             inputNeuronArray[10] = teams[GetTeamName(game, true)].TeamNeuronInput;
             inputNeuronArray[11] = teams[GetTeamName(game, false)].TeamNeuronInput;
             return CombineArrays(inputNeuronArray);
-        }
+        }*/
 
-        private double[] SaveGameToPlayerNeurons(SaveGameInfo.Player player)
-        {
-            return championIds[player.championId];
-        }
-
-        private double[] SaveGameToMiscNeurons(SaveGameInfo.Game game)
+        private double[] SaveTeamToMiscNeurons(SaveGameInfo.Team team)
         {
             List<double> gameData = new List<double>();
             double[] input;
 
-            foreach (SaveGameInfo.Team team in game.teams)
+            gameData.Add(team.towerKills);
+            gameData.Add(team.inhibitorKills);
+            gameData.Add(team.baronKills);
+            gameData.Add(team.dragonKills);
+            gameData.Add(team.riftHeraldKills);
+
+            if (team.firstBlood)
+            { gameData.Add(1); }
+            else { gameData.Add(0); }
+
+            if (team.firstTower)
+            { gameData.Add(1); }
+            else { gameData.Add(0); }
+
+            if (team.firstInhibitor)
+            { gameData.Add(1); }
+            else { gameData.Add(0); }
+
+            if (team.firstBaron)
+            { gameData.Add(1); }
+            else { gameData.Add(0); }
+
+            if (team.firstDragon)
+            { gameData.Add(1); }
+            else { gameData.Add(0); }
+
+            if (team.firstRiftHerald)
+            { gameData.Add(1); }
+            else { gameData.Add(0); }
+
+            foreach (SaveGameInfo.Player player in team.players)
             {
+                gameData.Add(player.stats.kills);
+                gameData.Add(player.stats.deaths);
+                gameData.Add(player.stats.assists);
+                gameData.Add(player.stats.largestKillingSpree);
+                gameData.Add(player.stats.largestMultiKill);
+                gameData.Add(player.stats.killingSprees);
+                gameData.Add(player.stats.longestTimeSpentLiving);
+                gameData.Add(player.stats.doubleKills);
+                gameData.Add(player.stats.tripleKills);
+                gameData.Add(player.stats.quadraKills);
+                gameData.Add(player.stats.pentaKills);
+                gameData.Add(player.stats.unrealKills);
+                gameData.Add(player.stats.totalDamageDealt);
+                gameData.Add(player.stats.magicDamageDealt);
+                gameData.Add(player.stats.physicalDamageDealt);
+                gameData.Add(player.stats.trueDamageDealt);
+                gameData.Add(player.stats.largestCriticalStrike);
+                gameData.Add(player.stats.totalDamageDealtToChampions);
+                gameData.Add(player.stats.magicDamageDealtToChampions);
+                gameData.Add(player.stats.physicalDamageDealtToChampions);
+                gameData.Add(player.stats.trueDamageDealtToChampions);
+                gameData.Add(player.stats.totalHeal);
+                gameData.Add(player.stats.totalUnitsHealed);
+                gameData.Add(player.stats.damageSelfMitigated);
+                gameData.Add(player.stats.damageDealtToObjectives);
+                gameData.Add(player.stats.damageDealtToTurrets);
+                gameData.Add(player.stats.timeCCingOthers);
+                gameData.Add(player.stats.totalDamageTaken);
+                gameData.Add(player.stats.magicalDamageTaken);
+                gameData.Add(player.stats.physicalDamageTaken);
+                gameData.Add(player.stats.trueDamageTaken);
+                gameData.Add(player.stats.goldEarned);
+                gameData.Add(player.stats.goldSpent);
+                gameData.Add(player.stats.turretKills);
+                gameData.Add(player.stats.inhibitorKills);
+                gameData.Add(player.stats.totalMinionsKilled);
+                gameData.Add(player.stats.neutralMinionsKilled);
+                gameData.Add(player.stats.neutralMinionsKilledTeamJungle);
+                gameData.Add(player.stats.neutralMinionsKilledEnemyJungle);
+                gameData.Add(player.stats.totalTimeCrowdControlDealt);
+                gameData.Add(player.stats.champLevel);
+                gameData.Add(player.stats.visionWardsBoughtInGame);
+                gameData.Add(player.stats.wardsPlaced);
+                gameData.Add(player.stats.wardsKilled);
 
-                gameData.Add(team.towerKills);
-                gameData.Add(team.inhibitorKills);
-                gameData.Add(team.baronKills);
-                gameData.Add(team.dragonKills);
-                gameData.Add(team.riftHeraldKills);
-
-                if (team.firstBlood)
+                if (player.stats.firstBloodKill)
                 { gameData.Add(1); }
                 else { gameData.Add(0); }
 
-                if (team.firstTower)
+                if (player.stats.firstBloodAssist)
                 { gameData.Add(1); }
                 else { gameData.Add(0); }
 
-                if (team.firstInhibitor)
+                if (player.stats.firstTowerKill)
                 { gameData.Add(1); }
                 else { gameData.Add(0); }
 
-                if (team.firstBaron)
+                if (player.stats.firstTowerAssist)
+                { gameData.Add(1); }
+                else { gameData.Add(0); };
+
+                if (player.stats.firstInhibitorKill)
                 { gameData.Add(1); }
                 else { gameData.Add(0); }
 
-                if (team.firstDragon)
+                if (player.stats.firstInhibitorAssist)
                 { gameData.Add(1); }
                 else { gameData.Add(0); }
 
-                if (team.firstRiftHerald)
-                { gameData.Add(1); }
-                else { gameData.Add(0); }
+                /*gameData.Add(player.timeline.creepsPerMinDeltas._010);
+                gameData.Add(player.timeline.creepsPerMinDeltas._1020);
+                gameData.Add(player.timeline.creepsPerMinDeltas._2030);
+                gameData.Add(player.timeline.creepsPerMinDeltas._3040);
+                gameData.Add(player.timeline.creepsPerMinDeltas._40end);
 
-                foreach (SaveGameInfo.Player player in team.players)
-                {
-                    gameData.Add(player.stats.kills);
-                    gameData.Add(player.stats.deaths);
-                    gameData.Add(player.stats.assists);
-                    gameData.Add(player.stats.largestKillingSpree);
-                    gameData.Add(player.stats.largestMultiKill);
-                    gameData.Add(player.stats.killingSprees);
-                    gameData.Add(player.stats.longestTimeSpentLiving);
-                    gameData.Add(player.stats.doubleKills);
-                    gameData.Add(player.stats.tripleKills);
-                    gameData.Add(player.stats.quadraKills);
-                    gameData.Add(player.stats.pentaKills);
-                    gameData.Add(player.stats.unrealKills);
-                    gameData.Add(player.stats.totalDamageDealt);
-                    gameData.Add(player.stats.magicDamageDealt);
-                    gameData.Add(player.stats.physicalDamageDealt);
-                    gameData.Add(player.stats.trueDamageDealt);
-                    gameData.Add(player.stats.largestCriticalStrike);
-                    gameData.Add(player.stats.totalDamageDealtToChampions);
-                    gameData.Add(player.stats.magicDamageDealtToChampions);
-                    gameData.Add(player.stats.physicalDamageDealtToChampions);
-                    gameData.Add(player.stats.trueDamageDealtToChampions);
-                    gameData.Add(player.stats.totalHeal);
-                    gameData.Add(player.stats.totalUnitsHealed);
-                    gameData.Add(player.stats.damageSelfMitigated);
-                    gameData.Add(player.stats.damageDealtToObjectives);
-                    gameData.Add(player.stats.damageDealtToTurrets);
-                    gameData.Add(player.stats.timeCCingOthers);
-                    gameData.Add(player.stats.totalDamageTaken);
-                    gameData.Add(player.stats.magicalDamageTaken);
-                    gameData.Add(player.stats.physicalDamageTaken);
-                    gameData.Add(player.stats.trueDamageTaken);
-                    gameData.Add(player.stats.goldEarned);
-                    gameData.Add(player.stats.goldSpent);
-                    gameData.Add(player.stats.turretKills);
-                    gameData.Add(player.stats.inhibitorKills);
-                    gameData.Add(player.stats.totalMinionsKilled);
-                    gameData.Add(player.stats.neutralMinionsKilled);
-                    gameData.Add(player.stats.neutralMinionsKilledTeamJungle);
-                    gameData.Add(player.stats.neutralMinionsKilledEnemyJungle);
-                    gameData.Add(player.stats.totalTimeCrowdControlDealt);
-                    gameData.Add(player.stats.champLevel);
-                    gameData.Add(player.stats.visionWardsBoughtInGame);
-                    gameData.Add(player.stats.wardsPlaced);
-                    gameData.Add(player.stats.wardsKilled);
+                gameData.Add(player.timeline.xpPerMinDeltas._010);
+                gameData.Add(player.timeline.xpPerMinDeltas._1020);
+                gameData.Add(player.timeline.xpPerMinDeltas._3040);
+                gameData.Add(player.timeline.xpPerMinDeltas._2030);
+                gameData.Add(player.timeline.xpPerMinDeltas._40end);
 
-                    if (player.stats.firstBloodKill)
-                    { gameData.Add(1); }
-                    else { gameData.Add(0); }
+                gameData.Add(player.timeline.goldPerMinDeltas._010);
+                gameData.Add(player.timeline.goldPerMinDeltas._1020);
+                gameData.Add(player.timeline.goldPerMinDeltas._2030);
+                gameData.Add(player.timeline.goldPerMinDeltas._3040);
+                gameData.Add(player.timeline.goldPerMinDeltas._40end);
 
-                    if (player.stats.firstBloodAssist)
-                    { gameData.Add(1); }
-                    else { gameData.Add(0); }
+                gameData.Add(player.timeline.csDiffPerMinDeltas._010);
+                gameData.Add(player.timeline.csDiffPerMinDeltas._1020);
+                gameData.Add(player.timeline.csDiffPerMinDeltas._2030);
+                gameData.Add(player.timeline.csDiffPerMinDeltas._3040);
+                gameData.Add(player.timeline.csDiffPerMinDeltas._40end);
 
-                    if (player.stats.firstTowerKill)
-                    { gameData.Add(1); }
-                    else { gameData.Add(0); }
+                gameData.Add(player.timeline.xpDiffPerMinDeltas._010);
+                gameData.Add(player.timeline.xpDiffPerMinDeltas._1020);
+                gameData.Add(player.timeline.xpDiffPerMinDeltas._2030);
+                gameData.Add(player.timeline.xpDiffPerMinDeltas._3040);
+                gameData.Add(player.timeline.xpDiffPerMinDeltas._40end);
 
-                    if (player.stats.firstTowerAssist)
-                    { gameData.Add(1); }
-                    else { gameData.Add(0); };
+                gameData.Add(player.timeline.damageTakenPerMinDeltas._010);
+                gameData.Add(player.timeline.damageTakenPerMinDeltas._1020);
+                gameData.Add(player.timeline.damageTakenPerMinDeltas._2030);
+                gameData.Add(player.timeline.damageTakenPerMinDeltas._3040);
+                gameData.Add(player.timeline.damageTakenPerMinDeltas._40end);
 
-                    if (player.stats.firstInhibitorKill)
-                    { gameData.Add(1); }
-                    else { gameData.Add(0); }
-
-                    if (player.stats.firstInhibitorAssist)
-                    { gameData.Add(1); }
-                    else { gameData.Add(0); }
-
-                    gameData.Add(player.timeline.creepsPerMinDeltas._010);
-                    gameData.Add(player.timeline.creepsPerMinDeltas._1020);
-                    gameData.Add(player.timeline.creepsPerMinDeltas._2030);
-                    gameData.Add(player.timeline.creepsPerMinDeltas._3040);
-                    gameData.Add(player.timeline.creepsPerMinDeltas._40end);
-
-                    gameData.Add(player.timeline.xpPerMinDeltas._010);
-                    gameData.Add(player.timeline.xpPerMinDeltas._1020);
-                    gameData.Add(player.timeline.xpPerMinDeltas._3040);
-                    gameData.Add(player.timeline.xpPerMinDeltas._2030);
-                    gameData.Add(player.timeline.xpPerMinDeltas._40end);
-
-                    gameData.Add(player.timeline.goldPerMinDeltas._010);
-                    gameData.Add(player.timeline.goldPerMinDeltas._1020);
-                    gameData.Add(player.timeline.goldPerMinDeltas._2030);
-                    gameData.Add(player.timeline.goldPerMinDeltas._3040);
-                    gameData.Add(player.timeline.goldPerMinDeltas._40end);
-
-                    gameData.Add(player.timeline.csDiffPerMinDeltas._010);
-                    gameData.Add(player.timeline.csDiffPerMinDeltas._1020);
-                    gameData.Add(player.timeline.csDiffPerMinDeltas._2030);
-                    gameData.Add(player.timeline.csDiffPerMinDeltas._3040);
-                    gameData.Add(player.timeline.csDiffPerMinDeltas._40end);
-
-                    gameData.Add(player.timeline.xpDiffPerMinDeltas._010);
-                    gameData.Add(player.timeline.xpDiffPerMinDeltas._1020);
-                    gameData.Add(player.timeline.xpDiffPerMinDeltas._2030);
-                    gameData.Add(player.timeline.xpDiffPerMinDeltas._3040);
-                    gameData.Add(player.timeline.xpDiffPerMinDeltas._40end);
-
-                    gameData.Add(player.timeline.damageTakenPerMinDeltas._010);
-                    gameData.Add(player.timeline.damageTakenPerMinDeltas._1020);
-                    gameData.Add(player.timeline.damageTakenPerMinDeltas._2030);
-                    gameData.Add(player.timeline.damageTakenPerMinDeltas._3040);
-                    gameData.Add(player.timeline.damageTakenPerMinDeltas._40end);
-
-                    gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._010);
-                    gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._1020);
-                    gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._2030);
-                    gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._3040);
-                    gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._40end);
-                }
+                gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._010);
+                gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._1020);
+                gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._2030);
+                gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._3040);
+                gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._40end);*/
             }
+
 
             input = gameData.ToArray();
             return input;
@@ -401,7 +487,6 @@ namespace ArtificialNeuralNetwork
 
         double[] CombineArrays(double[][] jaggedArray)
         {
-            //goes out of range
             int totalArrayLength = 0;
             for (int i = 0; i < jaggedArray.GetLength(0); i++)
             {

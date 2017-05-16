@@ -6,22 +6,25 @@ using System.Threading.Tasks;
 
 namespace ArtificialNeuralNetwork
 {
-    public class NNTestCase
-    {
-        SaveGameInfo[] blueTeamLatestGames;
-        SaveGameInfo[] redTeamLatestGames;
-        public double[] inputNeurons { set; get; }
-        public int winningTeam { set; get; }
-    }
-
     public class SaveGameInfo
     {
-        public class Game
+        public class Game : IComparable<Game>
         {
             public long gameCreation { get; set; }
             public int gameDuration { get; set; }
             public string gameVersion { get; set; }
             public Team[] teams { get; set; }
+            
+            public int CompareTo(Game other)
+            {
+                if (other == null) { return 1; }
+                return this.gameCreation.CompareTo(other.gameCreation);
+            }
+
+            public bool Equals(Game other)
+            {
+                return this.gameCreation == other.gameCreation;
+            }
         }
 
         public class Team
