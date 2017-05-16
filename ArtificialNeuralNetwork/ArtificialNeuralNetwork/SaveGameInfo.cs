@@ -10,6 +10,7 @@ namespace ArtificialNeuralNetwork
     {
         public NNTestCase(SaveGameInfo.Team[] blueRecent, SaveGameInfo.Team[] redRecent, SaveGameInfo.Game current)
         {
+            actualGame = current;
             if (current.teams[0].win)
             { winningTeam = 1; }
             else
@@ -17,6 +18,7 @@ namespace ArtificialNeuralNetwork
             blueTeamLatestGames = blueRecent;
             redTeamLatestGames = redRecent;
         }
+        public SaveGameInfo.Game actualGame;
         public SaveGameInfo.Team[] blueTeamLatestGames;
         public SaveGameInfo.Team[] redTeamLatestGames;
         public double[] inputNeurons { set; get; }
