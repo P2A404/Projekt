@@ -37,7 +37,7 @@ namespace ArtificialNeuralNetwork
             {
                 for (int j = 0; gamesSavedByTeam[i] < 3; j++)
                 {
-                    if (games[j].teams[0].teamName == teams.ElementAt(i).Key)
+                    if (games[j].teams[0].teamName == teams.ElementAt(i).Key || games[j].teams[1].teamName == teams.ElementAt(i).Key)
                     {
                         saveGames.Add(games[j]);
                         gamesSavedByTeam[i]++;
@@ -64,25 +64,19 @@ namespace ArtificialNeuralNetwork
                 }
                 if (!isBuffer)
                 {
-                    //FAILS! sometimes only finds 2 games but 3 exist
-                    for(int j = 0; j < bufferGames.Count; j++)
-                    {
-                        if (bufferGames[j].teams[0].teamName == "SSB" || bufferGames[j].teams[1].teamName == "SSB")
-                        { Console.WriteLine($"Found one! buffer game {j}"); }
-                    }
                     string blueTeamName = games[i].teams[0].teamName;
                     string redTeamName = games[i].teams[1].teamName;
                     List<SaveGameInfo.Team> recentBlueGames = new List<SaveGameInfo.Team>();
                     List<SaveGameInfo.Team> recentRedGames = new List<SaveGameInfo.Team>();
                     //Find previous 3 games for each team
-                    for (int j = i-1; /*j >= 0 &&*/ recentBlueGames.Count < 3; j--)
+                    for (int j = i-1; recentBlueGames.Count < 3; j--)
                     {
                         if (games[j].teams[0].teamName == blueTeamName)
                         { recentBlueGames.Add(games[j].teams[0]); }
                         if (games[j].teams[1].teamName == blueTeamName)
                         { recentBlueGames.Add(games[j].teams[1]); }
                     }
-                    for (int j = i - 1; /*j >= 0 &&*/ recentRedGames.Count < 3; j--)
+                    for (int j = i - 1; recentRedGames.Count < 3; j--)
                     {
                         if (games[j].teams[0].teamName == redTeamName)
                         { recentRedGames.Add(games[j].teams[0]); }
@@ -93,6 +87,7 @@ namespace ArtificialNeuralNetwork
                     testCases.Add(new NNTestCase(recentBlueGames.ToArray(), recentRedGames.ToArray(), games[i]));
                 }
             }
+            //make recent games for each test case into input neurons
             CalculateTestCasesInputNeurons();
             Console.WriteLine($"Done making {testCases.Count} Test Cases.");
         }
