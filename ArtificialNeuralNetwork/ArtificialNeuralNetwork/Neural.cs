@@ -158,9 +158,11 @@ namespace ArtificialNeuralNetwork
         public void CalculateErrorTerm(double[][] neuronErrorTerm, int resultMatch)
         {
             double sumError = 0.0;
+            double[] derivativeActivation;
 
             for (int l = layers.Length - 1; l >= 0; l--)
             {
+                derivativeActivation = _derivativeActivationFunction(layers[l].sums);
                 if (l != layers.Length - 1)
                 {
                     // j start at 1 because bias neuron don't have an error
@@ -173,13 +175,13 @@ namespace ArtificialNeuralNetwork
                         {
                             sumError += neuronErrorTerm[l + 1][k] * layers[l+1].weights[k, j];
                         }
-                        neuronErrorTerm[l][j] += sumError * _derivativeActivationFunction(layers[l].sums)[j];
+                        neuronErrorTerm[l][j] += sumError * derivativeActivation[j];
                     }
                 }
                 else
                 {
                     // Last layer
-                    neuronErrorTerm[l][0] += (resultMatch - layers[l].activations[0]) * _derivativeOutputFunction(layers[l].sums)[0];
+                    neuronErrorTerm[l][0] += (resultMatch - layers[l].activations[0]) * derivativeActivation[0];
                 }
             }
         }
