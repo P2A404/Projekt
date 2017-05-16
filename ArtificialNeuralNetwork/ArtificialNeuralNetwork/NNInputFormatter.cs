@@ -10,8 +10,9 @@ namespace ArtificialNeuralNetwork
 {
     class NNInputFormatter
     {
-        public NNInputFormatter()
+        public NNInputFormatter(int TrainingPoolSize)
         {
+            TrainingTestCases = new TestCase[TrainingPoolSize];
             JSONLoad();
             ConvertGames();
             games = games.OrderByDescending(x => x.gameDuration).ToList();
@@ -21,8 +22,12 @@ namespace ArtificialNeuralNetwork
             bufferGames = FindBufferGames();
             MakeTestCases();
             InputNeuronSize = testCases[0].inputNeurons.Length;
+            TrainingTestCases = testCases.Take(TrainingPoolSize).ToArray();
+            TestingTestCases = testCases.GetRange(TrainingPoolSize, (testCases.Count - TrainingPoolSize)).ToArray();
         }
 
+        public TestCase[] TrainingTestCases;
+        public TestCase[] TestingTestCases;
         public List<TestCase> testCases = new List<TestCase>();
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
         public List<SaveGameInfo.Game> bufferGames = new List<SaveGameInfo.Game>();
@@ -31,6 +36,7 @@ namespace ArtificialNeuralNetwork
         public Dictionary<string, double[]> teams = new Dictionary<string, double[]>();
         public Dictionary<string, double[]> playerNames = new Dictionary<string, double[]>();
         public int InputNeuronSize;
+
 
         public List<SaveGameInfo.Game> FindBufferGames()
         {
