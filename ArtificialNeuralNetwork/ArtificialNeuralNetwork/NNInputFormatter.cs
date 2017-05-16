@@ -607,5 +607,39 @@ namespace ArtificialNeuralNetwork
             returnStats.firstInhibitorAssist = stats.firstInhibitorAssist;
             return returnStats;
         }
+
+        private double[] TeamToDoubleArray(SaveGameInfo.Team team)
+        {
+            
+            double[][] NameOfPlayers = new double[5][];
+            int[] IndexesOfPlayers = new int[5];
+            double[] ReturnArray = new double[NameOfPlayers[0].Length];
+
+            // Finding the arrays with players in the dictionary
+            for (int index = 0; index < team.players.Length; index++)
+            {
+                NameOfPlayers[index] = playerNames[team.players[index].summonerName];
+            }
+
+            // Finding the index of each player in the current player array
+            for (int currPlayer = 0; currPlayer < NameOfPlayers.GetLength(0); currPlayer++)
+            {
+                for (int index = 0; index < NameOfPlayers.GetLength(1); index++)
+                {
+                    if (NameOfPlayers[currPlayer][index] != 0)
+                    {
+                        IndexesOfPlayers[currPlayer] = index;
+                    }
+                }
+            }
+
+            // Setting the indexes for all players into the return array
+            for (int i = 0; i < IndexesOfPlayers.Length; i++)
+            {
+                ReturnArray[IndexesOfPlayers[i]] = 1; 
+            }
+
+            return ReturnArray;
+        }
     }
 }
