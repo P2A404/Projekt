@@ -281,9 +281,20 @@ namespace ArtificialNeuralNetwork
             }
         }
 
-        public double[] SaveGameToNeurons(SaveGameInfo.Game game)
+        private double[] SaveTeamToTeamNeurons(SaveGameInfo.Team team)
         {
-            return CombineArrays(new double[][] { SaveGameToTeamNeurons(game), SaveGameToMiscNeurons(game) });
+            double[][] inputNeuronArray = new double[6][];
+            inputNeuronArray[0] = teams[team.teamName].TeamNeuronInput;
+            for (int i = 0; i < 5; i++)
+            {
+                inputNeuronArray[i+1] = SavePlayerToPlayerNeurons(team.players[i]);
+            }
+            return CombineArrays(inputNeuronArray);
+        }
+
+        private double[] SavePlayerToPlayerNeurons(SaveGameInfo.Player player)
+        {
+            return championIds[player.championId];
         }
 
         /*public NNTestCase SaveGameToTestCase(SaveGameInfo.Game game)
@@ -295,23 +306,12 @@ namespace ArtificialNeuralNetwork
             return testCase;
         }*/
 
-        private double[] SaveTeamToTeamNeurons(SaveGameInfo.Team team)
+        /*public double[] SaveGameToNeurons(SaveGameInfo.Game game)
         {
-            double[][] inputNeuronArray = new double[6][];
-            inputNeuronArray[0] = teams[team.teamName].TeamNeuronInput;
-            for (int i = 0; i < 5; i++)
-            {
-                inputNeuronArray[i+1] = SaveGameToPlayerNeurons(team.players[i]);
-            }
-            return CombineArrays(inputNeuronArray);
-        }
+            return CombineArrays(new double[][] { SaveGameToTeamNeurons(game), SaveGameToMiscNeurons(game) });
+        }*/
 
-        private double[] SavePlayerToPlayerNeurons(SaveGameInfo.Player player)
-        {
-            return championIds[player.championId];
-        }
-        
-        private double[] SaveGameToTeamNeurons(SaveGameInfo.Game game)
+        /*private double[] SaveGameToTeamNeurons(SaveGameInfo.Game game)
         {
             double[][] inputNeuronArray = new double[12][];
             for (int i = 0; i < 5; i++)
@@ -325,14 +325,9 @@ namespace ArtificialNeuralNetwork
             inputNeuronArray[10] = teams[GetTeamName(game, true)].TeamNeuronInput;
             inputNeuronArray[11] = teams[GetTeamName(game, false)].TeamNeuronInput;
             return CombineArrays(inputNeuronArray);
-        }
+        }*/
 
-        private double[] SaveGameToPlayerNeurons(SaveGameInfo.Player player)
-        {
-            return championIds[player.championId];
-        }
-
-        private double[] SaveGameToMiscNeurons(SaveGameInfo.Game game)
+        /* private double[] SaveGameToMiscNeurons(SaveGameInfo.Game game)
         {
             List<double> gameData = new List<double>();
             double[] input;
@@ -488,11 +483,10 @@ namespace ArtificialNeuralNetwork
             input = gameData.ToArray();
             return input;
 
-        }
+        }*/
 
         double[] CombineArrays(double[][] jaggedArray)
         {
-            //goes out of range
             int totalArrayLength = 0;
             for (int i = 0; i < jaggedArray.GetLength(0); i++)
             {
