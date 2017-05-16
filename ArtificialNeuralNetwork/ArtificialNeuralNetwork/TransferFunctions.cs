@@ -84,7 +84,7 @@ namespace ArtificialNeuralNetwork
             return result;
         }
 
-        public double[] HyperbolicDeivative(double[] inputArray)
+        public double[] HyperbolicDerivative(double[] inputArray)
         {
             double[] result = new double[inputArray.Length];
             for (int i = 0; i < inputArray.Length; i++)

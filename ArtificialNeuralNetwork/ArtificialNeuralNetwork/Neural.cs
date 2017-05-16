@@ -14,16 +14,16 @@ namespace ArtificialNeuralNetwork
         public Layer[] layers;
         public int inputSize;
         private double[] latestInput;
-        private TranferFunction _activationFunction;
-        private TranferFunction _outputFunction;
-        private TranferFunction _derivativeActivationFunction;
-        private TranferFunction _derivativeOutputFunction;
+        private TransferFunction _activationFunction;
+        private TransferFunction _outputFunction;
+        private TransferFunction _derivativeActivationFunction;
+        private TransferFunction _derivativeOutputFunction;
         private Random rand = new Random();
         #endregion
 
         #region Constructors
         //neuralt netværk constructor med bestemt størrelse
-        public NeuralNetwork(int[] size, TranferFunction activationFunction, TranferFunction outputFunction, TranferFunction derivativeActivationFunction, TranferFunction derivativeOutputFunction)
+        public NeuralNetwork(int[] size, TransferFunction activationFunction, TransferFunction outputFunction, TransferFunction derivativeActivationFunction, TransferFunction derivativeOutputFunction)
         {
             _activationFunction = activationFunction;
             _outputFunction = outputFunction;
@@ -38,7 +38,7 @@ namespace ArtificialNeuralNetwork
         }
 
         //Tomt neuralt netværk constructor til objectorienteret/dynamisk skabelse
-        public NeuralNetwork(TranferFunction activationFunction, TranferFunction activationFunctionDerivative, TranferFunction outputFunction, TranferFunction outputFunctionDerivative)
+        public NeuralNetwork(TransferFunction activationFunction, TransferFunction activationFunctionDerivative, TransferFunction outputFunction, TransferFunction outputFunctionDerivative)
         {
             _activationFunction = activationFunction;
             _outputFunction = outputFunction;
@@ -48,7 +48,7 @@ namespace ArtificialNeuralNetwork
 
         #region Functions
 
-        public delegate double[] TranferFunction(double[] input);
+        public delegate double[] TransferFunction(double[] input);
 
         public void AddLayer(Layer lay)
         {
@@ -69,7 +69,7 @@ namespace ArtificialNeuralNetwork
         }
 
         //maybie not have this?
-        public void ChangeTranferFunction(TranferFunction newTransfer)
+        public void ChangeTransferFunction(TransferFunction newTransfer)
         {
             _activationFunction = newTransfer;
         }
