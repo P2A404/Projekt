@@ -27,7 +27,7 @@ namespace ArtificialNeuralNetwork
         public List<SaveGameInfo.Game> bufferGames = new List<SaveGameInfo.Game>();
         public List<GameInfo.Match> matches = new List<GameInfo.Match>();
         public Dictionary<int, double[]> championIds = new Dictionary<int, double[]>();
-        public Dictionary<string, Team> teams = new Dictionary<string, Team>();
+        public Dictionary<string, double[]> teams = new Dictionary<string, double[]>();
         public Dictionary<string, double[]> playerNames = new Dictionary<string, double[]>();
 
         public List<SaveGameInfo.Game> FindBufferGames()
@@ -209,7 +209,7 @@ namespace ArtificialNeuralNetwork
                 double[] uniqueTeamNameArray = new double[uniqueTeamNames.Count];
                 Array.Clear(uniqueTeamNameArray, 0, uniqueTeamNames.Count);
                 uniqueTeamNameArray[i] = 1;
-                teams.Add(uniqueTeamNames[i], new Team(uniqueTeamNames[i], uniqueTeamNameArray));
+                teams.Add(uniqueTeamNames[i], uniqueTeamNameArray);
             }
         }
 
@@ -284,7 +284,7 @@ namespace ArtificialNeuralNetwork
         private double[] SaveTeamToTeamNeurons(SaveGameInfo.Team team)
         {
             double[][] inputNeuronArray = new double[7][];
-            inputNeuronArray[0] = teams[team.teamName].TeamNeuronInput;
+            inputNeuronArray[0] = teams[team.teamName];
             inputNeuronArray[1] = SaveTeamToMiscNeurons(team);
             for (int i = 0; i < 5; i++)
             {
@@ -434,7 +434,7 @@ namespace ArtificialNeuralNetwork
                 { gameData.Add(1); }
                 else { gameData.Add(0); }
 
-                gameData.Add(player.timeline.creepsPerMinDeltas._010);
+                /*gameData.Add(player.timeline.creepsPerMinDeltas._010);
                 gameData.Add(player.timeline.creepsPerMinDeltas._1020);
                 gameData.Add(player.timeline.creepsPerMinDeltas._2030);
                 gameData.Add(player.timeline.creepsPerMinDeltas._3040);
@@ -474,7 +474,7 @@ namespace ArtificialNeuralNetwork
                 gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._1020);
                 gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._2030);
                 gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._3040);
-                gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._40end);
+                gameData.Add(player.timeline.damageTakenDiffPerMinDeltas._40end);*/
             }
 
 
