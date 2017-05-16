@@ -152,6 +152,8 @@ namespace ArtificialNeuralNetwork
 
         public class Creepspermindeltas
         {
+            public float _50end { get; set; }
+            public float _4050 { get; set; }
             public float _40end { get; set; }
             public float _3040 { get; set; }
             public float _30end { get; set; }
@@ -165,6 +167,8 @@ namespace ArtificialNeuralNetwork
 
         public class Xppermindeltas
         {
+            public float _50end { get; set; }
+            public float _4050 { get; set; }
             public float _40end { get; set; }
             public float _3040 { get; set; }
             public float _30end { get; set; }
@@ -178,6 +182,8 @@ namespace ArtificialNeuralNetwork
 
         public class Goldpermindeltas
         {
+            public float _50end { get; set; }
+            public float _4050 { get; set; }
             public float _40end { get; set; }
             public float _3040 { get; set; }
             public float _30end { get; set; }
@@ -191,6 +197,8 @@ namespace ArtificialNeuralNetwork
 
         public class Csdiffpermindeltas
         {
+            public float _50end { get; set; }
+            public float _4050 { get; set; }
             public float _40end { get; set; }
             public float _3040 { get; set; }
             public float _30end { get; set; }
@@ -204,6 +212,8 @@ namespace ArtificialNeuralNetwork
 
         public class Xpdiffpermindeltas
         {
+            public float _50end { get; set; }
+            public float _4050 { get; set; }
             public float _40end { get; set; }
             public float _3040 { get; set; }
             public float _30end { get; set; }
@@ -217,6 +227,8 @@ namespace ArtificialNeuralNetwork
 
         public class Damagetakenpermindeltas
         {
+            public float _50end { get; set; }
+            public float _4050 { get; set; }
             public float _40end { get; set; }
             public float _3040 { get; set; }
             public float _30end { get; set; }
@@ -230,6 +242,8 @@ namespace ArtificialNeuralNetwork
 
         public class Damagetakendiffpermindeltas
         {
+            public float _50end { get; set; }
+            public float _4050 { get; set; }
             public float _40end { get; set; }
             public float _3040 { get; set; }
             public float _30end { get; set; }

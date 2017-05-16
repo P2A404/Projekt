@@ -24,6 +24,7 @@ namespace ArtificialNeuralNetwork
             InputNeuronSize = testCases[0].inputNeurons.Length;
             TrainingTestCases = testCases.Take(TrainingPoolSize).ToArray();
             TestingTestCases = testCases.GetRange(TrainingPoolSize, (testCases.Count - TrainingPoolSize)).ToArray();
+            
         }
 
         public TestCase[] TrainingTestCases;
@@ -70,8 +71,6 @@ namespace ArtificialNeuralNetwork
         void MinMaxPlayer(SaveGameInfo.Player p)
         {
             SaveGameInfo.Stats PlayerStats = p.stats;
-            //SaveGameInfo.Stats maximumTeam.players[0].stats = maximumTeam.players[0].stats;
-            //SaveGameInfo.Stats minimumTeam.players[0].stats = minimumTeam.players[0].stats;
 
             maximumTeam.players[0].stats.assists = Math.Max(maximumTeam.players[0].stats.assists, PlayerStats.assists);
             maximumTeam.players[0].stats.champLevel = Math.Max(maximumTeam.players[0].stats.champLevel, PlayerStats.champLevel);
@@ -166,7 +165,6 @@ namespace ArtificialNeuralNetwork
 
 
         }
-
 
         public List<SaveGameInfo.Game> FindBufferGames()
         {
