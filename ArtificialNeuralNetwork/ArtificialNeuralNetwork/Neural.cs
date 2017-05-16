@@ -86,7 +86,7 @@ namespace ArtificialNeuralNetwork
                 }
             }
 
-            double totalErrorTerm = 0.0, trainingsRate = 0.001, weightDecay = 0.1;
+            double totalErrorTerm = 0.0, trainingsRateBegin = 0.01, trainingsRate, weightDecay = 0.5;
             double[][] neuronErrorTerm = new double[layers.Length][];
             double[][,] updateSumError = new double[layers.Length][,];
 
@@ -95,7 +95,9 @@ namespace ArtificialNeuralNetwork
                 neuronErrorTerm[l] = new double[layers[l].weights.GetLength(0)];
                 updateSumError[l] = new double[layers[l].weights.GetLength(0), layers[l].weights.GetLength(1)];
             }
+            trainingsRate = trainingsRateBegin;
 
+            int test = 0;
             do
             {
                 // Clear the neuronErrorTerm and sumOfOutputError
@@ -126,15 +128,31 @@ namespace ArtificialNeuralNetwork
 
                 // Find totalErrorTerm
                 totalErrorTerm = 0;
-                for (int l = 0; l < layers.GetLength(0); l++)
+
+                totalErrorTerm = neuronErrorTerm[layers.Length - 1][0];
+
+                if (totalErrorTerm < 10 && trainingsRate == trainingsRateBegin)
                 {
-                    for (int i = 0; i < layers[l].weights.GetLength(0); i++)
-                    {
-                        totalErrorTerm += neuronErrorTerm[l][i];
-                    }
+                    trainingsRate /= 10;
                 }
-                Console.WriteLine(totalErrorTerm);
-            } while (totalErrorTerm > 0.2 || totalErrorTerm < -0.2); // Changeable total error term
+                else if (totalErrorTerm < 5 && trainingsRate == trainingsRateBegin / 10)
+                {
+                    trainingsRate /= 10;
+                }
+                else if (totalErrorTerm < 1 && trainingsRate == trainingsRateBegin / 100)
+                {
+                    trainingsRate /= 10;
+                }
+
+                // test
+                Console.WriteLine($"totalErrorTerm: {totalErrorTerm}      test: {test}");
+                test++;
+                if (test > 100)
+                {
+                    test = 0;
+                }
+                
+            } while (totalErrorTerm > 0.02 || totalErrorTerm < -0.02); // Changeable total error term
         }
 
         public void CalculateErrorTerm(double[][] neuronErrorTerm, int resultMatch)
@@ -146,16 +164,16 @@ namespace ArtificialNeuralNetwork
                 if (l != layers.Length - 1)
                 {
                     // j start at 1 because bias neuron don't have an error
-                    for (int j = 1; j < layers[l].weights.GetLength(0); j++)
+                    for (int j = 0; j < layers[l].weights.GetLength(0); j++)
                     {
                         sumError = 0.0;
                         // Check for not second last layer
-                        int k = l != layers.Length - 2 ? 1 : 0;
-                        for (; k < layers[l+1].weights.GetLength(0); k++)
+                        // int k = l != layers.Length - 2 ? 1 : 0;
+                        for (int k = 0; k < layers[l+1].weights.GetLength(0); k++)
                         {
                             sumError += neuronErrorTerm[l + 1][k] * layers[l+1].weights[k, j];
                         }
-                        neuronErrorTerm[l][j] += sumError * _derivativeActivationFunction(layers[l].sums)[j - 1];
+                        neuronErrorTerm[l][j] += sumError * _derivativeActivationFunction(layers[l].sums)[j];
                     }
                 }
                 else
@@ -170,8 +188,8 @@ namespace ArtificialNeuralNetwork
         {
             for (int l = 0; l < layers.Length; l++)
             {
-                int j = ((l != layers.Length - 2) ? 1 : 0);
-                for (; j < layers[l].weights.GetLength(0); j++)
+                // int j = ((l != layers.Length - 2) ? 1 : 0);
+                for (int j = 0; j < layers[l].weights.GetLength(0); j++)
                 {
                     if (l != 0)
                     {
