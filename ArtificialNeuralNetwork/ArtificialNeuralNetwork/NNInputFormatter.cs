@@ -20,6 +20,7 @@ namespace ArtificialNeuralNetwork
             LoadPlayerNamesDictionary();
             bufferGames = FindBufferGames();
             MakeTestCases();
+            InputNeuronSize = testCases[0].inputNeurons.Length;
         }
 
         public List<TestCase> testCases = new List<TestCase>();
@@ -29,6 +30,7 @@ namespace ArtificialNeuralNetwork
         public Dictionary<int, double[]> championIds = new Dictionary<int, double[]>();
         public Dictionary<string, double[]> teams = new Dictionary<string, double[]>();
         public Dictionary<string, double[]> playerNames = new Dictionary<string, double[]>();
+        public int InputNeuronSize;
 
         public List<SaveGameInfo.Game> FindBufferGames()
         {
