@@ -86,7 +86,7 @@ namespace ArtificialNeuralNetwork
                 }
             }
 
-            double totalErrorTerm = 0.0, trainingsRateBegin = 0.01, trainingsRate, weightDecay = 0.1;
+            double totalErrorTerm = 0.0, trainingsRateBegin = 0.1, trainingsRate, weightDecay = 0.5;
             double[][] neuronErrorTerm = new double[layers.Length][];
             double[][,] updateSumError = new double[layers.Length][,];
 
@@ -152,7 +152,7 @@ namespace ArtificialNeuralNetwork
                     test = 0;
                 }
                 
-            } while (totalErrorTerm > 0.2 || totalErrorTerm < -0.2); // Changeable total error term
+            } while (totalErrorTerm > 0.02 || totalErrorTerm < -0.02); // Changeable total error term
         }
 
         public void CalculateErrorTerm(double[][] neuronErrorTerm, int resultMatch)
