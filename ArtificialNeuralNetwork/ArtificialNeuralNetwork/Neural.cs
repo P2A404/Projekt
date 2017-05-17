@@ -86,7 +86,7 @@ namespace ArtificialNeuralNetwork
                 }
             }
 
-            double totalErrorTerm = 0.0, trainingsRateBegin = 0.1, trainingsRate, weightDecay = 0.5;
+            double totalErrorTerm = 0.0, trainingsRateBegin = 0.001, trainingsRate, weightDecay = 0.5;
             double[][] neuronErrorTerm = new double[layers.Length][];
             double[][,] updateSumError = new double[layers.Length][,];
 
@@ -123,7 +123,7 @@ namespace ArtificialNeuralNetwork
                     CalculateErrorTerm(neuronErrorTerm, testCases[k].winningTeam);
                     CalculateUpdateSumError(neuronErrorTerm, updateSumError);
                     //Console.WriteLine($"test case {k}.");
-                    totalErrorTerm += testCases[k].winningTeam * Log(layers[layers.Length - 1].activations[0], 2) + (1 - testCases[k].winningTeam) * Log(1 - layers[layers.Length - 1].activations[0], 2);
+                    totalErrorTerm += (testCases[k].winningTeam * Log(layers[layers.Length - 1].activations[0], 2) + (1 - testCases[k].winningTeam) * Log(1 - layers[layers.Length - 1].activations[0], 2)) / testCases.Length;
                     //totalErrorTerm += neuronErrorTerm[layers.Length - 1][0];
                 }
 
@@ -151,7 +151,7 @@ namespace ArtificialNeuralNetwork
                 Console.WriteLine($"totalErrorTerm: {totalErrorTerm}      test: {test}");
                 test++;
 
-                if (test == 100)
+                if (test == 1000000)
                 {
                     test = 0;
                 }
