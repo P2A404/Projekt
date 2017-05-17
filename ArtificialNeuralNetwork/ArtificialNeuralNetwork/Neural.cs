@@ -122,6 +122,7 @@ namespace ArtificialNeuralNetwork
                     CalculateErrorTerm(neuronErrorTerm, testCases[k].winningTeam);
                     CalculateUpdateSumError(neuronErrorTerm, updateSumError);
                     //Console.WriteLine($"test case {k}.");
+                    totalErrorTerm += testCases[k].winningTeam * Log(layers[layers.Length - 1].activations[0], 2) + (1 - testCases[k].winningTeam) * Log(1 - layers[layers.Length - 1].activations[0], 2);
                 }
 
                 UpdateWeights(updateSumError, trainingsRate, weightDecay, inputSize);
@@ -147,7 +148,7 @@ namespace ArtificialNeuralNetwork
                 // test
                 Console.WriteLine($"totalErrorTerm: {totalErrorTerm}      test: {test}");
                 test++;
-                if (test > 5)
+                if (test > 100)
                 {
                     test = 0;
                 }
