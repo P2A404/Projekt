@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ArtificialNeuralNetworkTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("vid")]
 [assembly: AssemblyProduct("ArtificialNeuralNetworkTests")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
+[assembly: AssemblyCopyright("Copyright © vid 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("c6c8e835-b592-472e-9db2-1e096320accd")]
+[assembly: Guid("b27c6c19-9dd1-4d7c-9b17-eb6133839ed4")]
 
 // Version information for an assembly consists of the following four values:
 //

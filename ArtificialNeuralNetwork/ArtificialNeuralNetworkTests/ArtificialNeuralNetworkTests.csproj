@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C6C8E835-B592-472E-9DB2-1E096320ACCD}</ProjectGuid>
+    <ProjectGuid>{B27C6C19-9DD1-4D7C-9B17-EB6133839ED4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ArtificialNeuralNetworkTests</RootNamespace>

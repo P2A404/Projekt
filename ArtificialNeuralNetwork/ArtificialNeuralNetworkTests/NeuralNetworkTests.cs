@@ -12,12 +12,6 @@ namespace ArtificialNeuralNetwork.Tests
     public class NeuralNetworkTests
     {
         [Test()]
-        public void CycleTest()
-        {
-            Assert.Fail();
-        }
-
-        [Test()]
         public void PrintArrayTest()
         {
             Assert.Fail();
@@ -25,6 +19,12 @@ namespace ArtificialNeuralNetwork.Tests
 
         [Test()]
         public void SumTest()
+        {
+            Assert.Fail();
+        }
+
+        [Test()]
+        public void CycleTest()
         {
             Assert.Fail();
         }
