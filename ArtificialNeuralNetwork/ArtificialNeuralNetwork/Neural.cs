@@ -86,7 +86,7 @@ namespace ArtificialNeuralNetwork
                 }
             }
 
-            double totalErrorTerm = 0.0, trainingsRateBegin = 0.01, trainingsRate, weightDecay = 0.5;
+            double totalErrorTerm = 0.0, trainingsRateBegin = 0.1, trainingsRate, weightDecay = 0.5;
             double[][] neuronErrorTerm = new double[layers.Length][];
             double[][,] updateSumError = new double[layers.Length][,];
 
@@ -284,12 +284,12 @@ namespace ArtificialNeuralNetwork
                     //Use Transferfunction / Outputfunction on each sum
                     if (i != layers.Length - 1)
                     {
-                        data = _activationFunction(data);
+                        //data = _activationFunction(data);
                         layers[i].activations = _activationFunction(data);
                     }
                     else
                     {
-                        data = _outputFunction(data);
+                        //data = _outputFunction(data);
                         layers[i].activations = _outputFunction(data);
                     }
                 }
