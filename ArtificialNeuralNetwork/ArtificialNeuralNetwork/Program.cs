@@ -14,11 +14,10 @@ namespace ArtificialNeuralNetwork
             Console.Clear();
             Console.WriteLine("Hello World!");
             #endregion
-            NNInputFormatter formatter = new NNInputFormatter();
+            NNInputFormatter formatter = new NNInputFormatter(2000);
             TransferFunctions tf = new TransferFunctions();
-            NeuralNetwork Shrek = new NeuralNetwork(new int[] { formatter.InputNeuronSize, 5, 1 }, tf.Logistic, tf.LogistikDerivative, tf.Logistic, tf.LogistikDerivative);
-            
-            Shrek.Training(formatter.testCases.GetRange(0,2000).ToArray());
+            NeuralNetwork Shrek = new NeuralNetwork(new int[] { formatter.InputNeuronSize, 100, 10, 10, 1 }, tf.Logistic, tf.LogistikDerivative, tf.Logistic, tf.LogistikDerivative);
+            Shrek.Training(formatter.TrainingTestCases);
             #region end
             Console.WriteLine("Goodbye Cruel World.");
             Console.ReadLine();

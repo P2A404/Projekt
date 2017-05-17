@@ -10,8 +10,9 @@ namespace ArtificialNeuralNetwork
 {
     class NNInputFormatter
     {
-        public NNInputFormatter()
+        public NNInputFormatter(int TrainingPoolSize)
         {
+            TrainingTestCases = new TestCase[TrainingPoolSize];
             JSONLoad();
             ConvertGames();
             games = games.OrderByDescending(x => x.gameDuration).ToList();
@@ -21,8 +22,12 @@ namespace ArtificialNeuralNetwork
             bufferGames = FindBufferGames();
             MakeTestCases();
             InputNeuronSize = testCases[0].inputNeurons.Length;
+            TrainingTestCases = testCases.Take(TrainingPoolSize).ToArray();
+            TestingTestCases = testCases.GetRange(TrainingPoolSize, (testCases.Count - TrainingPoolSize)).ToArray();
         }
 
+        public TestCase[] TrainingTestCases;
+        public TestCase[] TestingTestCases;
         public List<TestCase> testCases = new List<TestCase>();
         public List<SaveGameInfo.Game> games = new List<SaveGameInfo.Game>();
         public List<SaveGameInfo.Game> bufferGames = new List<SaveGameInfo.Game>();
@@ -31,6 +36,7 @@ namespace ArtificialNeuralNetwork
         public Dictionary<string, double[]> teams = new Dictionary<string, double[]>();
         public Dictionary<string, double[]> playerNames = new Dictionary<string, double[]>();
         public int InputNeuronSize;
+
 
         public List<SaveGameInfo.Game> FindBufferGames()
         {
@@ -285,12 +291,13 @@ namespace ArtificialNeuralNetwork
 
         private double[] SaveTeamToTeamNeurons(SaveGameInfo.Team team)
         {
-            double[][] inputNeuronArray = new double[7][];
+            double[][] inputNeuronArray = new double[8][];
             inputNeuronArray[0] = teams[team.teamName];
             inputNeuronArray[1] = SaveTeamToMiscNeurons(team);
+            inputNeuronArray[2] = TeamToDoubleArray(team);
             for (int i = 0; i < 5; i++)
             {
-                inputNeuronArray[i + 2] = SavePlayerToPlayerNeurons(team.players[i]);
+                inputNeuronArray[i + 3] = SavePlayerToPlayerNeurons(team.players[i]);
             }
             return CombineArrays(inputNeuronArray);
         }
@@ -600,6 +607,40 @@ namespace ArtificialNeuralNetwork
             returnStats.firstInhibitorKill = stats.firstInhibitorKill;
             returnStats.firstInhibitorAssist = stats.firstInhibitorAssist;
             return returnStats;
+        }
+
+        private double[] TeamToDoubleArray(SaveGameInfo.Team team)
+        {
+            
+            double[][] NameOfPlayers = new double[5][];
+            int[] IndexesOfPlayers = new int[5];
+
+            // Finding the arrays with players in the dictionary
+            for (int index = 0; index < team.players.Length; index++)
+            {
+                NameOfPlayers[index] = playerNames[team.players[index].summonerName];
+            }
+
+            // Finding the index of each player in the current player array
+            for (int currPlayer = 0; currPlayer < NameOfPlayers.GetLength(0); currPlayer++)
+            {
+                for (int index = 0; index < NameOfPlayers[0].Length; index++)
+                {
+                    if (NameOfPlayers[currPlayer][index] != 0)
+                    {
+                        IndexesOfPlayers[currPlayer] = index;
+                    }
+                }
+            }
+
+            double[] ReturnArray = new double[NameOfPlayers[0].Length];
+            // Setting the indexes for all players into the return array
+            for (int i = 0; i < IndexesOfPlayers.Length; i++)
+            {
+                ReturnArray[IndexesOfPlayers[i]] = 1; 
+            }
+
+            return ReturnArray;
         }
     }
 }
