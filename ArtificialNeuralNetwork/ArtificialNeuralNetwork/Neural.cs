@@ -8,7 +8,7 @@ using static System.Math;
 namespace ArtificialNeuralNetwork
 {
     //make layers a class consturct med activering og størrelse
-    class NeuralNetwork
+    public class NeuralNetwork
     {
         #region Variables
         public Layer[] layers;

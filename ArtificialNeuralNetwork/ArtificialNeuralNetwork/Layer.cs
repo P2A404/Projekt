@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ArtificialNeuralNetwork
 {
-    class Layer
+    public class Layer
     {
         #region Variables
         public double[,] weights;
