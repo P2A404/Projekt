@@ -86,7 +86,7 @@ namespace ArtificialNeuralNetwork
                 }
             }
 
-            double totalErrorTerm = 0.0, trainingsRateBegin = 0.1, trainingsRate, weightDecay = 0.5;
+            double totalErrorTerm = 0.0, trainingsRateBegin = 0.01, trainingsRate, weightDecay = 0.5;
             double[][] neuronErrorTerm = new double[layers.Length][];
             double[][,] updateSumError = new double[layers.Length][,];
 
@@ -133,7 +133,7 @@ namespace ArtificialNeuralNetwork
                 //totalErrorTerm = 0;
 
                 //totalErrorTerm = neuronErrorTerm[layers.Length - 1][0];
-
+                /*
                 if (totalErrorTerm < 50 && totalErrorTerm > - 50 && trainingsRate == trainingsRateBegin)
                 {
                     trainingsRate /= 10;
@@ -146,12 +146,12 @@ namespace ArtificialNeuralNetwork
                 {
                     trainingsRate /= 10;
                 }
-
+                */
                 // test
                 Console.WriteLine($"totalErrorTerm: {totalErrorTerm}      test: {test}");
                 test++;
 
-                if (test > 10)
+                if (test == 10)
                 {
                     test = 0;
                 }
@@ -185,7 +185,7 @@ namespace ArtificialNeuralNetwork
                 else
                 {
                     // Last layer
-                    neuronErrorTerm[l][0] = (resultMatch / (Log(2) * layers[l].activations[0]) + (1.0 - resultMatch) / (Log(2) * (1.0 - layers[l].activations[0]))) * derivativeActivation[0];
+                    neuronErrorTerm[l][0] = (resultMatch / (Log(2) * layers[l].activations[0]) + (1.0 - resultMatch) / (Log(2) * (layers[l].activations[0] - 1))) * derivativeActivation[0];
 
                     //neuronErrorTerm[l][0] = (resultMatch - layers[l].activations[0]) * _derivativeOutputFunction(layers[l].sums)[0];
                 }
