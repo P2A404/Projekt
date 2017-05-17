@@ -151,7 +151,7 @@ namespace ArtificialNeuralNetwork
                 Console.WriteLine($"totalErrorTerm: {totalErrorTerm}      test: {test}");
                 test++;
 
-                if (test == 10)
+                if (test == 100)
                 {
                     test = 0;
                 }
@@ -166,9 +166,10 @@ namespace ArtificialNeuralNetwork
 
             for (int l = layers.Length - 1; l >= 0; l--)
             {
-                derivativeActivation = _derivativeActivationFunction(layers[l].sums);
                 if (l != layers.Length - 1)
                 {
+                    derivativeActivation = _derivativeActivationFunction(layers[l].sums);
+
                     // j start at 1 because bias neuron don't have an error
                     for (int j = 0; j < layers[l].weights.GetLength(0); j++)
                     {
@@ -185,7 +186,7 @@ namespace ArtificialNeuralNetwork
                 else
                 {
                     // Last layer
-                    neuronErrorTerm[l][0] = (resultMatch / (Log(2) * layers[l].activations[0]) + (1.0 - resultMatch) / (Log(2) * (layers[l].activations[0] - 1))) * derivativeActivation[0];
+                    neuronErrorTerm[l][0] = (resultMatch / (Log(2) * layers[l].activations[0]) + (1.0 - resultMatch) / (Log(2) * (layers[l].activations[0] - 1))) * _derivativeOutputFunction(layers[l].sums)[0];
 
                     //neuronErrorTerm[l][0] = (resultMatch - layers[l].activations[0]) * _derivativeOutputFunction(layers[l].sums)[0];
                 }
