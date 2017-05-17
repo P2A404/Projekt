@@ -20,14 +20,10 @@ namespace ArtificialNeuralNetwork
             LoadTeamsDictionary();
             LoadPlayerNamesDictionary();
             bufferGames = FindBufferGames();
+            //minMaxList is not 100% correct
             List<SaveGameInfo.Game> minMaxList = games.GetRange(0, TrainingPoolSize);
-            //minMaxList.AddRange(bufferGames);
+            minMaxList.AddRange(bufferGames);
             MinMax(minMaxList);
-            Console.WriteLine($"Baron - Min: {minimumTeam.baronKills} Max: {maximumTeam.baronKills}");
-            Console.WriteLine($"Dragons - Min: {minimumTeam.dragonKills} Max: {maximumTeam.baronKills}");
-            Console.WriteLine($"Level - Min: {minimumTeam.players[0].stats.champLevel} Max: {maximumTeam.players[0].stats.champLevel}");
-            Console.WriteLine($"Towers - Min: {minimumTeam.towerKills} Max: {maximumTeam.towerKills}");
-            Console.WriteLine($"Gold - Min: {minimumTeam.players[0].stats.goldEarned} Max: {maximumTeam.players[0].stats.goldEarned}");
             MakeTestCases();
             InputNeuronSize = testCases[0].inputNeurons.Length;
             TrainingTestCases = testCases.Take(TrainingPoolSize).ToArray();
