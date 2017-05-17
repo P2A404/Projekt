@@ -100,7 +100,8 @@ namespace ArtificialNeuralNetwork
             int test = 0;
             do
             {
-                // Clear the neuronErrorTerm and sumOfOutputError
+                // Clear error terms
+                totalErrorTerm = 0.0;
                 for (int i = 0; i < layers.Length; i++)
                 {
                     Array.Clear(neuronErrorTerm[i], 0, neuronErrorTerm[i].Length);
@@ -122,24 +123,25 @@ namespace ArtificialNeuralNetwork
                     CalculateErrorTerm(neuronErrorTerm, testCases[k].winningTeam);
                     CalculateUpdateSumError(neuronErrorTerm, updateSumError);
                     //Console.WriteLine($"test case {k}.");
+                    totalErrorTerm += testCases[k].winningTeam * Log(layers[layers.Length - 1].activations[0], 2) + (1 - testCases[k].winningTeam) * Log(1 - layers[layers.Length - 1].activations[0], 2);
                 }
 
                 UpdateWeights(updateSumError, trainingsRate, weightDecay, inputSize);
 
                 // Find totalErrorTerm
-                totalErrorTerm = 0;
+                //totalErrorTerm = 0;
 
-                totalErrorTerm = neuronErrorTerm[layers.Length - 1][0];
+                //totalErrorTerm = neuronErrorTerm[layers.Length - 1][0];
 
-                if (totalErrorTerm < 10 && trainingsRate == trainingsRateBegin)
+                if (totalErrorTerm < 10 && totalErrorTerm > - 10 && trainingsRate == trainingsRateBegin)
                 {
                     trainingsRate /= 10;
                 }
-                else if (totalErrorTerm < 5 && trainingsRate == trainingsRateBegin / 10)
+                else if (totalErrorTerm < 5 && totalErrorTerm > - 5 && trainingsRate == trainingsRateBegin / 10)
                 {
                     trainingsRate /= 10;
                 }
-                else if (totalErrorTerm < 1 && trainingsRate == trainingsRateBegin / 100)
+                else if (totalErrorTerm < 1 && totalErrorTerm > - 1 && trainingsRate == trainingsRateBegin / 100)
                 {
                     trainingsRate /= 10;
                 }
@@ -147,7 +149,7 @@ namespace ArtificialNeuralNetwork
                 // test
                 Console.WriteLine($"totalErrorTerm: {totalErrorTerm}      test: {test}");
                 test++;
-                if (test > 100)
+                if (test > 5)
                 {
                     test = 0;
                 }
@@ -181,7 +183,9 @@ namespace ArtificialNeuralNetwork
                 else
                 {
                     // Last layer
-                    neuronErrorTerm[l][0] += (resultMatch - layers[l].activations[0]) * derivativeActivation[0];
+                    neuronErrorTerm[l][0] += (resultMatch / (Log(2) * layers[l].activations[0]) + (1.0 - resultMatch) / (Log(2) * (1.0 - layers[l].activations[0]))) * derivativeActivation[0];
+                    
+                    //neuronErrorTerm[l][0] += (resultMatch - layers[l].activations[0]) * derivativeActivation[0];
                 }
             }
         }
