@@ -19,7 +19,7 @@ namespace ArtificialNeuralNetwork
             }
             return ret;
         }
-
+        /*
         public double[] Tahn (double[] input)
         {
             double[] ret = new double[input.Length];
@@ -29,7 +29,7 @@ namespace ArtificialNeuralNetwork
             }
             return ret;
         }
-
+        */
         public double[] Hyperbolic (double[] input)
         {
             double[] ret = new double[input.Length];
@@ -39,7 +39,7 @@ namespace ArtificialNeuralNetwork
             }
             return ret;
         }
-
+        /*
         public double[] Linear (double[] input)
         {
             return input;
@@ -61,6 +61,7 @@ namespace ArtificialNeuralNetwork
 
             return input;
         }
+        */
         #endregion
         
         #region Derivatives
@@ -73,7 +74,7 @@ namespace ArtificialNeuralNetwork
             }
             return result;
         }
-
+        /*
         public double[] TahnDerivative(double[] inputArray)
         {
             double[] result = new double[inputArray.Length];
@@ -83,7 +84,7 @@ namespace ArtificialNeuralNetwork
             }
             return result;
         }
-
+        */
         public double[] HyperbolicDerivative(double[] inputArray)
         {
             double[] result = new double[inputArray.Length];
@@ -93,7 +94,7 @@ namespace ArtificialNeuralNetwork
             }
             return result;
         }
-
+        /*
         public double[] LinearDeivative(double[] inputArray)
         {
             double[] result = new double[inputArray.Length];
@@ -102,7 +103,7 @@ namespace ArtificialNeuralNetwork
                 result[i] = 1;
             }
             return result;
-        }
+        }*/
         #endregion
     }
 }
