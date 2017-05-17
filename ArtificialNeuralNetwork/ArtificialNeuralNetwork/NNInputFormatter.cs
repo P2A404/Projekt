@@ -20,10 +20,19 @@ namespace ArtificialNeuralNetwork
             LoadTeamsDictionary();
             LoadPlayerNamesDictionary();
             bufferGames = FindBufferGames();
+            List<SaveGameInfo.Game> minMaxList = games.GetRange(0, TrainingPoolSize);
+            //minMaxList.AddRange(bufferGames);
+            MinMax(minMaxList);
+            Console.WriteLine($"Baron - Min: {minimumTeam.baronKills} Max: {maximumTeam.baronKills}");
+            Console.WriteLine($"Dragons - Min: {minimumTeam.dragonKills} Max: {maximumTeam.baronKills}");
+            Console.WriteLine($"Level - Min: {minimumTeam.players[0].stats.champLevel} Max: {maximumTeam.players[0].stats.champLevel}");
+            Console.WriteLine($"Towers - Min: {minimumTeam.towerKills} Max: {maximumTeam.towerKills}");
+            Console.WriteLine($"Gold - Min: {minimumTeam.players[0].stats.goldEarned} Max: {maximumTeam.players[0].stats.goldEarned}");
             MakeTestCases();
             InputNeuronSize = testCases[0].inputNeurons.Length;
             TrainingTestCases = testCases.Take(TrainingPoolSize).ToArray();
             TestingTestCases = testCases.GetRange(TrainingPoolSize, (testCases.Count - TrainingPoolSize)).ToArray();
+            PrintDoubleArrayIgnoreZero(TrainingTestCases[0].inputNeurons);
         }
 
         public TestCase[] TrainingTestCases;
@@ -36,7 +45,242 @@ namespace ArtificialNeuralNetwork
         public Dictionary<string, double[]> teams = new Dictionary<string, double[]>();
         public Dictionary<string, double[]> playerNames = new Dictionary<string, double[]>();
         public int InputNeuronSize;
+        private SaveGameInfo.Team minimumTeam;
+        private SaveGameInfo.Team maximumTeam;
 
+        void MinMax(List<SaveGameInfo.Game> GameList)
+        {
+            #region MinMaxInitilization
+            minimumTeam = new SaveGameInfo.Team();
+            minimumTeam.baronKills = 1000000;
+            minimumTeam.dragonKills = 1000000;
+            minimumTeam.riftHeraldKills = 1000000;
+            minimumTeam.towerKills = 1000000;
+            minimumTeam.inhibitorKills = 1000000;
+            minimumTeam.baronKills = 1000000;
+            minimumTeam.players = new SaveGameInfo.Player[1];
+            minimumTeam.players[0] = new SaveGameInfo.Player();
+            minimumTeam.players[0].stats = new SaveGameInfo.Stats();
+            minimumTeam.players[0].stats.kills = 1000000;
+            minimumTeam.players[0].stats.deaths = 1000000;
+            minimumTeam.players[0].stats.assists = 1000000;
+            minimumTeam.players[0].stats.largestKillingSpree = 1000000;
+            minimumTeam.players[0].stats.largestMultiKill = 1000000;
+            minimumTeam.players[0].stats.killingSprees = 1000000;
+            minimumTeam.players[0].stats.longestTimeSpentLiving = 1000000;
+            minimumTeam.players[0].stats.doubleKills = 1000000;
+            minimumTeam.players[0].stats.tripleKills = 1000000;
+            minimumTeam.players[0].stats.quadraKills = 1000000;
+            minimumTeam.players[0].stats.pentaKills = 1000000;
+            minimumTeam.players[0].stats.unrealKills = 1000000;
+            minimumTeam.players[0].stats.totalDamageDealt = 1000000;
+            minimumTeam.players[0].stats.magicDamageDealt = 1000000;
+            minimumTeam.players[0].stats.physicalDamageDealt = 1000000;
+            minimumTeam.players[0].stats.trueDamageDealt = 1000000;
+            minimumTeam.players[0].stats.largestCriticalStrike = 1000000;
+            minimumTeam.players[0].stats.totalDamageDealtToChampions = 1000000;
+            minimumTeam.players[0].stats.magicDamageDealtToChampions = 1000000;
+            minimumTeam.players[0].stats.physicalDamageDealtToChampions = 1000000;
+            minimumTeam.players[0].stats.trueDamageDealtToChampions = 1000000;
+            minimumTeam.players[0].stats.totalHeal = 1000000;
+            minimumTeam.players[0].stats.totalUnitsHealed = 1000000;
+            minimumTeam.players[0].stats.damageSelfMitigated = 1000000;
+            minimumTeam.players[0].stats.damageDealtToObjectives = 1000000;
+            minimumTeam.players[0].stats.damageDealtToTurrets = 1000000;
+            minimumTeam.players[0].stats.timeCCingOthers = 1000000;
+            minimumTeam.players[0].stats.totalDamageTaken = 1000000;
+            minimumTeam.players[0].stats.magicalDamageTaken = 1000000;
+            minimumTeam.players[0].stats.physicalDamageTaken = 1000000;
+            minimumTeam.players[0].stats.trueDamageTaken = 1000000;
+            minimumTeam.players[0].stats.goldEarned = 1000000;
+            minimumTeam.players[0].stats.goldSpent = 1000000;
+            minimumTeam.players[0].stats.turretKills = 1000000;
+            minimumTeam.players[0].stats.inhibitorKills = 1000000;
+            minimumTeam.players[0].stats.totalMinionsKilled = 1000000;
+            minimumTeam.players[0].stats.neutralMinionsKilled = 1000000;
+            minimumTeam.players[0].stats.neutralMinionsKilledTeamJungle = 1000000;
+            minimumTeam.players[0].stats.neutralMinionsKilledEnemyJungle = 1000000;
+            minimumTeam.players[0].stats.totalTimeCrowdControlDealt = 1000000;
+            minimumTeam.players[0].stats.champLevel = 1000000;
+            minimumTeam.players[0].stats.visionWardsBoughtInGame = 1000000;
+            minimumTeam.players[0].stats.wardsPlaced = 1000000;
+            minimumTeam.players[0].stats.wardsKilled = 1000000;
+
+            maximumTeam = new SaveGameInfo.Team();
+            maximumTeam.baronKills = 0;
+            maximumTeam.dragonKills = 0;
+            maximumTeam.riftHeraldKills = 0;
+            maximumTeam.towerKills = 0;
+            maximumTeam.inhibitorKills = 0;
+            maximumTeam.baronKills = 0;
+            maximumTeam.players = new SaveGameInfo.Player[1];
+            maximumTeam.players[0] = new SaveGameInfo.Player();
+            maximumTeam.players[0].stats = new SaveGameInfo.Stats();
+            maximumTeam.players[0].stats.kills = 0;
+            maximumTeam.players[0].stats.deaths = 0;
+            maximumTeam.players[0].stats.assists = 0;
+            maximumTeam.players[0].stats.largestKillingSpree = 0;
+            maximumTeam.players[0].stats.largestMultiKill = 0;
+            maximumTeam.players[0].stats.killingSprees = 0;
+            maximumTeam.players[0].stats.longestTimeSpentLiving = 0;
+            maximumTeam.players[0].stats.doubleKills = 0;
+            maximumTeam.players[0].stats.tripleKills = 0;
+            maximumTeam.players[0].stats.quadraKills = 0;
+            maximumTeam.players[0].stats.pentaKills = 0;
+            maximumTeam.players[0].stats.unrealKills = 0;
+            maximumTeam.players[0].stats.totalDamageDealt = 0;
+            maximumTeam.players[0].stats.magicDamageDealt = 0;
+            maximumTeam.players[0].stats.physicalDamageDealt = 0;
+            maximumTeam.players[0].stats.trueDamageDealt = 0;
+            maximumTeam.players[0].stats.largestCriticalStrike = 0;
+            maximumTeam.players[0].stats.totalDamageDealtToChampions = 0;
+            maximumTeam.players[0].stats.magicDamageDealtToChampions = 0;
+            maximumTeam.players[0].stats.physicalDamageDealtToChampions = 0;
+            maximumTeam.players[0].stats.trueDamageDealtToChampions = 0;
+            maximumTeam.players[0].stats.totalHeal = 0;
+            maximumTeam.players[0].stats.totalUnitsHealed = 0;
+            maximumTeam.players[0].stats.damageSelfMitigated = 0;
+            maximumTeam.players[0].stats.damageDealtToObjectives = 0;
+            maximumTeam.players[0].stats.damageDealtToTurrets = 0;
+            maximumTeam.players[0].stats.timeCCingOthers = 0;
+            maximumTeam.players[0].stats.totalDamageTaken = 0;
+            maximumTeam.players[0].stats.magicalDamageTaken = 0;
+            maximumTeam.players[0].stats.physicalDamageTaken = 0;
+            maximumTeam.players[0].stats.trueDamageTaken = 0;
+            maximumTeam.players[0].stats.goldEarned = 0;
+            maximumTeam.players[0].stats.goldSpent = 0;
+            maximumTeam.players[0].stats.turretKills = 0;
+            maximumTeam.players[0].stats.inhibitorKills = 0;
+            maximumTeam.players[0].stats.totalMinionsKilled = 0;
+            maximumTeam.players[0].stats.neutralMinionsKilled = 0;
+            maximumTeam.players[0].stats.neutralMinionsKilledTeamJungle = 0;
+            maximumTeam.players[0].stats.neutralMinionsKilledEnemyJungle = 0;
+            maximumTeam.players[0].stats.totalTimeCrowdControlDealt = 0;
+            maximumTeam.players[0].stats.champLevel = 0;
+            maximumTeam.players[0].stats.visionWardsBoughtInGame = 0;
+            maximumTeam.players[0].stats.wardsPlaced = 0;
+            maximumTeam.players[0].stats.wardsKilled = 0;
+            #endregion
+
+            foreach (SaveGameInfo.Game g in GameList)
+            {
+                foreach(SaveGameInfo.Team t in g.teams)
+                {
+                    foreach (SaveGameInfo.Player p in t.players)
+                    {
+                        MinMaxPlayer(p);
+                    }
+                    maximumTeam.baronKills = Math.Max(maximumTeam.baronKills, t.baronKills);
+                    maximumTeam.dragonKills = Math.Max(maximumTeam.dragonKills, t.dragonKills);
+                    maximumTeam.riftHeraldKills = Math.Max(maximumTeam.riftHeraldKills, t.riftHeraldKills);
+                    maximumTeam.towerKills = Math.Max(maximumTeam.towerKills, t.towerKills);
+                    maximumTeam.inhibitorKills = Math.Max(maximumTeam.inhibitorKills, t.inhibitorKills);
+
+                    minimumTeam.baronKills = Math.Min(minimumTeam.baronKills, t.baronKills);
+                    minimumTeam.dragonKills = Math.Min(minimumTeam.dragonKills, t.dragonKills);
+                    minimumTeam.riftHeraldKills = Math.Min(minimumTeam.riftHeraldKills, t.riftHeraldKills);
+                    minimumTeam.towerKills = Math.Min(minimumTeam.towerKills, t.towerKills);
+                    minimumTeam.inhibitorKills = Math.Min(minimumTeam.inhibitorKills, t.inhibitorKills);
+                }
+            }
+        }
+
+        void MinMaxPlayer(SaveGameInfo.Player p)
+        {
+            SaveGameInfo.Stats PlayerStats = p.stats;
+
+            maximumTeam.players[0].stats.assists = Math.Max(maximumTeam.players[0].stats.assists, PlayerStats.assists);
+            maximumTeam.players[0].stats.champLevel = Math.Max(maximumTeam.players[0].stats.champLevel, PlayerStats.champLevel);
+            maximumTeam.players[0].stats.damageDealtToObjectives = Math.Max(maximumTeam.players[0].stats.damageDealtToObjectives, PlayerStats.damageDealtToObjectives);
+            maximumTeam.players[0].stats.damageDealtToTurrets = Math.Max(maximumTeam.players[0].stats.damageDealtToTurrets, PlayerStats.damageDealtToTurrets);
+            maximumTeam.players[0].stats.damageSelfMitigated = Math.Max(maximumTeam.players[0].stats.damageSelfMitigated, PlayerStats.damageSelfMitigated);
+            maximumTeam.players[0].stats.deaths = Math.Max(maximumTeam.players[0].stats.deaths, PlayerStats.deaths);
+            maximumTeam.players[0].stats.doubleKills = Math.Max(maximumTeam.players[0].stats.doubleKills, PlayerStats.doubleKills);
+            maximumTeam.players[0].stats.goldEarned = Math.Max(maximumTeam.players[0].stats.goldEarned, PlayerStats.goldEarned);
+            maximumTeam.players[0].stats.goldSpent = Math.Max(maximumTeam.players[0].stats.goldSpent, PlayerStats.goldSpent);
+            maximumTeam.players[0].stats.inhibitorKills = Math.Max(maximumTeam.players[0].stats.inhibitorKills, PlayerStats.inhibitorKills);
+            maximumTeam.players[0].stats.killingSprees = Math.Max(maximumTeam.players[0].stats.killingSprees, PlayerStats.killingSprees);
+            maximumTeam.players[0].stats.kills = Math.Max(maximumTeam.players[0].stats.kills, PlayerStats.kills);
+            maximumTeam.players[0].stats.largestCriticalStrike = Math.Max(maximumTeam.players[0].stats.largestCriticalStrike, PlayerStats.largestCriticalStrike);
+            maximumTeam.players[0].stats.largestKillingSpree = Math.Max(maximumTeam.players[0].stats.largestKillingSpree, PlayerStats.largestKillingSpree);
+            maximumTeam.players[0].stats.largestMultiKill = Math.Max(maximumTeam.players[0].stats.largestMultiKill, PlayerStats.largestMultiKill);
+            maximumTeam.players[0].stats.longestTimeSpentLiving = Math.Max(maximumTeam.players[0].stats.longestTimeSpentLiving, PlayerStats.longestTimeSpentLiving);
+            maximumTeam.players[0].stats.magicalDamageTaken = Math.Max(maximumTeam.players[0].stats.magicalDamageTaken, PlayerStats.magicalDamageTaken);
+            maximumTeam.players[0].stats.magicDamageDealt = Math.Max(maximumTeam.players[0].stats.magicDamageDealt, PlayerStats.magicDamageDealt);
+            maximumTeam.players[0].stats.magicDamageDealtToChampions = Math.Max(maximumTeam.players[0].stats.magicDamageDealtToChampions, PlayerStats.magicDamageDealtToChampions);
+            maximumTeam.players[0].stats.neutralMinionsKilled = Math.Max(maximumTeam.players[0].stats.neutralMinionsKilled, PlayerStats.neutralMinionsKilled);
+            maximumTeam.players[0].stats.neutralMinionsKilledEnemyJungle = Math.Max(maximumTeam.players[0].stats.neutralMinionsKilledEnemyJungle, PlayerStats.neutralMinionsKilledEnemyJungle);
+            maximumTeam.players[0].stats.neutralMinionsKilledTeamJungle = Math.Max(maximumTeam.players[0].stats.neutralMinionsKilledTeamJungle, PlayerStats.neutralMinionsKilledTeamJungle);
+            maximumTeam.players[0].stats.pentaKills = Math.Max(maximumTeam.players[0].stats.pentaKills, PlayerStats.pentaKills);
+            maximumTeam.players[0].stats.physicalDamageDealt = Math.Max(maximumTeam.players[0].stats.physicalDamageDealt, PlayerStats.physicalDamageDealt);
+            maximumTeam.players[0].stats.physicalDamageDealtToChampions = Math.Max(maximumTeam.players[0].stats.physicalDamageDealtToChampions, PlayerStats.physicalDamageDealtToChampions);
+            maximumTeam.players[0].stats.physicalDamageTaken = Math.Max(maximumTeam.players[0].stats.physicalDamageTaken, PlayerStats.physicalDamageTaken);
+            maximumTeam.players[0].stats.quadraKills = Math.Max(maximumTeam.players[0].stats.quadraKills, PlayerStats.quadraKills);
+            maximumTeam.players[0].stats.timeCCingOthers = Math.Max(maximumTeam.players[0].stats.timeCCingOthers, PlayerStats.timeCCingOthers);
+            maximumTeam.players[0].stats.totalDamageDealt = Math.Max(maximumTeam.players[0].stats.totalDamageDealt, PlayerStats.totalDamageDealt);
+            maximumTeam.players[0].stats.totalDamageDealtToChampions = Math.Max(maximumTeam.players[0].stats.totalDamageDealtToChampions, PlayerStats.totalDamageDealtToChampions);
+            maximumTeam.players[0].stats.totalDamageTaken = Math.Max(maximumTeam.players[0].stats.totalDamageTaken, PlayerStats.totalDamageTaken);
+            maximumTeam.players[0].stats.totalHeal = Math.Max(maximumTeam.players[0].stats.totalHeal, PlayerStats.totalHeal);
+            maximumTeam.players[0].stats.totalMinionsKilled = Math.Max(maximumTeam.players[0].stats.totalMinionsKilled, PlayerStats.totalMinionsKilled);
+            maximumTeam.players[0].stats.totalTimeCrowdControlDealt = Math.Max(maximumTeam.players[0].stats.totalTimeCrowdControlDealt, PlayerStats.totalTimeCrowdControlDealt);
+            maximumTeam.players[0].stats.totalUnitsHealed = Math.Max(maximumTeam.players[0].stats.totalUnitsHealed, PlayerStats.totalUnitsHealed);
+            maximumTeam.players[0].stats.tripleKills = Math.Max(maximumTeam.players[0].stats.tripleKills, PlayerStats.tripleKills);
+            maximumTeam.players[0].stats.trueDamageDealt = Math.Max(maximumTeam.players[0].stats.trueDamageDealt, PlayerStats.trueDamageDealt);
+            maximumTeam.players[0].stats.trueDamageDealtToChampions = Math.Max(maximumTeam.players[0].stats.trueDamageDealtToChampions, PlayerStats.trueDamageDealtToChampions);
+            maximumTeam.players[0].stats.trueDamageTaken = Math.Max(maximumTeam.players[0].stats.trueDamageTaken, PlayerStats.trueDamageTaken);
+            maximumTeam.players[0].stats.turretKills = Math.Max(maximumTeam.players[0].stats.turretKills, PlayerStats.turretKills);
+            maximumTeam.players[0].stats.unrealKills = Math.Max(maximumTeam.players[0].stats.unrealKills, PlayerStats.unrealKills);
+            maximumTeam.players[0].stats.visionWardsBoughtInGame = Math.Max(maximumTeam.players[0].stats.visionWardsBoughtInGame, PlayerStats.visionWardsBoughtInGame);
+            maximumTeam.players[0].stats.wardsKilled = Math.Max(maximumTeam.players[0].stats.wardsKilled, PlayerStats.wardsKilled);
+            maximumTeam.players[0].stats.wardsPlaced = Math.Max(maximumTeam.players[0].stats.wardsPlaced, PlayerStats.wardsPlaced);
+
+
+            minimumTeam.players[0].stats.assists = Math.Min(minimumTeam.players[0].stats.assists, PlayerStats.assists);
+            minimumTeam.players[0].stats.champLevel = Math.Min(minimumTeam.players[0].stats.champLevel, PlayerStats.champLevel);
+            minimumTeam.players[0].stats.damageDealtToObjectives = Math.Min(minimumTeam.players[0].stats.damageDealtToObjectives, PlayerStats.damageDealtToObjectives);
+            minimumTeam.players[0].stats.damageDealtToTurrets = Math.Min(minimumTeam.players[0].stats.damageDealtToTurrets, PlayerStats.damageDealtToTurrets);
+            minimumTeam.players[0].stats.damageSelfMitigated = Math.Min(minimumTeam.players[0].stats.damageSelfMitigated, PlayerStats.damageSelfMitigated);
+            minimumTeam.players[0].stats.deaths = Math.Min(minimumTeam.players[0].stats.deaths, PlayerStats.deaths);
+            minimumTeam.players[0].stats.doubleKills = Math.Min(minimumTeam.players[0].stats.doubleKills, PlayerStats.doubleKills);
+            minimumTeam.players[0].stats.goldEarned = Math.Min(minimumTeam.players[0].stats.goldEarned, PlayerStats.goldEarned);
+            minimumTeam.players[0].stats.goldSpent = Math.Min(minimumTeam.players[0].stats.goldSpent, PlayerStats.goldSpent);
+            minimumTeam.players[0].stats.inhibitorKills = Math.Min(minimumTeam.players[0].stats.inhibitorKills, PlayerStats.inhibitorKills);
+            minimumTeam.players[0].stats.killingSprees = Math.Min(minimumTeam.players[0].stats.killingSprees, PlayerStats.killingSprees);
+            minimumTeam.players[0].stats.kills = Math.Min(minimumTeam.players[0].stats.kills, PlayerStats.kills);
+            minimumTeam.players[0].stats.largestCriticalStrike = Math.Min(minimumTeam.players[0].stats.largestCriticalStrike, PlayerStats.largestCriticalStrike);
+            minimumTeam.players[0].stats.largestKillingSpree = Math.Min(minimumTeam.players[0].stats.largestKillingSpree, PlayerStats.largestKillingSpree);
+            minimumTeam.players[0].stats.largestMultiKill = Math.Min(minimumTeam.players[0].stats.largestMultiKill, PlayerStats.largestMultiKill);
+            minimumTeam.players[0].stats.longestTimeSpentLiving = Math.Min(minimumTeam.players[0].stats.longestTimeSpentLiving, PlayerStats.longestTimeSpentLiving);
+            minimumTeam.players[0].stats.magicalDamageTaken = Math.Min(minimumTeam.players[0].stats.magicalDamageTaken, PlayerStats.magicalDamageTaken);
+            minimumTeam.players[0].stats.magicDamageDealt = Math.Min(minimumTeam.players[0].stats.magicDamageDealt, PlayerStats.magicDamageDealt);
+            minimumTeam.players[0].stats.magicDamageDealtToChampions = Math.Min(minimumTeam.players[0].stats.magicDamageDealtToChampions, PlayerStats.magicDamageDealtToChampions);
+            minimumTeam.players[0].stats.neutralMinionsKilled = Math.Min(minimumTeam.players[0].stats.neutralMinionsKilled, PlayerStats.neutralMinionsKilled);
+            minimumTeam.players[0].stats.neutralMinionsKilledEnemyJungle = Math.Min(minimumTeam.players[0].stats.neutralMinionsKilledEnemyJungle, PlayerStats.neutralMinionsKilledEnemyJungle);
+            minimumTeam.players[0].stats.neutralMinionsKilledTeamJungle = Math.Min(minimumTeam.players[0].stats.neutralMinionsKilledTeamJungle, PlayerStats.neutralMinionsKilledTeamJungle);
+            minimumTeam.players[0].stats.pentaKills = Math.Min(minimumTeam.players[0].stats.pentaKills, PlayerStats.pentaKills);
+            minimumTeam.players[0].stats.physicalDamageDealt = Math.Min(minimumTeam.players[0].stats.physicalDamageDealt, PlayerStats.physicalDamageDealt);
+            minimumTeam.players[0].stats.physicalDamageDealtToChampions = Math.Min(minimumTeam.players[0].stats.physicalDamageDealtToChampions, PlayerStats.physicalDamageDealtToChampions);
+            minimumTeam.players[0].stats.physicalDamageTaken = Math.Min(minimumTeam.players[0].stats.physicalDamageTaken, PlayerStats.physicalDamageTaken);
+            minimumTeam.players[0].stats.quadraKills = Math.Min(minimumTeam.players[0].stats.quadraKills, PlayerStats.quadraKills);
+            minimumTeam.players[0].stats.timeCCingOthers = Math.Min(minimumTeam.players[0].stats.timeCCingOthers, PlayerStats.timeCCingOthers);
+            minimumTeam.players[0].stats.totalDamageDealt = Math.Min(minimumTeam.players[0].stats.totalDamageDealt, PlayerStats.totalDamageDealt);
+            minimumTeam.players[0].stats.totalDamageDealtToChampions = Math.Min(minimumTeam.players[0].stats.totalDamageDealtToChampions, PlayerStats.totalDamageDealtToChampions);
+            minimumTeam.players[0].stats.totalDamageTaken = Math.Min(minimumTeam.players[0].stats.totalDamageTaken, PlayerStats.totalDamageTaken);
+            minimumTeam.players[0].stats.totalHeal = Math.Min(minimumTeam.players[0].stats.totalHeal, PlayerStats.totalHeal);
+            minimumTeam.players[0].stats.totalMinionsKilled = Math.Min(minimumTeam.players[0].stats.totalMinionsKilled, PlayerStats.totalMinionsKilled);
+            minimumTeam.players[0].stats.totalTimeCrowdControlDealt = Math.Min(minimumTeam.players[0].stats.totalTimeCrowdControlDealt, PlayerStats.totalTimeCrowdControlDealt);
+            minimumTeam.players[0].stats.totalUnitsHealed = Math.Min(minimumTeam.players[0].stats.totalUnitsHealed, PlayerStats.totalUnitsHealed);
+            minimumTeam.players[0].stats.tripleKills = Math.Min(minimumTeam.players[0].stats.tripleKills, PlayerStats.tripleKills);
+            minimumTeam.players[0].stats.trueDamageDealt = Math.Min(minimumTeam.players[0].stats.trueDamageDealt, PlayerStats.trueDamageDealt);
+            minimumTeam.players[0].stats.trueDamageDealtToChampions = Math.Min(minimumTeam.players[0].stats.trueDamageDealtToChampions, PlayerStats.trueDamageDealtToChampions);
+            minimumTeam.players[0].stats.trueDamageTaken = Math.Min(minimumTeam.players[0].stats.trueDamageTaken, PlayerStats.trueDamageTaken);
+            minimumTeam.players[0].stats.turretKills = Math.Min(minimumTeam.players[0].stats.turretKills, PlayerStats.turretKills);
+            minimumTeam.players[0].stats.unrealKills = Math.Min(minimumTeam.players[0].stats.unrealKills, PlayerStats.unrealKills);
+            minimumTeam.players[0].stats.visionWardsBoughtInGame = Math.Min(minimumTeam.players[0].stats.visionWardsBoughtInGame, PlayerStats.visionWardsBoughtInGame);
+            minimumTeam.players[0].stats.wardsKilled = Math.Min(minimumTeam.players[0].stats.wardsKilled, PlayerStats.wardsKilled);
+            minimumTeam.players[0].stats.wardsPlaced = Math.Min(minimumTeam.players[0].stats.wardsPlaced, PlayerStats.wardsPlaced);
+
+        }
 
         public List<SaveGameInfo.Game> FindBufferGames()
         {
@@ -155,6 +399,8 @@ namespace ArtificialNeuralNetwork
 
         public double Normalization(double currentValue, double minValue, double maxValue)
         {
+            if (maxValue-minValue == 0)
+            { return 0; }
             return (2 * ((currentValue - minValue) / (maxValue - minValue)) - 1);
         }
 
@@ -162,7 +408,7 @@ namespace ArtificialNeuralNetwork
         {
             for (int i = 0; i < matches.Count; i++)
             {
-                games.Add(MatchToSaveGame(matches[i]));
+                games.Add(GameInfoMatchToSaveGameInfoGame(matches[i]));
             }
             matches = null;
             games = games.OrderByDescending(x => x.gameDuration).ToList();
@@ -341,11 +587,11 @@ namespace ArtificialNeuralNetwork
             List<double> gameData = new List<double>();
             double[] input;
 
-            gameData.Add(team.towerKills);
-            gameData.Add(team.inhibitorKills);
-            gameData.Add(team.baronKills);
-            gameData.Add(team.dragonKills);
-            gameData.Add(team.riftHeraldKills);
+            gameData.Add(Normalization(team.towerKills, minimumTeam.towerKills, maximumTeam.towerKills));
+            gameData.Add(Normalization(team.inhibitorKills, minimumTeam.inhibitorKills, maximumTeam.inhibitorKills));
+            gameData.Add(Normalization(team.baronKills, minimumTeam.baronKills, maximumTeam.baronKills));
+            gameData.Add(Normalization(team.dragonKills, minimumTeam.dragonKills, maximumTeam.dragonKills));
+            gameData.Add(Normalization(team.riftHeraldKills, minimumTeam.riftHeraldKills, maximumTeam.riftHeraldKills));
 
             if (team.firstBlood)
             { gameData.Add(1); }
@@ -373,50 +619,50 @@ namespace ArtificialNeuralNetwork
 
             foreach (SaveGameInfo.Player player in team.players)
             {
-                gameData.Add(player.stats.kills);
-                gameData.Add(player.stats.deaths);
-                gameData.Add(player.stats.assists);
-                gameData.Add(player.stats.largestKillingSpree);
-                gameData.Add(player.stats.largestMultiKill);
-                gameData.Add(player.stats.killingSprees);
-                gameData.Add(player.stats.longestTimeSpentLiving);
-                gameData.Add(player.stats.doubleKills);
-                gameData.Add(player.stats.tripleKills);
-                gameData.Add(player.stats.quadraKills);
-                gameData.Add(player.stats.pentaKills);
-                gameData.Add(player.stats.unrealKills);
-                gameData.Add(player.stats.totalDamageDealt);
-                gameData.Add(player.stats.magicDamageDealt);
-                gameData.Add(player.stats.physicalDamageDealt);
-                gameData.Add(player.stats.trueDamageDealt);
-                gameData.Add(player.stats.largestCriticalStrike);
-                gameData.Add(player.stats.totalDamageDealtToChampions);
-                gameData.Add(player.stats.magicDamageDealtToChampions);
-                gameData.Add(player.stats.physicalDamageDealtToChampions);
-                gameData.Add(player.stats.trueDamageDealtToChampions);
-                gameData.Add(player.stats.totalHeal);
-                gameData.Add(player.stats.totalUnitsHealed);
-                gameData.Add(player.stats.damageSelfMitigated);
-                gameData.Add(player.stats.damageDealtToObjectives);
-                gameData.Add(player.stats.damageDealtToTurrets);
-                gameData.Add(player.stats.timeCCingOthers);
-                gameData.Add(player.stats.totalDamageTaken);
-                gameData.Add(player.stats.magicalDamageTaken);
-                gameData.Add(player.stats.physicalDamageTaken);
-                gameData.Add(player.stats.trueDamageTaken);
-                gameData.Add(player.stats.goldEarned);
-                gameData.Add(player.stats.goldSpent);
-                gameData.Add(player.stats.turretKills);
-                gameData.Add(player.stats.inhibitorKills);
-                gameData.Add(player.stats.totalMinionsKilled);
-                gameData.Add(player.stats.neutralMinionsKilled);
-                gameData.Add(player.stats.neutralMinionsKilledTeamJungle);
-                gameData.Add(player.stats.neutralMinionsKilledEnemyJungle);
-                gameData.Add(player.stats.totalTimeCrowdControlDealt);
-                gameData.Add(player.stats.champLevel);
-                gameData.Add(player.stats.visionWardsBoughtInGame);
-                gameData.Add(player.stats.wardsPlaced);
-                gameData.Add(player.stats.wardsKilled);
+                gameData.Add(Normalization(player.stats.kills, minimumTeam.players[0].stats.kills, maximumTeam.players[0].stats.kills));
+                gameData.Add(Normalization(player.stats.deaths, minimumTeam.players[0].stats.deaths, maximumTeam.players[0].stats.deaths));
+                gameData.Add(Normalization(player.stats.assists, minimumTeam.players[0].stats.assists, maximumTeam.players[0].stats.assists));
+                gameData.Add(Normalization(player.stats.largestKillingSpree, minimumTeam.players[0].stats.largestKillingSpree, maximumTeam.players[0].stats.largestKillingSpree));
+                gameData.Add(Normalization(player.stats.largestMultiKill, minimumTeam.players[0].stats.largestMultiKill, maximumTeam.players[0].stats.largestMultiKill));
+                gameData.Add(Normalization(player.stats.killingSprees, minimumTeam.players[0].stats.killingSprees, maximumTeam.players[0].stats.killingSprees));
+                gameData.Add(Normalization(player.stats.longestTimeSpentLiving, minimumTeam.players[0].stats.longestTimeSpentLiving, maximumTeam.players[0].stats.longestTimeSpentLiving));
+                gameData.Add(Normalization(player.stats.doubleKills, minimumTeam.players[0].stats.doubleKills, maximumTeam.players[0].stats.doubleKills));
+                gameData.Add(Normalization(player.stats.tripleKills, minimumTeam.players[0].stats.tripleKills, maximumTeam.players[0].stats.tripleKills));
+                gameData.Add(Normalization(player.stats.quadraKills, minimumTeam.players[0].stats.quadraKills, maximumTeam.players[0].stats.quadraKills));
+                gameData.Add(Normalization(player.stats.pentaKills, minimumTeam.players[0].stats.pentaKills, maximumTeam.players[0].stats.pentaKills));
+                gameData.Add(Normalization(player.stats.unrealKills, minimumTeam.players[0].stats.unrealKills, maximumTeam.players[0].stats.unrealKills));
+                gameData.Add(Normalization(player.stats.totalDamageDealt, minimumTeam.players[0].stats.totalDamageDealt, maximumTeam.players[0].stats.totalDamageDealt));
+                gameData.Add(Normalization(player.stats.magicDamageDealt, minimumTeam.players[0].stats.magicDamageDealt, maximumTeam.players[0].stats.magicDamageDealt));
+                gameData.Add(Normalization(player.stats.physicalDamageDealt, minimumTeam.players[0].stats.physicalDamageDealt, maximumTeam.players[0].stats.physicalDamageDealt));
+                gameData.Add(Normalization(player.stats.trueDamageDealt, minimumTeam.players[0].stats.trueDamageDealt, maximumTeam.players[0].stats.trueDamageDealt));
+                gameData.Add(Normalization(player.stats.largestCriticalStrike, minimumTeam.players[0].stats.largestCriticalStrike, maximumTeam.players[0].stats.largestCriticalStrike));
+                gameData.Add(Normalization(player.stats.totalDamageDealtToChampions, minimumTeam.players[0].stats.totalDamageDealtToChampions, maximumTeam.players[0].stats.totalDamageDealtToChampions));
+                gameData.Add(Normalization(player.stats.magicDamageDealtToChampions, minimumTeam.players[0].stats.magicDamageDealtToChampions, maximumTeam.players[0].stats.magicDamageDealtToChampions));
+                gameData.Add(Normalization(player.stats.physicalDamageDealtToChampions, minimumTeam.players[0].stats.physicalDamageDealtToChampions, maximumTeam.players[0].stats.physicalDamageDealtToChampions));
+                gameData.Add(Normalization(player.stats.trueDamageDealtToChampions, minimumTeam.players[0].stats.trueDamageDealtToChampions, maximumTeam.players[0].stats.trueDamageDealtToChampions));
+                gameData.Add(Normalization(player.stats.totalHeal, minimumTeam.players[0].stats.totalHeal, maximumTeam.players[0].stats.totalHeal));
+                gameData.Add(Normalization(player.stats.totalUnitsHealed, minimumTeam.players[0].stats.totalUnitsHealed, maximumTeam.players[0].stats.totalUnitsHealed));
+                gameData.Add(Normalization(player.stats.damageSelfMitigated, minimumTeam.players[0].stats.damageSelfMitigated, maximumTeam.players[0].stats.damageSelfMitigated));
+                gameData.Add(Normalization(player.stats.damageDealtToObjectives, minimumTeam.players[0].stats.damageDealtToObjectives, maximumTeam.players[0].stats.damageDealtToObjectives));
+                gameData.Add(Normalization(player.stats.damageDealtToTurrets, minimumTeam.players[0].stats.damageDealtToTurrets, maximumTeam.players[0].stats.damageDealtToTurrets));
+                gameData.Add(Normalization(player.stats.timeCCingOthers, minimumTeam.players[0].stats.timeCCingOthers, maximumTeam.players[0].stats.timeCCingOthers));
+                gameData.Add(Normalization(player.stats.totalDamageTaken, minimumTeam.players[0].stats.totalDamageTaken, maximumTeam.players[0].stats.totalDamageTaken));
+                gameData.Add(Normalization(player.stats.magicalDamageTaken, minimumTeam.players[0].stats.magicalDamageTaken, maximumTeam.players[0].stats.magicalDamageTaken));
+                gameData.Add(Normalization(player.stats.physicalDamageTaken, minimumTeam.players[0].stats.physicalDamageTaken, maximumTeam.players[0].stats.physicalDamageTaken));
+                gameData.Add(Normalization(player.stats.trueDamageTaken, minimumTeam.players[0].stats.trueDamageTaken, maximumTeam.players[0].stats.trueDamageTaken));
+                gameData.Add(Normalization(player.stats.goldEarned, minimumTeam.players[0].stats.goldEarned, maximumTeam.players[0].stats.goldEarned));
+                gameData.Add(Normalization(player.stats.goldSpent, minimumTeam.players[0].stats.goldSpent, maximumTeam.players[0].stats.goldSpent));
+                gameData.Add(Normalization(player.stats.turretKills, minimumTeam.players[0].stats.turretKills, maximumTeam.players[0].stats.turretKills));
+                gameData.Add(Normalization(player.stats.inhibitorKills, minimumTeam.players[0].stats.inhibitorKills, maximumTeam.players[0].stats.inhibitorKills));
+                gameData.Add(Normalization(player.stats.totalMinionsKilled, minimumTeam.players[0].stats.totalMinionsKilled, maximumTeam.players[0].stats.totalMinionsKilled));
+                gameData.Add(Normalization(player.stats.neutralMinionsKilled, minimumTeam.players[0].stats.neutralMinionsKilled, maximumTeam.players[0].stats.neutralMinionsKilled));
+                gameData.Add(Normalization(player.stats.neutralMinionsKilledTeamJungle, minimumTeam.players[0].stats.neutralMinionsKilledTeamJungle, maximumTeam.players[0].stats.neutralMinionsKilledTeamJungle));
+                gameData.Add(Normalization(player.stats.neutralMinionsKilledEnemyJungle, minimumTeam.players[0].stats.neutralMinionsKilledEnemyJungle, maximumTeam.players[0].stats.neutralMinionsKilledEnemyJungle));
+                gameData.Add(Normalization(player.stats.totalTimeCrowdControlDealt, minimumTeam.players[0].stats.totalTimeCrowdControlDealt, maximumTeam.players[0].stats.totalTimeCrowdControlDealt));
+                gameData.Add(Normalization(player.stats.champLevel, minimumTeam.players[0].stats.champLevel, maximumTeam.players[0].stats.champLevel));
+                gameData.Add(Normalization(player.stats.visionWardsBoughtInGame, minimumTeam.players[0].stats.visionWardsBoughtInGame, maximumTeam.players[0].stats.visionWardsBoughtInGame));
+                gameData.Add(Normalization(player.stats.wardsPlaced, minimumTeam.players[0].stats.wardsPlaced, maximumTeam.players[0].stats.wardsPlaced));
+                gameData.Add(Normalization(player.stats.wardsKilled, minimumTeam.players[0].stats.wardsKilled, maximumTeam.players[0].stats.wardsKilled));
 
                 if (player.stats.firstBloodKill)
                 { gameData.Add(1); }
@@ -510,7 +756,7 @@ namespace ArtificialNeuralNetwork
             return returnArray;
         }
 
-        SaveGameInfo.Game MatchToSaveGame(GameInfo.Match match)
+        SaveGameInfo.Game GameInfoMatchToSaveGameInfoGame(GameInfo.Match match)
         {
             //still missing some stuff
             SaveGameInfo.Game returnGame = new SaveGameInfo.Game();
@@ -521,6 +767,7 @@ namespace ArtificialNeuralNetwork
             for (int i = 0; i < returnGame.teams.Length; i++)
             {
                 returnGame.teams[i] = new SaveGameInfo.Team();
+                returnGame.teams[i].gameDuration = match.gameDuration;
                 returnGame.teams[i].teamId = match.teams[i].teamId;
                 returnGame.teams[i].players = new SaveGameInfo.Player[5];
                 returnGame.teams[i].teamName = match.participantIdentities[i * 5].player.summonerName.Substring(0, match.participantIdentities[i * 5].player.summonerName.IndexOf(' '));
@@ -529,6 +776,13 @@ namespace ArtificialNeuralNetwork
                 returnGame.teams[i].firstTower = match.teams[i].firstTower;
                 returnGame.teams[i].firstInhibitor = match.teams[i].firstInhibitor;
                 returnGame.teams[i].firstBaron = match.teams[i].firstBaron;
+                returnGame.teams[i].firstDragon = match.teams[i].firstDragon;
+                returnGame.teams[i].firstRiftHerald = match.teams[i].firstRiftHerald;
+                returnGame.teams[i].towerKills = match.teams[i].towerKills;
+                returnGame.teams[i].inhibitorKills = match.teams[i].inhibitorKills;
+                returnGame.teams[i].baronKills = match.teams[i].baronKills;
+                returnGame.teams[i].dragonKills = match.teams[i].dragonKills;
+                returnGame.teams[i].riftHeraldKills = match.teams[i].riftHeraldKills;
                 returnGame.teams[i].bannedChampionId = new int[3];
                 for (int j = 0; j < 3; j++)
                 {
@@ -543,16 +797,17 @@ namespace ArtificialNeuralNetwork
                     returnGame.teams[i].players[j].championId = match.participants[(i * 5) + j].championId;
                     returnGame.teams[i].players[j].playerId = match.participants[(i * 5) + j].championId;
                     returnGame.teams[i].players[j].summonerName = match.participantIdentities[(i * 5 + j)].player.summonerName;
-                    returnGame.teams[i].players[j].stats = StatsToSaveStats(match.participants[(i * 5) + j].stats);
+                    returnGame.teams[i].players[j].stats = GameInfoStatsToSaveGameInfoStats(match.participants[(i * 5) + j].stats);
                     returnGame.teams[i].players[j].playerId = match.participantIdentities[j].participantId;
-                    //spells here if needed
+                    returnGame.teams[i].players[j].spell1Id = match.participants[j].spell1Id;
+                    returnGame.teams[i].players[j].spell2Id = match.participants[j].spell2Id;
                     //timeline here if needed
                 }
             }
             return returnGame;
         }
 
-        SaveGameInfo.Stats StatsToSaveStats(GameInfo.Stats stats)
+        SaveGameInfo.Stats GameInfoStatsToSaveGameInfoStats(GameInfo.Stats stats)
         {
             SaveGameInfo.Stats returnStats = new SaveGameInfo.Stats();
             returnStats.participantId = stats.participantId;
