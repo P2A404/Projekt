@@ -284,13 +284,13 @@ namespace ArtificialNeuralNetwork
                     //Use Transferfunction / Outputfunction on each sum
                     if (i != layers.Length - 1)
                     {
-                        //data = _activationFunction(data);
-                        layers[i].activations = _activationFunction(data);
+                        data = _activationFunction(data);
+                        layers[i].activations = data;
                     }
                     else
                     {
-                        //data = _outputFunction(data);
-                        layers[i].activations = _outputFunction(data);
+                        data = _outputFunction(data);
+                        layers[i].activations = data;
                     }
                 }
                 //Possibility Tree
