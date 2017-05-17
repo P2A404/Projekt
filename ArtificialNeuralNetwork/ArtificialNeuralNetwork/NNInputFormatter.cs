@@ -28,7 +28,6 @@ namespace ArtificialNeuralNetwork
             InputNeuronSize = testCases[0].inputNeurons.Length;
             TrainingTestCases = testCases.Take(TrainingPoolSize).ToArray();
             TestingTestCases = testCases.GetRange(TrainingPoolSize, (testCases.Count - TrainingPoolSize)).ToArray();
-            PrintDoubleArrayIgnoreZero(TrainingTestCases[0].inputNeurons);
         }
 
         public TestCase[] TrainingTestCases;
