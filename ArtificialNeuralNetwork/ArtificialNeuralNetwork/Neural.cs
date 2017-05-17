@@ -308,6 +308,10 @@ namespace ArtificialNeuralNetwork
 
         public double[] Sum(double[] input, double[,] weights)
         {
+            if (input == null || weights == null)
+            {
+                throw new ArgumentNullException();
+            }
             double[] returnArray = new double[weights.GetLength(0)];
 
             for (int outputIndex = 0; outputIndex < returnArray.Length; outputIndex++)
