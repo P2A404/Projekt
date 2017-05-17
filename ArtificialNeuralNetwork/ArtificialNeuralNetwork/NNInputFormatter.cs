@@ -470,11 +470,11 @@ namespace ArtificialNeuralNetwork
             List<double> gameData = new List<double>();
             double[] input;
 
-            gameData.Add(team.towerKills);
-            gameData.Add(team.inhibitorKills);
-            gameData.Add(team.baronKills);
-            gameData.Add(team.dragonKills);
-            gameData.Add(team.riftHeraldKills);
+            gameData.Add(Normalization(team.towerKills, minimumTeam.towerKills, maximumTeam.towerKills));
+            gameData.Add(Normalization(team.inhibitorKills, minimumTeam.inhibitorKills, maximumTeam.inhibitorKills));
+            gameData.Add(Normalization(team.baronKills, minimumTeam.baronKills, maximumTeam.baronKills));
+            gameData.Add(Normalization(team.dragonKills, minimumTeam.dragonKills, maximumTeam.dragonKills));
+            gameData.Add(Normalization(team.riftHeraldKills, minimumTeam.riftHeraldKills, maximumTeam.riftHeraldKills));
 
             if (team.firstBlood)
             { gameData.Add(1); }
@@ -502,27 +502,27 @@ namespace ArtificialNeuralNetwork
 
             foreach (SaveGameInfo.Player player in team.players)
             {
-                gameData.Add(player.stats.kills);
-                gameData.Add(player.stats.deaths);
-                gameData.Add(player.stats.assists);
-                gameData.Add(player.stats.largestKillingSpree);
-                gameData.Add(player.stats.largestMultiKill);
-                gameData.Add(player.stats.killingSprees);
-                gameData.Add(player.stats.longestTimeSpentLiving);
-                gameData.Add(player.stats.doubleKills);
-                gameData.Add(player.stats.tripleKills);
-                gameData.Add(player.stats.quadraKills);
-                gameData.Add(player.stats.pentaKills);
-                gameData.Add(player.stats.unrealKills);
-                gameData.Add(player.stats.totalDamageDealt);
-                gameData.Add(player.stats.magicDamageDealt);
-                gameData.Add(player.stats.physicalDamageDealt);
-                gameData.Add(player.stats.trueDamageDealt);
-                gameData.Add(player.stats.largestCriticalStrike);
-                gameData.Add(player.stats.totalDamageDealtToChampions);
-                gameData.Add(player.stats.magicDamageDealtToChampions);
-                gameData.Add(player.stats.physicalDamageDealtToChampions);
-                gameData.Add(player.stats.trueDamageDealtToChampions);
+                gameData.Add(Normalization(player.stats.kills, minimumTeam.players[0].stats.kills, maximumTeam.players[0].stats.kills));
+                gameData.Add(Normalization(player.stats.deaths, minimumTeam.players[0].stats.deaths, maximumTeam.players[0].stats.deaths));
+                gameData.Add(Normalization(player.stats.assists, minimumTeam.players[0].stats.assists, maximumTeam.players[0].stats.assists));
+                gameData.Add(Normalization(player.stats.largestKillingSpree, minimumTeam.players[0].stats.largestKillingSpree, maximumTeam.players[0].stats.largestKillingSpree));
+                gameData.Add(Normalization(player.stats.largestMultiKill, minimumTeam.players[0].stats.largestMultiKill, maximumTeam.players[0].stats.largestMultiKill));
+                gameData.Add(Normalization(player.stats.killingSprees, minimumTeam.players[0].stats.killingSprees, maximumTeam.players[0].stats.killingSprees));
+                gameData.Add(Normalization(player.stats.longestTimeSpentLiving, minimumTeam.players[0].stats.longestTimeSpentLiving, maximumTeam.players[0].stats.longestTimeSpentLiving));
+                gameData.Add(Normalization(player.stats.doubleKills, minimumTeam.players[0].stats.doubleKills, maximumTeam.players[0].stats.doubleKills));
+                gameData.Add(Normalization(player.stats.tripleKills, minimumTeam.players[0].stats.tripleKills, maximumTeam.players[0].stats.tripleKills));
+                gameData.Add(Normalization(player.stats.quadraKills, minimumTeam.players[0].stats.quadraKills, maximumTeam.players[0].stats.quadraKills));
+                gameData.Add(Normalization(player.stats.pentaKills, minimumTeam.players[0].stats.pentaKills, maximumTeam.players[0].stats.pentaKills));
+                gameData.Add(Normalization(player.stats.unrealKills, minimumTeam.players[0].stats.unrealKills, maximumTeam.players[0].stats.unrealKills));
+                gameData.Add(Normalization(player.stats.totalDamageDealt, minimumTeam.players[0].stats.totalDamageDealt, maximumTeam.players[0].stats.totalDamageDealt));
+                gameData.Add(Normalization(player.stats.magicDamageDealt, minimumTeam.players[0].stats.magicDamageDealt, maximumTeam.players[0].stats.magicDamageDealt));
+                gameData.Add(Normalization(player.stats.physicalDamageDealt, minimumTeam.players[0].stats.physicalDamageDealt, maximumTeam.players[0].stats.physicalDamageDealt));
+                gameData.Add(Normalization(player.stats.trueDamageDealt, minimumTeam.players[0].stats.trueDamageDealt, maximumTeam.players[0].stats.trueDamageDealt));
+                gameData.Add(Normalization(player.stats.largestCriticalStrike, minimumTeam.players[0].stats.largestCriticalStrike, maximumTeam.players[0].stats.largestCriticalStrike));
+                gameData.Add(Normalization(player.stats.totalDamageDealtToChampions, minimumTeam.players[0].stats.totalDamageDealtToChampions, maximumTeam.players[0].stats.totalDamageDealtToChampions));
+                gameData.Add(Normalization(player.stats.magicDamageDealtToChampions, minimumTeam.players[0].stats.magicDamageDealtToChampions, maximumTeam.players[0].stats.magicDamageDealtToChampions));
+                gameData.Add(Normalization(player.stats.physicalDamageDealtToChampions, minimumTeam.players[0].stats.physicalDamageDealtToChampions, maximumTeam.players[0].stats.physicalDamageDealtToChampions));
+                gameData.Add(Normalization(player.stats.trueDamageDealtToChampions, minimumTeam.players[0].stats.trueDamageDealtToChampions, maximumTeam.players[0].stats.trueDamageDealtToChampions));
                 gameData.Add(player.stats.totalHeal);
                 gameData.Add(player.stats.totalUnitsHealed);
                 gameData.Add(player.stats.damageSelfMitigated);
