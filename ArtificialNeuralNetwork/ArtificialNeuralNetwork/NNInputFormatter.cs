@@ -20,11 +20,19 @@ namespace ArtificialNeuralNetwork
             LoadTeamsDictionary();
             LoadPlayerNamesDictionary();
             bufferGames = FindBufferGames();
+            List<SaveGameInfo.Game> minMaxList = games.GetRange(0, TrainingPoolSize);
+            //minMaxList.AddRange(bufferGames);
+            MinMax(minMaxList);
+            Console.WriteLine($"Baron - Min: {minimumTeam.baronKills} Max: {maximumTeam.baronKills}");
+            Console.WriteLine($"Dragons - Min: {minimumTeam.dragonKills} Max: {maximumTeam.baronKills}");
+            Console.WriteLine($"Level - Min: {minimumTeam.players[0].stats.champLevel} Max: {maximumTeam.players[0].stats.champLevel}");
+            Console.WriteLine($"Towers - Min: {minimumTeam.towerKills} Max: {maximumTeam.towerKills}");
+            Console.WriteLine($"Gold - Min: {minimumTeam.players[0].stats.goldEarned} Max: {maximumTeam.players[0].stats.goldEarned}");
             MakeTestCases();
             InputNeuronSize = testCases[0].inputNeurons.Length;
             TrainingTestCases = testCases.Take(TrainingPoolSize).ToArray();
             TestingTestCases = testCases.GetRange(TrainingPoolSize, (testCases.Count - TrainingPoolSize)).ToArray();
-            
+            PrintDoubleArrayIgnoreZero(TrainingTestCases[0].inputNeurons);
         }
 
         public TestCase[] TrainingTestCases;
@@ -42,16 +50,125 @@ namespace ArtificialNeuralNetwork
 
         void MinMax(List<SaveGameInfo.Game> GameList)
         {
-            minimumTeam = GameList[0].teams[0];
-            maximumTeam = GameList[0].teams[0];
-            foreach(SaveGameInfo.Game g in GameList)
+            #region MinMaxInitilization
+            minimumTeam = new SaveGameInfo.Team();
+            minimumTeam.baronKills = 1000000;
+            minimumTeam.dragonKills = 1000000;
+            minimumTeam.riftHeraldKills = 1000000;
+            minimumTeam.towerKills = 1000000;
+            minimumTeam.inhibitorKills = 1000000;
+            minimumTeam.baronKills = 1000000;
+            minimumTeam.players = new SaveGameInfo.Player[1];
+            minimumTeam.players[0] = new SaveGameInfo.Player();
+            minimumTeam.players[0].stats = new SaveGameInfo.Stats();
+            minimumTeam.players[0].stats.kills = 1000000;
+            minimumTeam.players[0].stats.deaths = 1000000;
+            minimumTeam.players[0].stats.assists = 1000000;
+            minimumTeam.players[0].stats.largestKillingSpree = 1000000;
+            minimumTeam.players[0].stats.largestMultiKill = 1000000;
+            minimumTeam.players[0].stats.killingSprees = 1000000;
+            minimumTeam.players[0].stats.longestTimeSpentLiving = 1000000;
+            minimumTeam.players[0].stats.doubleKills = 1000000;
+            minimumTeam.players[0].stats.tripleKills = 1000000;
+            minimumTeam.players[0].stats.quadraKills = 1000000;
+            minimumTeam.players[0].stats.pentaKills = 1000000;
+            minimumTeam.players[0].stats.unrealKills = 1000000;
+            minimumTeam.players[0].stats.totalDamageDealt = 1000000;
+            minimumTeam.players[0].stats.magicDamageDealt = 1000000;
+            minimumTeam.players[0].stats.physicalDamageDealt = 1000000;
+            minimumTeam.players[0].stats.trueDamageDealt = 1000000;
+            minimumTeam.players[0].stats.largestCriticalStrike = 1000000;
+            minimumTeam.players[0].stats.totalDamageDealtToChampions = 1000000;
+            minimumTeam.players[0].stats.magicDamageDealtToChampions = 1000000;
+            minimumTeam.players[0].stats.physicalDamageDealtToChampions = 1000000;
+            minimumTeam.players[0].stats.trueDamageDealtToChampions = 1000000;
+            minimumTeam.players[0].stats.totalHeal = 1000000;
+            minimumTeam.players[0].stats.totalUnitsHealed = 1000000;
+            minimumTeam.players[0].stats.damageSelfMitigated = 1000000;
+            minimumTeam.players[0].stats.damageDealtToObjectives = 1000000;
+            minimumTeam.players[0].stats.damageDealtToTurrets = 1000000;
+            minimumTeam.players[0].stats.timeCCingOthers = 1000000;
+            minimumTeam.players[0].stats.totalDamageTaken = 1000000;
+            minimumTeam.players[0].stats.magicalDamageTaken = 1000000;
+            minimumTeam.players[0].stats.physicalDamageTaken = 1000000;
+            minimumTeam.players[0].stats.trueDamageTaken = 1000000;
+            minimumTeam.players[0].stats.goldEarned = 1000000;
+            minimumTeam.players[0].stats.goldSpent = 1000000;
+            minimumTeam.players[0].stats.turretKills = 1000000;
+            minimumTeam.players[0].stats.inhibitorKills = 1000000;
+            minimumTeam.players[0].stats.totalMinionsKilled = 1000000;
+            minimumTeam.players[0].stats.neutralMinionsKilled = 1000000;
+            minimumTeam.players[0].stats.neutralMinionsKilledTeamJungle = 1000000;
+            minimumTeam.players[0].stats.neutralMinionsKilledEnemyJungle = 1000000;
+            minimumTeam.players[0].stats.totalTimeCrowdControlDealt = 1000000;
+            minimumTeam.players[0].stats.champLevel = 1000000;
+            minimumTeam.players[0].stats.visionWardsBoughtInGame = 1000000;
+            minimumTeam.players[0].stats.wardsPlaced = 1000000;
+            minimumTeam.players[0].stats.wardsKilled = 1000000;
+
+            maximumTeam = new SaveGameInfo.Team();
+            maximumTeam.baronKills = 0;
+            maximumTeam.dragonKills = 0;
+            maximumTeam.riftHeraldKills = 0;
+            maximumTeam.towerKills = 0;
+            maximumTeam.inhibitorKills = 0;
+            maximumTeam.baronKills = 0;
+            maximumTeam.players = new SaveGameInfo.Player[1];
+            maximumTeam.players[0] = new SaveGameInfo.Player();
+            maximumTeam.players[0].stats = new SaveGameInfo.Stats();
+            maximumTeam.players[0].stats.kills = 0;
+            maximumTeam.players[0].stats.deaths = 0;
+            maximumTeam.players[0].stats.assists = 0;
+            maximumTeam.players[0].stats.largestKillingSpree = 0;
+            maximumTeam.players[0].stats.largestMultiKill = 0;
+            maximumTeam.players[0].stats.killingSprees = 0;
+            maximumTeam.players[0].stats.longestTimeSpentLiving = 0;
+            maximumTeam.players[0].stats.doubleKills = 0;
+            maximumTeam.players[0].stats.tripleKills = 0;
+            maximumTeam.players[0].stats.quadraKills = 0;
+            maximumTeam.players[0].stats.pentaKills = 0;
+            maximumTeam.players[0].stats.unrealKills = 0;
+            maximumTeam.players[0].stats.totalDamageDealt = 0;
+            maximumTeam.players[0].stats.magicDamageDealt = 0;
+            maximumTeam.players[0].stats.physicalDamageDealt = 0;
+            maximumTeam.players[0].stats.trueDamageDealt = 0;
+            maximumTeam.players[0].stats.largestCriticalStrike = 0;
+            maximumTeam.players[0].stats.totalDamageDealtToChampions = 0;
+            maximumTeam.players[0].stats.magicDamageDealtToChampions = 0;
+            maximumTeam.players[0].stats.physicalDamageDealtToChampions = 0;
+            maximumTeam.players[0].stats.trueDamageDealtToChampions = 0;
+            maximumTeam.players[0].stats.totalHeal = 0;
+            maximumTeam.players[0].stats.totalUnitsHealed = 0;
+            maximumTeam.players[0].stats.damageSelfMitigated = 0;
+            maximumTeam.players[0].stats.damageDealtToObjectives = 0;
+            maximumTeam.players[0].stats.damageDealtToTurrets = 0;
+            maximumTeam.players[0].stats.timeCCingOthers = 0;
+            maximumTeam.players[0].stats.totalDamageTaken = 0;
+            maximumTeam.players[0].stats.magicalDamageTaken = 0;
+            maximumTeam.players[0].stats.physicalDamageTaken = 0;
+            maximumTeam.players[0].stats.trueDamageTaken = 0;
+            maximumTeam.players[0].stats.goldEarned = 0;
+            maximumTeam.players[0].stats.goldSpent = 0;
+            maximumTeam.players[0].stats.turretKills = 0;
+            maximumTeam.players[0].stats.inhibitorKills = 0;
+            maximumTeam.players[0].stats.totalMinionsKilled = 0;
+            maximumTeam.players[0].stats.neutralMinionsKilled = 0;
+            maximumTeam.players[0].stats.neutralMinionsKilledTeamJungle = 0;
+            maximumTeam.players[0].stats.neutralMinionsKilledEnemyJungle = 0;
+            maximumTeam.players[0].stats.totalTimeCrowdControlDealt = 0;
+            maximumTeam.players[0].stats.champLevel = 0;
+            maximumTeam.players[0].stats.visionWardsBoughtInGame = 0;
+            maximumTeam.players[0].stats.wardsPlaced = 0;
+            maximumTeam.players[0].stats.wardsKilled = 0;
+            #endregion
+
+            foreach (SaveGameInfo.Game g in GameList)
             {
                 foreach(SaveGameInfo.Team t in g.teams)
                 {
                     foreach (SaveGameInfo.Player p in t.players)
                     {
                         MinMaxPlayer(p);
-                        
                     }
                     maximumTeam.baronKills = Math.Max(maximumTeam.baronKills, t.baronKills);
                     maximumTeam.dragonKills = Math.Max(maximumTeam.dragonKills, t.dragonKills);
@@ -162,7 +279,6 @@ namespace ArtificialNeuralNetwork
             minimumTeam.players[0].stats.visionWardsBoughtInGame = Math.Min(minimumTeam.players[0].stats.visionWardsBoughtInGame, PlayerStats.visionWardsBoughtInGame);
             minimumTeam.players[0].stats.wardsKilled = Math.Min(minimumTeam.players[0].stats.wardsKilled, PlayerStats.wardsKilled);
             minimumTeam.players[0].stats.wardsPlaced = Math.Min(minimumTeam.players[0].stats.wardsPlaced, PlayerStats.wardsPlaced);
-
 
         }
 
@@ -283,6 +399,8 @@ namespace ArtificialNeuralNetwork
 
         public double Normalization(double currentValue, double minValue, double maxValue)
         {
+            if (maxValue-minValue == 0)
+            { return 0; }
             return (2 * ((currentValue - minValue) / (maxValue - minValue)) - 1);
         }
 
@@ -290,7 +408,7 @@ namespace ArtificialNeuralNetwork
         {
             for (int i = 0; i < matches.Count; i++)
             {
-                games.Add(MatchToSaveGame(matches[i]));
+                games.Add(GameInfoMatchToSaveGameInfoGame(matches[i]));
             }
             matches = null;
             games = games.OrderByDescending(x => x.gameDuration).ToList();
@@ -639,7 +757,7 @@ namespace ArtificialNeuralNetwork
             return returnArray;
         }
 
-        SaveGameInfo.Game MatchToSaveGame(GameInfo.Match match)
+        SaveGameInfo.Game GameInfoMatchToSaveGameInfoGame(GameInfo.Match match)
         {
             //still missing some stuff
             SaveGameInfo.Game returnGame = new SaveGameInfo.Game();
@@ -650,6 +768,7 @@ namespace ArtificialNeuralNetwork
             for (int i = 0; i < returnGame.teams.Length; i++)
             {
                 returnGame.teams[i] = new SaveGameInfo.Team();
+                returnGame.teams[i].gameDuration = match.gameDuration;
                 returnGame.teams[i].teamId = match.teams[i].teamId;
                 returnGame.teams[i].players = new SaveGameInfo.Player[5];
                 returnGame.teams[i].teamName = match.participantIdentities[i * 5].player.summonerName.Substring(0, match.participantIdentities[i * 5].player.summonerName.IndexOf(' '));
@@ -658,6 +777,13 @@ namespace ArtificialNeuralNetwork
                 returnGame.teams[i].firstTower = match.teams[i].firstTower;
                 returnGame.teams[i].firstInhibitor = match.teams[i].firstInhibitor;
                 returnGame.teams[i].firstBaron = match.teams[i].firstBaron;
+                returnGame.teams[i].firstDragon = match.teams[i].firstDragon;
+                returnGame.teams[i].firstRiftHerald = match.teams[i].firstRiftHerald;
+                returnGame.teams[i].towerKills = match.teams[i].towerKills;
+                returnGame.teams[i].inhibitorKills = match.teams[i].inhibitorKills;
+                returnGame.teams[i].baronKills = match.teams[i].baronKills;
+                returnGame.teams[i].dragonKills = match.teams[i].dragonKills;
+                returnGame.teams[i].riftHeraldKills = match.teams[i].riftHeraldKills;
                 returnGame.teams[i].bannedChampionId = new int[3];
                 for (int j = 0; j < 3; j++)
                 {
@@ -672,16 +798,17 @@ namespace ArtificialNeuralNetwork
                     returnGame.teams[i].players[j].championId = match.participants[(i * 5) + j].championId;
                     returnGame.teams[i].players[j].playerId = match.participants[(i * 5) + j].championId;
                     returnGame.teams[i].players[j].summonerName = match.participantIdentities[(i * 5 + j)].player.summonerName;
-                    returnGame.teams[i].players[j].stats = StatsToSaveStats(match.participants[(i * 5) + j].stats);
+                    returnGame.teams[i].players[j].stats = GameInfoStatsToSaveGameInfoStats(match.participants[(i * 5) + j].stats);
                     returnGame.teams[i].players[j].playerId = match.participantIdentities[j].participantId;
-                    //spells here if needed
+                    returnGame.teams[i].players[j].spell1Id = match.participants[j].spell1Id;
+                    returnGame.teams[i].players[j].spell2Id = match.participants[j].spell2Id;
                     //timeline here if needed
                 }
             }
             return returnGame;
         }
 
-        SaveGameInfo.Stats StatsToSaveStats(GameInfo.Stats stats)
+        SaveGameInfo.Stats GameInfoStatsToSaveGameInfoStats(GameInfo.Stats stats)
         {
             SaveGameInfo.Stats returnStats = new SaveGameInfo.Stats();
             returnStats.participantId = stats.participantId;
