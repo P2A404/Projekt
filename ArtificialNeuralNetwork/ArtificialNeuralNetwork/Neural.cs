@@ -100,7 +100,7 @@ namespace ArtificialNeuralNetwork
             int test = 0;
             do
             {
-                // Clear the neuronErrorTerm and sumOfOutputError
+                // Clear the neuronErrorTerm and sumOfOutputError 
                 for (int i = 0; i < layers.Length; i++)
                 {
                     Array.Clear(neuronErrorTerm[i], 0, neuronErrorTerm[i].Length);
