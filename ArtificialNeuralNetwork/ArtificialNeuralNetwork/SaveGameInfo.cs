@@ -87,10 +87,10 @@ namespace ArtificialNeuralNetwork
             public double trueDamageDealtToChampions { get; set; }
             public double totalHeal { get; set; }
             public double totalUnitsHealed { get; set; }
-            public double damageSelfMitigated { get; set; }
-            public double damageDealtToObjectives { get; set; }
-            public double damageDealtToTurrets { get; set; }
-            public double timeCCingOthers { get; set; }
+           // public double damageSelfMitigated { get; set; }
+            //public double damageDealtToObjectives { get; set; }
+            //public double damageDealtToTurrets { get; set; }
+            //public double timeCCingOthers { get; set; }
             public double totalDamageTaken { get; set; }
             public double magicalDamageTaken { get; set; }
             public double physicalDamageTaken { get; set; }

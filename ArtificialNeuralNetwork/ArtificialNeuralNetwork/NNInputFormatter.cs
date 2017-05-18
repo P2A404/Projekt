@@ -15,7 +15,6 @@ namespace ArtificialNeuralNetwork
             TrainingTestCases = new TestCase[TrainingPoolSize];
             JSONLoad();
             ConvertGames();
-            games = games.OrderByDescending(x => x.gameDuration).ToList();
             LoadChampionIdDictionary();
             LoadTeamsDictionary();
             LoadPlayerNamesDictionary();
@@ -29,6 +28,7 @@ namespace ArtificialNeuralNetwork
             TrainingTestCases = testCases.Take(TrainingPoolSize).ToArray();
             TestingTestCases = testCases.GetRange(TrainingPoolSize, (testCases.Count - TrainingPoolSize)).ToArray();
         }
+
 
         public TestCase[] TrainingTestCases;
         public TestCase[] TestingTestCases;
@@ -79,10 +79,10 @@ namespace ArtificialNeuralNetwork
             minimumTeam.players[0].stats.trueDamageDealtToChampions = 1000000;
             minimumTeam.players[0].stats.totalHeal = 1000000;
             minimumTeam.players[0].stats.totalUnitsHealed = 1000000;
-            minimumTeam.players[0].stats.damageSelfMitigated = 1000000;
-            minimumTeam.players[0].stats.damageDealtToObjectives = 1000000;
-            minimumTeam.players[0].stats.damageDealtToTurrets = 1000000;
-            minimumTeam.players[0].stats.timeCCingOthers = 1000000;
+            //minimumTeam.players[0].stats.damageSelfMitigated = 1000000;
+            //minimumTeam.players[0].stats.damageDealtToObjectives = 1000000;
+            //minimumTeam.players[0].stats.damageDealtToTurrets = 1000000;
+            //minimumTeam.players[0].stats.timeCCingOthers = 1000000;
             minimumTeam.players[0].stats.totalDamageTaken = 1000000;
             minimumTeam.players[0].stats.magicalDamageTaken = 1000000;
             minimumTeam.players[0].stats.physicalDamageTaken = 1000000;
@@ -134,10 +134,10 @@ namespace ArtificialNeuralNetwork
             maximumTeam.players[0].stats.trueDamageDealtToChampions = 0;
             maximumTeam.players[0].stats.totalHeal = 0;
             maximumTeam.players[0].stats.totalUnitsHealed = 0;
-            maximumTeam.players[0].stats.damageSelfMitigated = 0;
-            maximumTeam.players[0].stats.damageDealtToObjectives = 0;
-            maximumTeam.players[0].stats.damageDealtToTurrets = 0;
-            maximumTeam.players[0].stats.timeCCingOthers = 0;
+            //maximumTeam.players[0].stats.damageSelfMitigated = 0;
+            //maximumTeam.players[0].stats.damageDealtToObjectives = 0;
+            //maximumTeam.players[0].stats.damageDealtToTurrets = 0;
+            //maximumTeam.players[0].stats.timeCCingOthers = 0;
             maximumTeam.players[0].stats.totalDamageTaken = 0;
             maximumTeam.players[0].stats.magicalDamageTaken = 0;
             maximumTeam.players[0].stats.physicalDamageTaken = 0;
@@ -186,9 +186,9 @@ namespace ArtificialNeuralNetwork
 
             maximumTeam.players[0].stats.assists = Math.Max(maximumTeam.players[0].stats.assists, PlayerStats.assists);
             maximumTeam.players[0].stats.champLevel = Math.Max(maximumTeam.players[0].stats.champLevel, PlayerStats.champLevel);
-            maximumTeam.players[0].stats.damageDealtToObjectives = Math.Max(maximumTeam.players[0].stats.damageDealtToObjectives, PlayerStats.damageDealtToObjectives);
-            maximumTeam.players[0].stats.damageDealtToTurrets = Math.Max(maximumTeam.players[0].stats.damageDealtToTurrets, PlayerStats.damageDealtToTurrets);
-            maximumTeam.players[0].stats.damageSelfMitigated = Math.Max(maximumTeam.players[0].stats.damageSelfMitigated, PlayerStats.damageSelfMitigated);
+            //maximumTeam.players[0].stats.damageDealtToObjectives = Math.Max(maximumTeam.players[0].stats.damageDealtToObjectives, PlayerStats.damageDealtToObjectives);
+            //maximumTeam.players[0].stats.damageDealtToTurrets = Math.Max(maximumTeam.players[0].stats.damageDealtToTurrets, PlayerStats.damageDealtToTurrets);
+            //maximumTeam.players[0].stats.damageSelfMitigated = Math.Max(maximumTeam.players[0].stats.damageSelfMitigated, PlayerStats.damageSelfMitigated);
             maximumTeam.players[0].stats.deaths = Math.Max(maximumTeam.players[0].stats.deaths, PlayerStats.deaths);
             maximumTeam.players[0].stats.doubleKills = Math.Max(maximumTeam.players[0].stats.doubleKills, PlayerStats.doubleKills);
             maximumTeam.players[0].stats.goldEarned = Math.Max(maximumTeam.players[0].stats.goldEarned, PlayerStats.goldEarned);
@@ -211,7 +211,7 @@ namespace ArtificialNeuralNetwork
             maximumTeam.players[0].stats.physicalDamageDealtToChampions = Math.Max(maximumTeam.players[0].stats.physicalDamageDealtToChampions, PlayerStats.physicalDamageDealtToChampions);
             maximumTeam.players[0].stats.physicalDamageTaken = Math.Max(maximumTeam.players[0].stats.physicalDamageTaken, PlayerStats.physicalDamageTaken);
             maximumTeam.players[0].stats.quadraKills = Math.Max(maximumTeam.players[0].stats.quadraKills, PlayerStats.quadraKills);
-            maximumTeam.players[0].stats.timeCCingOthers = Math.Max(maximumTeam.players[0].stats.timeCCingOthers, PlayerStats.timeCCingOthers);
+            //maximumTeam.players[0].stats.timeCCingOthers = Math.Max(maximumTeam.players[0].stats.timeCCingOthers, PlayerStats.timeCCingOthers);
             maximumTeam.players[0].stats.totalDamageDealt = Math.Max(maximumTeam.players[0].stats.totalDamageDealt, PlayerStats.totalDamageDealt);
             maximumTeam.players[0].stats.totalDamageDealtToChampions = Math.Max(maximumTeam.players[0].stats.totalDamageDealtToChampions, PlayerStats.totalDamageDealtToChampions);
             maximumTeam.players[0].stats.totalDamageTaken = Math.Max(maximumTeam.players[0].stats.totalDamageTaken, PlayerStats.totalDamageTaken);
@@ -232,9 +232,9 @@ namespace ArtificialNeuralNetwork
 
             minimumTeam.players[0].stats.assists = Math.Min(minimumTeam.players[0].stats.assists, PlayerStats.assists);
             minimumTeam.players[0].stats.champLevel = Math.Min(minimumTeam.players[0].stats.champLevel, PlayerStats.champLevel);
-            minimumTeam.players[0].stats.damageDealtToObjectives = Math.Min(minimumTeam.players[0].stats.damageDealtToObjectives, PlayerStats.damageDealtToObjectives);
-            minimumTeam.players[0].stats.damageDealtToTurrets = Math.Min(minimumTeam.players[0].stats.damageDealtToTurrets, PlayerStats.damageDealtToTurrets);
-            minimumTeam.players[0].stats.damageSelfMitigated = Math.Min(minimumTeam.players[0].stats.damageSelfMitigated, PlayerStats.damageSelfMitigated);
+            // minimumTeam.players[0].stats.damageDealtToObjectives = Math.Min(minimumTeam.players[0].stats.damageDealtToObjectives, PlayerStats.damageDealtToObjectives);
+            // minimumTeam.players[0].stats.damageDealtToTurrets = Math.Min(minimumTeam.players[0].stats.damageDealtToTurrets, PlayerStats.damageDealtToTurrets);
+            //minimumTeam.players[0].stats.damageSelfMitigated = Math.Min(minimumTeam.players[0].stats.damageSelfMitigated, PlayerStats.damageSelfMitigated);
             minimumTeam.players[0].stats.deaths = Math.Min(minimumTeam.players[0].stats.deaths, PlayerStats.deaths);
             minimumTeam.players[0].stats.doubleKills = Math.Min(minimumTeam.players[0].stats.doubleKills, PlayerStats.doubleKills);
             minimumTeam.players[0].stats.goldEarned = Math.Min(minimumTeam.players[0].stats.goldEarned, PlayerStats.goldEarned);
@@ -257,7 +257,7 @@ namespace ArtificialNeuralNetwork
             minimumTeam.players[0].stats.physicalDamageDealtToChampions = Math.Min(minimumTeam.players[0].stats.physicalDamageDealtToChampions, PlayerStats.physicalDamageDealtToChampions);
             minimumTeam.players[0].stats.physicalDamageTaken = Math.Min(minimumTeam.players[0].stats.physicalDamageTaken, PlayerStats.physicalDamageTaken);
             minimumTeam.players[0].stats.quadraKills = Math.Min(minimumTeam.players[0].stats.quadraKills, PlayerStats.quadraKills);
-            minimumTeam.players[0].stats.timeCCingOthers = Math.Min(minimumTeam.players[0].stats.timeCCingOthers, PlayerStats.timeCCingOthers);
+            //minimumTeam.players[0].stats.timeCCingOthers = Math.Min(minimumTeam.players[0].stats.timeCCingOthers, PlayerStats.timeCCingOthers);
             minimumTeam.players[0].stats.totalDamageDealt = Math.Min(minimumTeam.players[0].stats.totalDamageDealt, PlayerStats.totalDamageDealt);
             minimumTeam.players[0].stats.totalDamageDealtToChampions = Math.Min(minimumTeam.players[0].stats.totalDamageDealtToChampions, PlayerStats.totalDamageDealtToChampions);
             minimumTeam.players[0].stats.totalDamageTaken = Math.Min(minimumTeam.players[0].stats.totalDamageTaken, PlayerStats.totalDamageTaken);
@@ -378,7 +378,7 @@ namespace ArtificialNeuralNetwork
         private void JSONLoad()
         {
             string LocalPath = GetLocalDirectory() + @"Data\Matches\";
-            for (int index = 1; index < 2827; index++)
+            for (int index = 1; index <= 2827; index++)
             {
                 using (StreamReader Reader = new StreamReader(LocalPath + $@"{index}.json"))
                 {
@@ -406,7 +406,7 @@ namespace ArtificialNeuralNetwork
                 games.Add(GameInfoMatchToSaveGameInfoGame(matches[i]));
             }
             matches = null;
-            games = games.OrderByDescending(x => x.gameDuration).ToList();
+            games = games.OrderByDescending(x => x.gameCreation).ToList();
             Console.WriteLine($"Done converting from JSON Class to Game Class");
         }
 
@@ -637,10 +637,10 @@ namespace ArtificialNeuralNetwork
                 gameData.Add(Normalization(player.stats.trueDamageDealtToChampions, minimumTeam.players[0].stats.trueDamageDealtToChampions, maximumTeam.players[0].stats.trueDamageDealtToChampions));
                 gameData.Add(Normalization(player.stats.totalHeal, minimumTeam.players[0].stats.totalHeal, maximumTeam.players[0].stats.totalHeal));
                 gameData.Add(Normalization(player.stats.totalUnitsHealed, minimumTeam.players[0].stats.totalUnitsHealed, maximumTeam.players[0].stats.totalUnitsHealed));
-                gameData.Add(Normalization(player.stats.damageSelfMitigated, minimumTeam.players[0].stats.damageSelfMitigated, maximumTeam.players[0].stats.damageSelfMitigated));
-                gameData.Add(Normalization(player.stats.damageDealtToObjectives, minimumTeam.players[0].stats.damageDealtToObjectives, maximumTeam.players[0].stats.damageDealtToObjectives));
-                gameData.Add(Normalization(player.stats.damageDealtToTurrets, minimumTeam.players[0].stats.damageDealtToTurrets, maximumTeam.players[0].stats.damageDealtToTurrets));
-                gameData.Add(Normalization(player.stats.timeCCingOthers, minimumTeam.players[0].stats.timeCCingOthers, maximumTeam.players[0].stats.timeCCingOthers));
+                //gameData.Add(Normalization(player.stats.damageSelfMitigated, minimumTeam.players[0].stats.damageSelfMitigated, maximumTeam.players[0].stats.damageSelfMitigated));
+                //gameData.Add(Normalization(player.stats.damageDealtToObjectives, minimumTeam.players[0].stats.damageDealtToObjectives, maximumTeam.players[0].stats.damageDealtToObjectives));
+                //gameData.Add(Normalization(player.stats.damageDealtToTurrets, minimumTeam.players[0].stats.damageDealtToTurrets, maximumTeam.players[0].stats.damageDealtToTurrets));
+                //gameData.Add(Normalization(player.stats.timeCCingOthers, minimumTeam.players[0].stats.timeCCingOthers, maximumTeam.players[0].stats.timeCCingOthers));
                 gameData.Add(Normalization(player.stats.totalDamageTaken, minimumTeam.players[0].stats.totalDamageTaken, maximumTeam.players[0].stats.totalDamageTaken));
                 gameData.Add(Normalization(player.stats.magicalDamageTaken, minimumTeam.players[0].stats.magicalDamageTaken, maximumTeam.players[0].stats.magicalDamageTaken));
                 gameData.Add(Normalization(player.stats.physicalDamageTaken, minimumTeam.players[0].stats.physicalDamageTaken, maximumTeam.players[0].stats.physicalDamageTaken));
@@ -830,11 +830,11 @@ namespace ArtificialNeuralNetwork
             returnStats.trueDamageDealtToChampions = stats.trueDamageDealtToChampions;
             returnStats.totalHeal = stats.totalHeal;
             returnStats.totalUnitsHealed = stats.totalUnitsHealed;
-            returnStats.damageSelfMitigated = stats.damageSelfMitigated;
-            returnStats.damageDealtToObjectives = stats.damageDealtToObjectives;
-            returnStats.damageDealtToTurrets = stats.damageDealtToTurrets;
-            returnStats.timeCCingOthers = stats.timeCCingOthers;
-            returnStats.totalUnitsHealed = stats.totalDamageTaken = stats.totalDamageTaken;
+            //returnStats.damageSelfMitigated = stats.damageSelfMitigated;
+            //returnStats.damageDealtToObjectives = stats.damageDealtToObjectives;
+            //returnStats.damageDealtToTurrets = stats.damageDealtToTurrets;
+            //returnStats.timeCCingOthers = stats.timeCCingOthers;
+            returnStats.totalDamageTaken = stats.totalDamageTaken;
             returnStats.magicalDamageTaken = stats.magicalDamageTaken;
             returnStats.physicalDamageTaken = stats.physicalDamageTaken;
             returnStats.trueDamageTaken = stats.trueDamageTaken;
@@ -855,6 +855,8 @@ namespace ArtificialNeuralNetwork
             returnStats.firstTowerAssist = stats.firstTowerAssist;
             returnStats.firstInhibitorKill = stats.firstInhibitorKill;
             returnStats.firstInhibitorAssist = stats.firstInhibitorAssist;
+            returnStats.wardsKilled = stats.wardsKilled;
+            returnStats.wardsPlaced = stats.wardsPlaced;
             return returnStats;
         }
 
