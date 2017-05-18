@@ -74,9 +74,9 @@ namespace ArtificialNeuralNetwork
             _activationFunction = newTransfer;
         }
 
-        public void Training(TestCase[] testCases)
+        public void Training(TestCase[] trainingCases, TestCase[] testCases)
         {
-            foreach (TestCase testCase in testCases)
+            foreach (TestCase testCase in trainingCases)
             {
                 if (testCase.inputNeurons.Length != inputSize)
                 {
@@ -113,17 +113,17 @@ namespace ArtificialNeuralNetwork
 
                 totalErrorTerm = 0;
 
-                for (int k = 0; k < testCases.Length; k++)
+                for (int k = 0; k < trainingCases.Length; k++)
                 {
                     // Run the neuron network
-                    Cycle(testCases[k].inputNeurons);
+                    Cycle(trainingCases[k].inputNeurons);
 
                     // Calculate the errors
-                    CalculateErrorTerm(neuronErrorTerm, testCases[k].winningTeam);
+                    CalculateErrorTerm(neuronErrorTerm, trainingCases[k].winningTeam);
 
                     // Update the sum with the errors
                     CalculateUpdateSumError(neuronErrorTerm, updateSumError);
-                    totalErrorTerm += (testCases[k].winningTeam * Log(layers[layers.Length - 1].activations[0], 10) + (1 - testCases[k].winningTeam) * Log(1 - layers[layers.Length - 1].activations[0], 10)) / testCases.Length;
+                    totalErrorTerm += (trainingCases[k].winningTeam * Log(layers[layers.Length - 1].activations[0], 10) + (1 - trainingCases[k].winningTeam) * Log(1 - layers[layers.Length - 1].activations[0], 10)) / trainingCases.Length;
                 }
 
                 UpdateWeights(updateSumError, trainingsRate, weightDecay, inputSize);
@@ -153,6 +153,32 @@ namespace ArtificialNeuralNetwork
                 }
 
             } while (totalErrorTerm > 0.02 || totalErrorTerm < -0.02); // Changeable total error term
+            
+            List<double> listOfPredict = new List<double>();
+
+            int Right = 0;
+            int Wrong = 0;
+            double Result = 0.0;
+
+            for (int i = 0; i < testCases.Length; i++)
+            {
+                Cycle(testCases[i].inputNeurons);
+                double Predict = layers[layers.Length - 1].activations[0];
+
+                listOfPredict.Add(Predict);
+
+                if((listOfPredict[i] < 0.5 && testCases[i].winningTeam == 0) || (listOfPredict[i] > 0.5 && testCases[i].winningTeam == 1))
+                {
+                    Right++;
+                } 
+                else 
+                {
+                    Wrong++;
+                }
+            }
+            Result = Right / (Right + Wrong);
+
+            System.Console.WriteLine(Result);
         }
 
         public void CalculateErrorTerm(double[][] neuronErrorTerm, int resultMatch)
