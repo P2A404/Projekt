@@ -84,7 +84,7 @@ namespace ArtificialNeuralNetwork
                 }
             }
 
-            double totalErrorTerm = 0.0, trainingsRateBegin = 0.01, trainingsRate, weightDecay = 0.05;
+            double totalErrorTerm = 0.0, trainingsRateBegin = 0.0001, trainingsRate, weightDecay = 0.05;
             double[][] neuronErrorTerm = new double[layers.Length][];
             double[][,] updateSumError = new double[layers.Length][,];
 
@@ -112,6 +112,7 @@ namespace ArtificialNeuralNetwork
                 }
 
                 totalErrorTerm = 0;
+
                 for (int k = 0; k < testCases.Length; k++)
                 {
                     // Run the neuron network
@@ -122,7 +123,6 @@ namespace ArtificialNeuralNetwork
                     
                     // Update the sum with the errors
                     CalculateUpdateSumError(neuronErrorTerm, updateSumError);
-
                     totalErrorTerm += (testCases[k].winningTeam * Log(layers[layers.Length - 1].activations[0], 10) + (1 - testCases[k].winningTeam) * Log(1 - layers[layers.Length - 1].activations[0], 10)) / testCases.Length;
                 }
 
@@ -172,7 +172,7 @@ namespace ArtificialNeuralNetwork
 
                         for (int k = 0; k < layers[l + 1].weights.GetLength(0); k++)
                         {
-                            sumError += neuronErrorTerm[l + 1][k] * layers[l + 1].weights[k, j];
+                            sumError += neuronErrorTerm[l + 1][k] * layers[l + 1].weights[k, j + 1];
                         }
                         neuronErrorTerm[l][j] = sumError * derivativeActivation[j];
                     }
