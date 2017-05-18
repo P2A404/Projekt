@@ -120,7 +120,7 @@ namespace ArtificialNeuralNetwork
 
                     // Calculate the errors
                     CalculateErrorTerm(neuronErrorTerm, testCases[k].winningTeam);
-                    
+
                     // Update the sum with the errors
                     CalculateUpdateSumError(neuronErrorTerm, updateSumError);
                     totalErrorTerm += (testCases[k].winningTeam * Log(layers[layers.Length - 1].activations[0], 10) + (1 - testCases[k].winningTeam) * Log(1 - layers[layers.Length - 1].activations[0], 10)) / testCases.Length;
@@ -180,7 +180,8 @@ namespace ArtificialNeuralNetwork
                 else
                 {
                     // Last layer
-                    neuronErrorTerm[l][0] = (resultMatch / (Log(10) * layers[l].activations[0]) + (1.0 - resultMatch) / (Log(10) * (layers[l].activations[0] - 1))) * _derivativeOutputFunction(layers[l].sums)[0];
+                    neuronErrorTerm[l][0] = resultMatch - layers[l].activations[0];
+                    //neuronErrorTerm[l][0] = (resultMatch / (Log(10) * layers[l].activations[0]) + (1.0 - resultMatch) / (Log(10) * (layers[l].activations[0] - 1))) * _derivativeOutputFunction(layers[l].sums)[0];
                 }
             }
         }
@@ -215,6 +216,7 @@ namespace ArtificialNeuralNetwork
 
         public void UpdateWeights(double[][,] updateSumError, double trainingsRate, double weightDecay, int trainingsDataLength)
         {
+            double weightsRegularization;
             for (int l = 0; l < layers.Length; l++)
             {
                 for (int j = 0; j < layers[l].weights.GetLength(0); j++)
@@ -224,7 +226,15 @@ namespace ArtificialNeuralNetwork
 
                     for (int i = 1; i < layers[l].weights.GetLength(1); i++)
                     {
-                        layers[l].weights[j, i] += trainingsRate * (updateSumError[l][j, i] / trainingsDataLength + weightDecay * layers[l].weights[j, i]);
+                        if (layers[l].weights[j, i] < 0)
+                        {
+                            weightsRegularization = -layers[l].weights[j, i];
+                        }
+                        else
+                        {
+                            weightsRegularization = layers[l].weights[j, i];
+                        }
+                        layers[l].weights[j, i] += trainingsRate * (updateSumError[l][j, i] / trainingsDataLength + weightDecay * weightsRegularization);
                     }
                 }
             }
