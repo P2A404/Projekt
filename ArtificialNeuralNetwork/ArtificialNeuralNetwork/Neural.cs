@@ -74,7 +74,7 @@ namespace ArtificialNeuralNetwork
             _activationFunction = newTransfer;
         }
 
-        public void Training(TestCase[] trainingCases, TestCase[] testCases)
+        public void Training(TestCase[] trainingCases)
         {
             foreach (TestCase testCase in trainingCases)
             {
@@ -84,9 +84,10 @@ namespace ArtificialNeuralNetwork
                 }
             }
 
-            double totalErrorTerm = 0.0, trainingsRateBegin = 0.0001, trainingsRate, weightDecay = 0.05;
+            double totalErrorTerm = 0.0, trainingsRateBegin = 0.0001, trainingsRate, weightDecay = 0.05, previousErrorTerm = 0.0;
             double[][] neuronErrorTerm = new double[layers.Length][];
             double[][,] updateSumError = new double[layers.Length][,];
+            bool done = false;
 
             for (int l = 0; l < layers.GetLength(0); l++)
             {
@@ -147,13 +148,24 @@ namespace ArtificialNeuralNetwork
                 Console.WriteLine($"totalErrorTerm: {totalErrorTerm}      test: {test}");
                 test++;
 
-                if (test == 100)
+                // Changeable total error term
+                if (((previousErrorTerm - totalErrorTerm) < 0.0001) && ((previousErrorTerm - totalErrorTerm) > -0.0001))
+                {
+                    done = true;
+                }
+                previousErrorTerm = totalErrorTerm;
+
+
+                if (test == 10)
                 {
                     test = 0;
                 }
 
-            } while (totalErrorTerm > 0.02 || totalErrorTerm < -0.02); // Changeable total error term
-            
+            } while (!done);
+        }
+
+        public void CalulateAccurracy(TestCase[] testCases)
+        {
             List<double> listOfPredict = new List<double>();
 
             int Right = 0;
@@ -167,11 +179,11 @@ namespace ArtificialNeuralNetwork
 
                 listOfPredict.Add(Predict);
 
-                if((listOfPredict[i] < 0.5 && testCases[i].winningTeam == 0) || (listOfPredict[i] > 0.5 && testCases[i].winningTeam == 1))
+                if ((listOfPredict[i] < 0.5 && testCases[i].winningTeam == 0) || (listOfPredict[i] > 0.5 && testCases[i].winningTeam == 1))
                 {
                     Right++;
-                } 
-                else 
+                }
+                else
                 {
                     Wrong++;
                 }
