@@ -149,17 +149,11 @@ namespace ArtificialNeuralNetwork
                 test++;
 
                 // Changeable total error term
-                if (((previousErrorTerm - totalErrorTerm) < 0.0001) && ((previousErrorTerm - totalErrorTerm) > -0.0001))
+                if (((previousErrorTerm - totalErrorTerm) < 0.000001) && ((previousErrorTerm - totalErrorTerm) > -0.000001))
                 {
                     done = true;
                 }
                 previousErrorTerm = totalErrorTerm;
-
-
-                if (test == 10)
-                {
-                    test = 0;
-                }
 
             } while (!done);
         }
@@ -188,9 +182,9 @@ namespace ArtificialNeuralNetwork
                     Wrong++;
                 }
             }
-            Result = Right / (Right + Wrong);
+            Result = (double)Right / (double)(Right + Wrong) * 100;
 
-            Console.WriteLine(Result);
+            Console.WriteLine($"Right: {Right}, Wrong: {Wrong}, Result: {Result}%");
             Console.Read();
         }
 
