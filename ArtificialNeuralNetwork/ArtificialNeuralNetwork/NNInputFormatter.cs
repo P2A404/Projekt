@@ -406,7 +406,7 @@ namespace ArtificialNeuralNetwork
                 games.Add(GameInfoMatchToSaveGameInfoGame(matches[i]));
             }
             matches = null;
-            games = games.OrderByDescending(x => x.gameCreation).ToList();
+            games = games.OrderBy(x => x.gameCreation).ToList();
             Console.WriteLine($"Done converting from JSON Class to Game Class");
         }
 
