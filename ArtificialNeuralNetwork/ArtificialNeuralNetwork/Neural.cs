@@ -178,7 +178,8 @@ namespace ArtificialNeuralNetwork
             }
             Result = Right / (Right + Wrong);
 
-            System.Console.WriteLine(Result);
+            Console.WriteLine(Result);
+            Console.Read();
         }
 
         public void CalculateErrorTerm(double[][] neuronErrorTerm, int resultMatch)
