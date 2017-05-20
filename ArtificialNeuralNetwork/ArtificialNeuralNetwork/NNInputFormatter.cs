@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace ArtificialNeuralNetwork
 {
-    class NNInputFormatter
+    public class NNInputFormatter
     {
         public NNInputFormatter(int TrainingPoolSize)
         {
@@ -20,6 +20,7 @@ namespace ArtificialNeuralNetwork
             LoadPlayerNamesDictionary();
             bufferGames = FindBufferGames();
             //minMaxList is not 100% correct
+            //needs to be buffergames + 2000 first non-buffer games
             List<SaveGameInfo.Game> minMaxList = games.GetRange(0, TrainingPoolSize);
             minMaxList.AddRange(bufferGames);
             MinMax(minMaxList);
@@ -43,7 +44,7 @@ namespace ArtificialNeuralNetwork
         private SaveGameInfo.Team minimumTeam;
         private SaveGameInfo.Team maximumTeam;
 
-        void MinMax(List<SaveGameInfo.Game> GameList)
+        private void MinMax(List<SaveGameInfo.Game> GameList)
         {
             #region MinMaxInitilization
             minimumTeam = new SaveGameInfo.Team();
@@ -180,7 +181,7 @@ namespace ArtificialNeuralNetwork
             }
         }
 
-        void MinMaxPlayer(SaveGameInfo.Player p)
+        private void MinMaxPlayer(SaveGameInfo.Player p)
         {
             SaveGameInfo.Stats PlayerStats = p.stats;
 
@@ -277,7 +278,7 @@ namespace ArtificialNeuralNetwork
 
         }
 
-        public List<SaveGameInfo.Game> FindBufferGames()
+        private List<SaveGameInfo.Game> FindBufferGames()
         {
             List<SaveGameInfo.Game> saveGames = new List<SaveGameInfo.Game>();
             int[] gamesSavedByTeam = new int[teams.Count];
@@ -296,7 +297,7 @@ namespace ArtificialNeuralNetwork
             return saveGames;
         }
 
-        public void MakeTestCases()
+        private void MakeTestCases()
         {
             //foreach non-buffer game make a testcase with previous 3 games from same team
             for (int i = 0; i < games.Count; i++)
@@ -394,9 +395,14 @@ namespace ArtificialNeuralNetwork
 
         public double Normalization(double currentValue, double minValue, double maxValue)
         {
-            if (maxValue-minValue == 0)
+            if (minValue > maxValue)
+            { throw new ArgumentOutOfRangeException(); }
+            else if (maxValue - minValue == 0)
             { return 0; }
-            return (2 * ((currentValue - minValue) / (maxValue - minValue)) - 1);
+            else
+            {
+                return (2 * ((currentValue - minValue) / (maxValue - minValue)) - 1);
+            }
         }
 
         private void ConvertGames()
@@ -410,7 +416,7 @@ namespace ArtificialNeuralNetwork
             Console.WriteLine($"Done converting from JSON Class to Game Class");
         }
 
-        public void LoadPlayerNamesDictionary()
+        private void LoadPlayerNamesDictionary()
         {
             List<string> uniquePlayerNames = new List<string>();
 
@@ -437,7 +443,7 @@ namespace ArtificialNeuralNetwork
             }
         }
 
-        public void LoadTeamsDictionary()
+        private void LoadTeamsDictionary()
         {
             List<string> uniqueTeamNames = new List<string>();
 
@@ -462,7 +468,7 @@ namespace ArtificialNeuralNetwork
             }
         }
 
-        public double[] GetAllPlayersInTeam(SaveGameInfo.Team team)
+        private double[] GetAllPlayersInTeam(SaveGameInfo.Team team)
         {
             double[][] players = new double[5][];
             double[] allTeamPlayers;
@@ -484,7 +490,7 @@ namespace ArtificialNeuralNetwork
             return allTeamPlayers;
         }
 
-        public void LoadChampionIdDictionary()
+        private void LoadChampionIdDictionary()
         {
             List<int> uniqueChampionId = new List<int>();
 
@@ -546,36 +552,6 @@ namespace ArtificialNeuralNetwork
         {
             return championIds[player.championId];
         }
-
-        /*public NNTestCase SaveGameToTestCase(SaveGameInfo.Game game)
-        {
-            NNTestCase testCase = new NNTestCase();
-            if(game.teams[0].win == true) { testCase.winningTeam = 0; }
-            else { testCase.winningTeam = 1; }
-            testCase.inputNeurons = SaveGameToTeamNeurons(game);
-            return testCase;
-        }*/
-
-        /*public double[] SaveGameToNeurons(SaveGameInfo.Game game)
-        {
-            return CombineArrays(new double[][] { SaveGameToTeamNeurons(game), SaveGameToMiscNeurons(game) });
-        }*/
-
-        /*private double[] SaveGameToTeamNeurons(SaveGameInfo.Game game)
-        {
-            double[][] inputNeuronArray = new double[12][];
-            for (int i = 0; i < 5; i++)
-            {
-                inputNeuronArray[i] = SaveGameToPlayerNeurons(game.teams[0].players[i]);
-            }
-            for (int i = 0; i < 5; i++)
-            {
-                inputNeuronArray[i + 5] = SaveGameToPlayerNeurons(game.teams[1].players[i]);
-            }
-            inputNeuronArray[10] = teams[GetTeamName(game, true)].TeamNeuronInput;
-            inputNeuronArray[11] = teams[GetTeamName(game, false)].TeamNeuronInput;
-            return CombineArrays(inputNeuronArray);
-        }*/
 
         private double[] SaveTeamToMiscNeurons(SaveGameInfo.Team team)
         {
@@ -732,7 +708,7 @@ namespace ArtificialNeuralNetwork
 
         }
 
-        double[] CombineArrays(double[][] jaggedArray)
+        private double[] CombineArrays(double[][] jaggedArray)
         {
             int totalArrayLength = 0;
             for (int i = 0; i < jaggedArray.GetLength(0); i++)
@@ -751,7 +727,7 @@ namespace ArtificialNeuralNetwork
             return returnArray;
         }
 
-        SaveGameInfo.Game GameInfoMatchToSaveGameInfoGame(GameInfo.Match match)
+        private SaveGameInfo.Game GameInfoMatchToSaveGameInfoGame(GameInfo.Match match)
         {
             //still missing some stuff
             SaveGameInfo.Game returnGame = new SaveGameInfo.Game();
@@ -802,7 +778,7 @@ namespace ArtificialNeuralNetwork
             return returnGame;
         }
 
-        SaveGameInfo.Stats GameInfoStatsToSaveGameInfoStats(GameInfo.Stats stats)
+        private SaveGameInfo.Stats GameInfoStatsToSaveGameInfoStats(GameInfo.Stats stats)
         {
             SaveGameInfo.Stats returnStats = new SaveGameInfo.Stats();
             returnStats.participantId = stats.participantId;
