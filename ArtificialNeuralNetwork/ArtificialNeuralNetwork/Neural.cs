@@ -18,7 +18,7 @@ namespace ArtificialNeuralNetwork
         private TransferFunction _outputFunction;
         private TransferFunction _derivativeActivationFunction;
         private TransferFunction _derivativeOutputFunction;
-        private Random rand = new Random();
+        private Random rand = new Random(DateTime.Now.Millisecond);
         #endregion
 
         #region Constructors
@@ -74,7 +74,7 @@ namespace ArtificialNeuralNetwork
             _activationFunction = newTransfer;
         }
 
-        public void Training(TestCase[] trainingCases)
+        public void Training(TestCase[] trainingCases, TestCase[] finaltestCases)
         {
             foreach (TestCase testCase in trainingCases)
             {
@@ -84,7 +84,7 @@ namespace ArtificialNeuralNetwork
                 }
             }
 
-            double totalErrorTerm = 0.0, trainingsRateBegin = 0.0001, trainingsRate, weightDecay = 0.05, previousErrorTerm = 0.0;
+            double totalErrorTerm = 0.0, trainingsRateBegin = 0.01, trainingsRate, weightDecay = 0.05, previousErrorTerm = 0.0;
             double[][] neuronErrorTerm = new double[layers.Length][];
             double[][,] updateSumError = new double[layers.Length][,];
             bool done = false;
@@ -126,6 +126,7 @@ namespace ArtificialNeuralNetwork
                     CalculateUpdateSumError(neuronErrorTerm, updateSumError);
                     totalErrorTerm += (trainingCases[k].winningTeam * Log(layers[layers.Length - 1].activations[0], 10) + (1 - trainingCases[k].winningTeam) * Log(1 - layers[layers.Length - 1].activations[0], 10)) / trainingCases.Length;
                 }
+                //trainingsRate = 0.0001;
 
                 UpdateWeights(updateSumError, trainingsRate, weightDecay, inputSize);
 
@@ -154,6 +155,12 @@ namespace ArtificialNeuralNetwork
                     done = true;
                 }
                 previousErrorTerm = totalErrorTerm;
+
+                if (test % 100 == 0)
+                {
+                    CalulateAccurracy(finaltestCases);
+                }
+
 
             } while (!done);
         }
@@ -185,7 +192,7 @@ namespace ArtificialNeuralNetwork
             Result = (double)Right / (double)(Right + Wrong) * 100;
 
             Console.WriteLine($"Right: {Right}, Wrong: {Wrong}, Result: {Result}%");
-            Console.Read();
+            //Console.Read();
         }
 
         public void CalculateErrorTerm(double[][] neuronErrorTerm, int resultMatch)
