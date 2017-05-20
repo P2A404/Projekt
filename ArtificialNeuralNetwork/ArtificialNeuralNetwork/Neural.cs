@@ -18,7 +18,7 @@ namespace ArtificialNeuralNetwork
         private TransferFunction _outputFunction;
         private TransferFunction _derivativeActivationFunction;
         private TransferFunction _derivativeOutputFunction;
-        private Random rand = new Random();
+        private Random rand = new Random(DateTime.Now.Millisecond);
         #endregion
 
         #region Constructors
@@ -84,7 +84,7 @@ namespace ArtificialNeuralNetwork
                 }
             }
 
-            double totalErrorTerm = 0.0, trainingsRateBegin = 0.0001, trainingsRate, weightDecay = 0.05, previousErrorTerm = 0.0;
+            double totalErrorTerm = 0.0, trainingsRateBegin = 0.00001, trainingsRate, weightDecay = 0.05, previousErrorTerm = 0.0;
             double[][] neuronErrorTerm = new double[layers.Length][];
             double[][,] updateSumError = new double[layers.Length][,];
             bool done = false;
@@ -128,7 +128,6 @@ namespace ArtificialNeuralNetwork
                 }
 
                 UpdateWeights(updateSumError, trainingsRate, weightDecay, inputSize);
-
                 /*
                 if (totalErrorTerm < 50 && totalErrorTerm > - 50 && trainingsRate == trainingsRateBegin)
                 {
@@ -149,7 +148,7 @@ namespace ArtificialNeuralNetwork
                 test++;
 
                 // Changeable total error term
-                if (((previousErrorTerm - totalErrorTerm) < 0.000001) && ((previousErrorTerm - totalErrorTerm) > -0.000001))
+                if (((previousErrorTerm - totalErrorTerm) < 0.0000001) && ((previousErrorTerm - totalErrorTerm) > -0.0000001))
                 {
                     done = true;
                 }
