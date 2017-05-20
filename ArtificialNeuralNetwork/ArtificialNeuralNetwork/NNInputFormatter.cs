@@ -26,6 +26,7 @@ namespace ArtificialNeuralNetwork
             MinMax(minMaxList);
             MakeTestCases();
             InputNeuronSize = testCases[0].inputNeurons.Length;
+            Console.WriteLine(InputNeuronSize.ToString());
             TrainingTestCases = testCases.Take(TrainingPoolSize).ToArray();
             TestingTestCases = testCases.GetRange(TrainingPoolSize, (testCases.Count - TrainingPoolSize)).ToArray();
         }
@@ -337,7 +338,7 @@ namespace ArtificialNeuralNetwork
                 }
             }
             //make recent games for each test case into input neurons
-            CalculateTestCasesInputNeurons();
+            CalculateTestCasesDeltaInputNeurons();
             Console.WriteLine($"Done making {testCases.Count} Test Cases.");
         }
 
@@ -353,6 +354,25 @@ namespace ArtificialNeuralNetwork
                 for (int j = 0; j < 3; j++)
                 {
                     recentGamesNeurons[j + 3] = SaveTeamToTeamNeurons(testCases[i].redTeamLatestGames[j]);
+                }
+                testCases[i].inputNeurons = CombineArrays(recentGamesNeurons);
+            }
+        }
+
+        private void CalculateTestCasesDeltaInputNeurons()
+        {
+            for (int i = 0; i < testCases.Count; i++)
+            {
+                double[][] recentGamesNeurons = new double[3][];
+                for (int j = 0; j < 3; j++)
+                {
+                    double[] blue = SaveTeamToTeamNeurons(testCases[i].blueTeamLatestGames[j]);
+                    double[] red = SaveTeamToTeamNeurons(testCases[i].redTeamLatestGames[j]);
+                    recentGamesNeurons[j] = blue;
+                    for(int j2 = 0; j2 < recentGamesNeurons[j].Length; j2++)
+                    {
+                        recentGamesNeurons[j][j2] -= red[j2];
+                    }
                 }
                 testCases[i].inputNeurons = CombineArrays(recentGamesNeurons);
             }

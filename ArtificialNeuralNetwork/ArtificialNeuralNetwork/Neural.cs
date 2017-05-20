@@ -84,7 +84,7 @@ namespace ArtificialNeuralNetwork
                 }
             }
 
-            double totalErrorTerm = 0.0, trainingsRateBegin = 0.00001, trainingsRate, weightDecay = 0.05, previousErrorTerm = 0.0;
+            double totalErrorTerm = 0.0, trainingsRateBegin = 0.01, trainingsRate, weightDecay = 0.05, previousErrorTerm = 0.0;
             double[][] neuronErrorTerm = new double[layers.Length][];
             double[][,] updateSumError = new double[layers.Length][,];
             bool done = false;
@@ -152,7 +152,7 @@ namespace ArtificialNeuralNetwork
                 test++;
 
                 // Changeable total error term
-                if (((previousErrorTerm - totalErrorTerm) < 0.00000001) && ((previousErrorTerm - totalErrorTerm) > -0.00000001))
+                if (((previousErrorTerm - totalErrorTerm) < 0.0000001) && ((previousErrorTerm - totalErrorTerm) > -0.0000001))
                 {
                     done = true;
                 }
