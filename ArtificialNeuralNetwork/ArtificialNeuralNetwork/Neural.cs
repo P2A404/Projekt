@@ -74,7 +74,7 @@ namespace ArtificialNeuralNetwork
             _activationFunction = newTransfer;
         }
 
-        public void Training(TestCase[] trainingCases)
+        public void Training(TestCase[] trainingCases, TestCase[] testCases)
         {
             foreach (TestCase testCase in trainingCases)
             {
@@ -145,14 +145,20 @@ namespace ArtificialNeuralNetwork
 
                 // test
                 Console.WriteLine($"totalErrorTerm: {totalErrorTerm}      test: {test}");
+                if (test%50 == 0)
+                {
+                    CalulateAccurracy(testCases);
+                }
                 test++;
 
                 // Changeable total error term
-                if (((previousErrorTerm - totalErrorTerm) < 0.0000001) && ((previousErrorTerm - totalErrorTerm) > -0.0000001))
+                if (((previousErrorTerm - totalErrorTerm) < 0.00000001) && ((previousErrorTerm - totalErrorTerm) > -0.00000001))
                 {
                     done = true;
                 }
                 previousErrorTerm = totalErrorTerm;
+
+                
 
             } while (!done);
         }

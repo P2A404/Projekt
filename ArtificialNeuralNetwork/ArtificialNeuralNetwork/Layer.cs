@@ -24,12 +24,19 @@ namespace ArtificialNeuralNetwork
             {
                 for (int i2 = 0; i2 < weights.GetLength(1); i2++)
                 {
-                    double random = ((rand.NextDouble() * 2) - 1) / Math.Sqrt(prevSize + 1);
-                    while (random == 0.0)
+                    if (i2 == weights.GetLength(1) - 1)
                     {
-                        random = ((rand.NextDouble() * 2) - 1) / Math.Sqrt(prevSize + 1);
+                        weights[i, i2] = 0;
                     }
-                    weights[i, i2] = random;
+                    else
+                    {
+                        double random = ((rand.NextDouble() * 2) - 1) / Math.Sqrt(prevSize + 1);
+                        while (random == 0.0)
+                        {
+                            random = ((rand.NextDouble() * 2) - 1) / Math.Sqrt(prevSize + 1);
+                        }
+                        weights[i, i2] = random;
+                    }
                 }
             }
         }
