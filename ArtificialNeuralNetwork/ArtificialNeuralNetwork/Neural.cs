@@ -18,12 +18,12 @@ namespace ArtificialNeuralNetwork
         private TransferFunction _outputFunction;
         private TransferFunction _derivativeActivationFunction;
         private TransferFunction _derivativeOutputFunction;
-        private Random rand = new Random();
+        private Random rand = new Random(DateTime.Now.Millisecond);
         #endregion
 
         #region Constructors
         //neuralt netværk constructor med bestemt størrelse
-        public NeuralNetwork(int[] size, TransferFunction activationFunction, TransferFunction outputFunction, TransferFunction derivativeActivationFunction, TransferFunction derivativeOutputFunction)
+        public NeuralNetwork(int[] size, TransferFunction activationFunction, TransferFunction derivativeActivationFunction, TransferFunction outputFunction, TransferFunction derivativeOutputFunction)
         {
             _activationFunction = activationFunction;
             _outputFunction = outputFunction;
@@ -74,11 +74,9 @@ namespace ArtificialNeuralNetwork
             _activationFunction = newTransfer;
         }
 
-        public void Training(TestCase[] testCases)
+        public void Training(TestCase[] trainingCases)
         {
-            // layers[i].weight.GetLength(0); row
-            // layers[i].weight.GetLength(1); column
-            foreach (TestCase testCase in testCases)
+            foreach (TestCase testCase in trainingCases)
             {
                 if (testCase.inputNeurons.Length != inputSize)
                 {
@@ -86,9 +84,10 @@ namespace ArtificialNeuralNetwork
                 }
             }
 
-            double totalErrorTerm = 0.0, trainingsRateBegin = 0.01, trainingsRate, weightDecay = 0.5;
+            double totalErrorTerm = 0.0, trainingsRateBegin = 0.00001, trainingsRate, weightDecay = 0.05, previousErrorTerm = 0.0;
             double[][] neuronErrorTerm = new double[layers.Length][];
             double[][,] updateSumError = new double[layers.Length][,];
+            bool done = false;
 
             for (int l = 0; l < layers.GetLength(0); l++)
             {
@@ -100,7 +99,7 @@ namespace ArtificialNeuralNetwork
             int test = 0;
             do
             {
-                // Clear the neuronErrorTerm and sumOfOutputError
+                // Clear the neuronErrorTerm and sumOfOutputError 
                 for (int i = 0; i < layers.Length; i++)
                 {
                     Array.Clear(neuronErrorTerm[i], 0, neuronErrorTerm[i].Length);
@@ -113,73 +112,108 @@ namespace ArtificialNeuralNetwork
                     }
                 }
 
-                for (int k = 0; k < testCases.Length; k++)
+                totalErrorTerm = 0;
+
+                for (int k = 0; k < trainingCases.Length; k++)
                 {
                     // Run the neuron network
-                    Cycle(testCases[k].inputNeurons);
+                    Cycle(trainingCases[k].inputNeurons);
 
                     // Calculate the errors
-                    CalculateErrorTerm(neuronErrorTerm, testCases[k].winningTeam);
+                    CalculateErrorTerm(neuronErrorTerm, trainingCases[k].winningTeam);
+
+                    // Update the sum with the errors
                     CalculateUpdateSumError(neuronErrorTerm, updateSumError);
-                    //Console.WriteLine($"test case {k}.");
+                    totalErrorTerm += (trainingCases[k].winningTeam * Log(layers[layers.Length - 1].activations[0], 10) + (1 - trainingCases[k].winningTeam) * Log(1 - layers[layers.Length - 1].activations[0], 10)) / trainingCases.Length;
                 }
 
                 UpdateWeights(updateSumError, trainingsRate, weightDecay, inputSize);
-
-                // Find totalErrorTerm
-                totalErrorTerm = 0;
-
-                totalErrorTerm = neuronErrorTerm[layers.Length - 1][0];
-
-                if (totalErrorTerm < 10 && trainingsRate == trainingsRateBegin)
+                /*
+                if (totalErrorTerm < 50 && totalErrorTerm > - 50 && trainingsRate == trainingsRateBegin)
                 {
                     trainingsRate /= 10;
                 }
-                else if (totalErrorTerm < 5 && trainingsRate == trainingsRateBegin / 10)
+                else if (totalErrorTerm < 10 && totalErrorTerm > - 10 && trainingsRate == trainingsRateBegin / 10)
                 {
                     trainingsRate /= 10;
                 }
-                else if (totalErrorTerm < 1 && trainingsRate == trainingsRateBegin / 100)
+                else if (totalErrorTerm < 1 && totalErrorTerm > -1 && trainingsRate == trainingsRateBegin / 100)
                 {
                     trainingsRate /= 10;
                 }
+                */
 
                 // test
                 Console.WriteLine($"totalErrorTerm: {totalErrorTerm}      test: {test}");
                 test++;
-                if (test > 100)
+
+                // Changeable total error term
+                if (((previousErrorTerm - totalErrorTerm) < 0.0000001) && ((previousErrorTerm - totalErrorTerm) > -0.0000001))
                 {
-                    test = 0;
+                    done = true;
                 }
-                
-            } while (totalErrorTerm > 0.02 || totalErrorTerm < -0.02); // Changeable total error term
+                previousErrorTerm = totalErrorTerm;
+
+            } while (!done);
+        }
+
+        public void CalulateAccurracy(TestCase[] testCases)
+        {
+            List<double> listOfPredict = new List<double>();
+
+            int Right = 0;
+            int Wrong = 0;
+            double Result = 0.0;
+
+            for (int i = 0; i < testCases.Length; i++)
+            {
+                Cycle(testCases[i].inputNeurons);
+                double Predict = layers[layers.Length - 1].activations[0];
+
+                listOfPredict.Add(Predict);
+
+                if ((listOfPredict[i] < 0.5 && testCases[i].winningTeam == 0) || (listOfPredict[i] > 0.5 && testCases[i].winningTeam == 1))
+                {
+                    Right++;
+                }
+                else
+                {
+                    Wrong++;
+                }
+            }
+            Result = (double)Right / (double)(Right + Wrong) * 100;
+
+            Console.WriteLine($"Right: {Right}, Wrong: {Wrong}, Result: {Result}%");
+            Console.Read();
         }
 
         public void CalculateErrorTerm(double[][] neuronErrorTerm, int resultMatch)
         {
             double sumError = 0.0;
+            double[] derivativeActivation;
 
             for (int l = layers.Length - 1; l >= 0; l--)
             {
                 if (l != layers.Length - 1)
                 {
-                    // j start at 1 because bias neuron don't have an error
+                    derivativeActivation = _derivativeActivationFunction(layers[l].sums);
+
                     for (int j = 0; j < layers[l].weights.GetLength(0); j++)
                     {
                         sumError = 0.0;
-                        // Check for not second last layer
-                        // int k = l != layers.Length - 2 ? 1 : 0;
-                        for (int k = 0; k < layers[l+1].weights.GetLength(0); k++)
+
+                        for (int k = 0; k < layers[l + 1].weights.GetLength(0); k++)
                         {
-                            sumError += neuronErrorTerm[l + 1][k] * layers[l+1].weights[k, j];
+                            sumError += neuronErrorTerm[l + 1][k] * layers[l + 1].weights[k, j + 1];
                         }
-                        neuronErrorTerm[l][j] += sumError * _derivativeActivationFunction(layers[l].sums)[j];
+                        neuronErrorTerm[l][j] = sumError * derivativeActivation[j];
                     }
                 }
                 else
                 {
                     // Last layer
-                    neuronErrorTerm[l][0] += (resultMatch - layers[l].activations[0]) * _derivativeOutputFunction(layers[l].sums)[0];
+                    neuronErrorTerm[l][0] = resultMatch - layers[l].activations[0];
+                    //neuronErrorTerm[l][0] = (resultMatch / (Log(10) * layers[l].activations[0]) + (1.0 - resultMatch) / (Log(10) * (layers[l].activations[0] - 1))) * _derivativeOutputFunction(layers[l].sums)[0];
                 }
             }
         }
@@ -188,21 +222,16 @@ namespace ArtificialNeuralNetwork
         {
             for (int l = 0; l < layers.Length; l++)
             {
-                // int j = ((l != layers.Length - 2) ? 1 : 0);
                 for (int j = 0; j < layers[l].weights.GetLength(0); j++)
                 {
                     if (l != 0)
                     {
-                        for (int i = 0; i < layers[l].weights.GetLength(1); i++)
+                        // Bias
+                        updateSumError[l][j, 0] += neuronErrorTerm[l][0];
+
+                        for (int i = 1; i < layers[l].weights.GetLength(1); i++)
                         {
-                            if (i == 0)
-                            {
-                                updateSumError[l][j, i] += neuronErrorTerm[l][j];
-                            }
-                            else
-                            {
-                                updateSumError[l][j, i] += neuronErrorTerm[l][j] * layers[l - 1].activations[i - 1];
-                            }
+                            updateSumError[l][j, i] += neuronErrorTerm[l][j] * layers[l - 1].activations[i - 1];
                         }
                     }
                     else
@@ -219,23 +248,25 @@ namespace ArtificialNeuralNetwork
 
         public void UpdateWeights(double[][,] updateSumError, double trainingsRate, double weightDecay, int trainingsDataLength)
         {
-            double failRate;
+            double weightsRegularization;
             for (int l = 0; l < layers.Length; l++)
             {
                 for (int j = 0; j < layers[l].weights.GetLength(0); j++)
                 {
-                    for (int i = 0; i < layers[l].weights.GetLength(1); i++)
+                    // Bias
+                    layers[l].weights[j, 0] += trainingsRate * (updateSumError[l][j, 0] / trainingsDataLength);
+
+                    for (int i = 1; i < layers[l].weights.GetLength(1); i++)
                     {
-                        if (i != 0)
+                        if (layers[l].weights[j, i] < 0)
                         {
-                            failRate = updateSumError[l][j, i] + weightDecay * layers[l].weights[j, i];
+                            weightsRegularization = -layers[l].weights[j, i];
                         }
                         else
                         {
-                            // Bias
-                            failRate = updateSumError[l][j, i];
+                            weightsRegularization = layers[l].weights[j, i];
                         }
-                        layers[l].weights[j, i] += trainingsRate * failRate / trainingsDataLength;
+                        layers[l].weights[j, i] += trainingsRate * (updateSumError[l][j, i] / trainingsDataLength + weightDecay * weightsRegularization);
                     }
                 }
             }
@@ -276,12 +307,12 @@ namespace ArtificialNeuralNetwork
                     if (i != layers.Length - 1)
                     {
                         data = _activationFunction(data);
-                        layers[i].activations = _activationFunction(data);
+                        layers[i].activations = data;
                     }
                     else
                     {
                         data = _outputFunction(data);
-                        layers[i].activations = _outputFunction(data);
+                        layers[i].activations = data;
                     }
                 }
                 //Possibility Tree

@@ -29,6 +29,7 @@ namespace ArtificialNeuralNetwork
 
         public class Team
         {
+            public double gameDuration { get; set; }
             public int teamId { get; set; }
             public string teamName { get; set; }
             public bool win { get; set; }
@@ -38,11 +39,11 @@ namespace ArtificialNeuralNetwork
             public bool firstBaron { get; set; }
             public bool firstDragon { get; set; }
             public bool firstRiftHerald { get; set; }
-            public int towerKills { get; set; }
-            public int inhibitorKills { get; set; }
-            public int baronKills { get; set; }
-            public int dragonKills { get; set; }
-            public int riftHeraldKills { get; set; }
+            public double towerKills { get; set; }
+            public double inhibitorKills { get; set; }
+            public double baronKills { get; set; }
+            public double dragonKills { get; set; }
+            public double riftHeraldKills { get; set; }
             public int[] bannedChampionId { get; set; }
             public Player[] players { get; set; }
         }
@@ -63,50 +64,50 @@ namespace ArtificialNeuralNetwork
         {
             public int participantId { get; set; }
             public bool win { get; set; }
-            public int kills { get; set; }
-            public int deaths { get; set; }
-            public int assists { get; set; }
-            public int largestKillingSpree { get; set; }
-            public int largestMultiKill { get; set; }
-            public int killingSprees { get; set; }
-            public int longestTimeSpentLiving { get; set; }
-            public int doubleKills { get; set; }
-            public int tripleKills { get; set; }
-            public int quadraKills { get; set; }
-            public int pentaKills { get; set; }
-            public int unrealKills { get; set; }
-            public int totalDamageDealt { get; set; }
-            public int magicDamageDealt { get; set; }
-            public int physicalDamageDealt { get; set; }
-            public int trueDamageDealt { get; set; }
-            public int largestCriticalStrike { get; set; }
-            public int totalDamageDealtToChampions { get; set; }
-            public int magicDamageDealtToChampions { get; set; }
-            public int physicalDamageDealtToChampions { get; set; }
-            public int trueDamageDealtToChampions { get; set; }
-            public int totalHeal { get; set; }
-            public int totalUnitsHealed { get; set; }
-            public int damageSelfMitigated { get; set; }
-            public int damageDealtToObjectives { get; set; }
-            public int damageDealtToTurrets { get; set; }
-            public int timeCCingOthers { get; set; }
-            public int totalDamageTaken { get; set; }
-            public int magicalDamageTaken { get; set; }
-            public int physicalDamageTaken { get; set; }
-            public int trueDamageTaken { get; set; }
-            public int goldEarned { get; set; }
-            public int goldSpent { get; set; }
-            public int turretKills { get; set; }
-            public int inhibitorKills { get; set; }
-            public int totalMinionsKilled { get; set; }
-            public int neutralMinionsKilled { get; set; }
-            public int neutralMinionsKilledTeamJungle { get; set; }
-            public int neutralMinionsKilledEnemyJungle { get; set; }
-            public int totalTimeCrowdControlDealt { get; set; }
-            public int champLevel { get; set; }
-            public int visionWardsBoughtInGame { get; set; }
-            public int wardsPlaced { get; set; }
-            public int wardsKilled { get; set; }
+            public double kills { get; set; }
+            public double deaths { get; set; }
+            public double assists { get; set; }
+            public double largestKillingSpree { get; set; }
+            public double largestMultiKill { get; set; }
+            public double killingSprees { get; set; }
+            public double longestTimeSpentLiving { get; set; }
+            public double doubleKills { get; set; }
+            public double tripleKills { get; set; }
+            public double quadraKills { get; set; }
+            public double pentaKills { get; set; }
+            public double unrealKills { get; set; }
+            public double totalDamageDealt { get; set; }
+            public double magicDamageDealt { get; set; }
+            public double physicalDamageDealt { get; set; }
+            public double trueDamageDealt { get; set; }
+            public double largestCriticalStrike { get; set; }
+            public double totalDamageDealtToChampions { get; set; }
+            public double magicDamageDealtToChampions { get; set; }
+            public double physicalDamageDealtToChampions { get; set; }
+            public double trueDamageDealtToChampions { get; set; }
+            public double totalHeal { get; set; }
+            public double totalUnitsHealed { get; set; }
+           // public double damageSelfMitigated { get; set; }
+            //public double damageDealtToObjectives { get; set; }
+            //public double damageDealtToTurrets { get; set; }
+            //public double timeCCingOthers { get; set; }
+            public double totalDamageTaken { get; set; }
+            public double magicalDamageTaken { get; set; }
+            public double physicalDamageTaken { get; set; }
+            public double trueDamageTaken { get; set; }
+            public double goldEarned { get; set; }
+            public double goldSpent { get; set; }
+            public double turretKills { get; set; }
+            public double inhibitorKills { get; set; }
+            public double totalMinionsKilled { get; set; }
+            public double neutralMinionsKilled { get; set; }
+            public double neutralMinionsKilledTeamJungle { get; set; }
+            public double neutralMinionsKilledEnemyJungle { get; set; }
+            public double totalTimeCrowdControlDealt { get; set; }
+            public double champLevel { get; set; }
+            public double visionWardsBoughtInGame { get; set; }
+            public double wardsPlaced { get; set; }
+            public double wardsKilled { get; set; }
             public bool firstBloodKill { get; set; }
             public bool firstBloodAssist { get; set; }
             public bool firstTowerKill { get; set; }
@@ -133,7 +134,8 @@ namespace ArtificialNeuralNetwork
         public class Differencial
         {
             //has diffrent amount of variables based on time.
-            public float _40end { get; set; }
+            public float _50end { get; set; }
+            public float _4050 { get; set; }
             public float _3040 { get; set; }
             public float _1020 { get; set; }
             public float _2030 { get; set; }
