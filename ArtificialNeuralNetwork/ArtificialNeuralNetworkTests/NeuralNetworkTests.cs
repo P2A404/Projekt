@@ -61,5 +61,25 @@ namespace ArtificialNeuralNetwork.Tests
                 Assert.Throws(typeof(ArgumentNullException), delegate () { nn.Sum(null, new double[,] { { 0 } }); });
             });
         }
+
+        [TestCase(new double[] { 1, 1 }, 0, new double[] { 0, 0 })]
+        [TestCase(new double[] { 1, 1 }, 1, new double[] { 2, 2 })]
+        [TestCase(new double[] { 1, 1 }, 2, new double[] { 1, -1 })]
+        [TestCase(new double[] { -1, -1 }, 3, new double[] { -1, -1 })]
+        [TestCase(new double[] { -1, -1 }, 4, new double[] { 1, 1 })]
+        public void Sum_Test(double[] input, int weightsIndex, double[] expected)
+        {
+            double[][,] weights = new double[5][,];
+            weights[0] = new double[,] { { 0, 0 }, { 0, 0 } };
+            weights[1] = new double[,] { { 1, 1 }, { 1, 1 } };
+            weights[2] = new double[,] { { 0.5, 0.5 }, { -0.5, -0.5 } };
+            weights[3] = new double[,] { { 1, 0 }, { 1, 0 } };
+            weights[4] = new double[,] { { -0.5, -0.5 }, { -0.5, -0.5 } };
+
+            //Act
+            double[] result = nn.Sum(input, weights[weightsIndex]);
+            //Assert
+            Assert.AreEqual(expected, result);
+        }
     }
 }
