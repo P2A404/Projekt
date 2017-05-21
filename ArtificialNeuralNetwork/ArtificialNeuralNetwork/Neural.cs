@@ -163,7 +163,7 @@ namespace ArtificialNeuralNetwork
 
                 listOfPredict.Add(Predict);
 
-                if ((listOfPredict[i] < 0.5 && testCases[i].winningTeam == 0) || (listOfPredict[i] > 0.5 && testCases[i].winningTeam == 1))
+                if ((listOfPredict[i] < 0.5 && testCases[i].winningTeam == 0) || (listOfPredict[i] >= 0.5 && testCases[i].winningTeam == 1))
                 {
                     Right++;
                 }
