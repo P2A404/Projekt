@@ -7,7 +7,7 @@ using static System.Math;
 
 namespace ArtificialNeuralNetwork
 {
-    //make layers a class consturct med activering og størrelse
+    // Make layers a class consturct with activation and the size
     class NeuralNetwork
     {
         #region Variables
@@ -22,7 +22,7 @@ namespace ArtificialNeuralNetwork
         #endregion
 
         #region Constructors
-        //neuralt netværk constructor med bestemt størrelse
+        // Neural network constructor with specific sizes
         public NeuralNetwork(int[] size, TransferFunction activationFunction, TransferFunction derivativeActivationFunction, TransferFunction outputFunction, TransferFunction derivativeOutputFunction)
         {
             _activationFunction = activationFunction;
@@ -37,7 +37,7 @@ namespace ArtificialNeuralNetwork
             }
         }
 
-        //Tomt neuralt netværk constructor til objectorienteret/dynamisk skabelse
+        // Empty neural network constructor for object oriented/dynamic construction
         public NeuralNetwork(TransferFunction activationFunction, TransferFunction activationFunctionDerivative, TransferFunction outputFunction, TransferFunction outputFunctionDerivative)
         {
             _activationFunction = activationFunction;
@@ -52,7 +52,7 @@ namespace ArtificialNeuralNetwork
 
         public void AddLayer(Layer lay)
         {
-            //Work in progress
+            // Work in progress
             Layer[] newLayers = new Layer[layers.Length + 1];
             for (int i = 0; i < newLayers.Length; i++)
             {
@@ -68,7 +68,7 @@ namespace ArtificialNeuralNetwork
             layers = newLayers;
         }
 
-        //maybie not have this?
+        // Maybie not have this?
         public void ChangeTransferFunction(TransferFunction newTransfer)
         {
             _activationFunction = newTransfer;
@@ -84,7 +84,7 @@ namespace ArtificialNeuralNetwork
                 }
             }
 
-            double totalErrorTerm = 0.0, trainingsRateBegin = 0.01, trainingsRate, weightDecay = 0.05, previousErrorTerm = 0.0;
+            double totalErrorTerm = 0.0, trainingsRate = 0.01, weightDecay = 0.05, previousErrorTerm = 0.0;
             double[][] neuronErrorTerm = new double[layers.Length][];
             double[][,] updateSumError = new double[layers.Length][,];
             bool done = false;
@@ -94,9 +94,8 @@ namespace ArtificialNeuralNetwork
                 neuronErrorTerm[l] = new double[layers[l].weights.GetLength(0)];
                 updateSumError[l] = new double[layers[l].weights.GetLength(0), layers[l].weights.GetLength(1)];
             }
-            trainingsRate = trainingsRateBegin;
 
-            int test = 0;
+            int test = 1;
             do
             {
                 // Clear the neuronErrorTerm and sumOfOutputError 
@@ -126,30 +125,14 @@ namespace ArtificialNeuralNetwork
                     CalculateUpdateSumError(neuronErrorTerm, updateSumError);
                     totalErrorTerm += (trainingCases[k].winningTeam * Log(layers[layers.Length - 1].activations[0], 10) + (1 - trainingCases[k].winningTeam) * Log(1 - layers[layers.Length - 1].activations[0], 10)) / trainingCases.Length;
                 }
-                //trainingsRate = 0.0001;
 
                 UpdateWeights(updateSumError, trainingsRate, weightDecay, inputSize);
 
-                /*
-                if (totalErrorTerm < 50 && totalErrorTerm > - 50 && trainingsRate == trainingsRateBegin)
-                {
-                    trainingsRate /= 10;
-                }
-                else if (totalErrorTerm < 10 && totalErrorTerm > - 10 && trainingsRate == trainingsRateBegin / 10)
-                {
-                    trainingsRate /= 10;
-                }
-                else if (totalErrorTerm < 1 && totalErrorTerm > -1 && trainingsRate == trainingsRateBegin / 100)
-                {
-                    trainingsRate /= 10;
-                }
-                */
-
-                // test
+                // Result for the current test
                 Console.WriteLine($"totalErrorTerm: {totalErrorTerm}      test: {test}");
                 test++;
 
-                // Changeable total error term
+                // Change in total error term
                 if (((previousErrorTerm - totalErrorTerm) < 0.000001) && ((previousErrorTerm - totalErrorTerm) > -0.000001))
                 {
                     done = true;
@@ -158,14 +141,14 @@ namespace ArtificialNeuralNetwork
 
                 if (test % 100 == 0)
                 {
-                    CalulateAccurracy(finaltestCases);
+                    CalculateAccuracy(finaltestCases);
                 }
 
 
             } while (!done);
         }
 
-        public void CalulateAccurracy(TestCase[] testCases)
+        public void CalculateAccuracy(TestCase[] testCases)
         {
             List<double> listOfPredict = new List<double>();
 
@@ -192,7 +175,6 @@ namespace ArtificialNeuralNetwork
             Result = (double)Right / (double)(Right + Wrong) * 100;
 
             Console.WriteLine($"Right: {Right}, Wrong: {Wrong}, Result: {Result}%");
-            //Console.Read();
         }
 
         public void CalculateErrorTerm(double[][] neuronErrorTerm, int resultMatch)
@@ -221,7 +203,6 @@ namespace ArtificialNeuralNetwork
                 {
                     // Last layer
                     neuronErrorTerm[l][0] = resultMatch - layers[l].activations[0];
-                    //neuronErrorTerm[l][0] = (resultMatch / (Log(10) * layers[l].activations[0]) + (1.0 - resultMatch) / (Log(10) * (layers[l].activations[0] - 1))) * _derivativeOutputFunction(layers[l].sums)[0];
                 }
             }
         }
@@ -256,7 +237,6 @@ namespace ArtificialNeuralNetwork
 
         public void UpdateWeights(double[][,] updateSumError, double trainingsRate, double weightDecay, int trainingsDataLength)
         {
-            double weightsRegularization;
             for (int l = 0; l < layers.Length; l++)
             {
                 for (int j = 0; j < layers[l].weights.GetLength(0); j++)
@@ -266,15 +246,7 @@ namespace ArtificialNeuralNetwork
 
                     for (int i = 1; i < layers[l].weights.GetLength(1); i++)
                     {
-                        if (layers[l].weights[j, i] < 0)
-                        {
-                            weightsRegularization = -layers[l].weights[j, i];
-                        }
-                        else
-                        {
-                            weightsRegularization = layers[l].weights[j, i];
-                        }
-                        layers[l].weights[j, i] += trainingsRate * (updateSumError[l][j, i] / trainingsDataLength + weightDecay * weightsRegularization);
+                        layers[l].weights[j, i] += trainingsRate * (updateSumError[l][j, i] / trainingsDataLength + weightDecay * Abs(layers[l].weights[j, i]));
                     }
                 }
             }
@@ -290,11 +262,11 @@ namespace ArtificialNeuralNetwork
             {
                 latestInput = input;
                 double[] data = input;
-                //Cycle through network
+                // Cycle through network
                 for (int i = 0; i < layers.Length; i++)
                 {
-                    //Set up bias node for input
-                    //make into function
+                    // Set up bias node for input
+                    // Make into function
                     double[] newdata = new double[data.Length + 1];
                     for (int j = 0; j < newdata.Length; j++)
                     {
@@ -308,10 +280,10 @@ namespace ArtificialNeuralNetwork
                         }
                     }
                     data = newdata;
-                    //Find sums for each neuron
+                    // Find sums for each neuron
                     data = Sum(data, layers[i].weights);
                     layers[i].sums = data;
-                    //Use Transferfunction / Outputfunction on each sum
+                    // Use Transferfunction / Outputfunction on each sum
                     if (i != layers.Length - 1)
                     {
                         data = _activationFunction(data);
@@ -323,7 +295,7 @@ namespace ArtificialNeuralNetwork
                         layers[i].activations = data;
                     }
                 }
-                //Possibility Tree
+
                 return data;
             }
         }

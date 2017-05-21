@@ -87,7 +87,7 @@ namespace ArtificialNeuralNetwork
             public double trueDamageDealtToChampions { get; set; }
             public double totalHeal { get; set; }
             public double totalUnitsHealed { get; set; }
-           // public double damageSelfMitigated { get; set; }
+            //public double damageSelfMitigated { get; set; }
             //public double damageDealtToObjectives { get; set; }
             //public double damageDealtToTurrets { get; set; }
             //public double timeCCingOthers { get; set; }
@@ -118,7 +118,7 @@ namespace ArtificialNeuralNetwork
 
         public class Timeline
         {
-            public int participantId { get; set; } //1 = top, 2 = jungle, 3 = mid, 4 = adc, 5 = support
+            public int participantId { get; set; } // 1 = top, 2 = jungle, 3 = mid, 4 = adc, 5 = support
             public Differencial creepsPerMinDeltas { get; set; }
             public Differencial xpPerMinDeltas { get; set; }
             public Differencial goldPerMinDeltas { get; set; }
@@ -127,13 +127,13 @@ namespace ArtificialNeuralNetwork
             public Differencial damageTakenPerMinDeltas { get; set; }
             public Differencial damageTakenDiffPerMinDeltas { get; set; }
             
-            public string role { get; set; } //figure out what to do with this
-            public string lane { get; set; } //this too.
+            public string role { get; set; } // Figure out what to do with this
+            public string lane { get; set; } // This too.
         }
 
         public class Differencial
         {
-            //has diffrent amount of variables based on time.
+            // Has diffrent amount of variables based on time.
             public float _50end { get; set; }
             public float _4050 { get; set; }
             public float _3040 { get; set; }
