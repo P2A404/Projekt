@@ -26,7 +26,6 @@ namespace ArtificialNeuralNetwork
             MinMax(minMaxList);
             MakeTestCases();
             InputNeuronSize = testCases[0].inputNeurons.Length;
-            Console.WriteLine(InputNeuronSize.ToString());
             TrainingTestCases = testCases.Take(TrainingPoolSize).ToArray();
             TestingTestCases = testCases.GetRange(TrainingPoolSize, (testCases.Count - TrainingPoolSize)).ToArray();
         }
@@ -338,7 +337,7 @@ namespace ArtificialNeuralNetwork
                 }
             }
             //make recent games for each test case into input neurons
-            CalculateTestCasesDeltaInputNeurons();
+            CalculateTestCasesInputNeurons();
             Console.WriteLine($"Done making {testCases.Count} Test Cases.");
         }
 

@@ -23,16 +23,9 @@ namespace ArtificialNeuralNetwork.Tests
         {
             nn = new NeuralNetwork(new int[] { 0 }, tf, tf, tf, tf);
         }
-
-        [Test()]
-        public void PrintArrayTest()
-        {
-            Assert.Pass();
-        }
-
         
         [Test()]
-        public void Sum_Empty()
+        public void Sum_Empty_Test()
         {
             //Arrage
             double[] input = new double[0];
@@ -44,15 +37,16 @@ namespace ArtificialNeuralNetwork.Tests
         }
 
         [Test()]
-        public void Sum_Difference()
+        public void Sum_SizeDifference_Test()
         {
             //Arrage
-            double[] largeInput = new double[1000000];
-            double[,] smallWeights = new double[,] { { 0 } };
+            double[] largeInput = new double[5];
+            double[] smallInput = new double[1];
+            double[,] smallWeights = new double[1,1];
+            double[,] largeWeights = new double[5,5];
             //Act
-            double[] result = nn.Sum(largeInput, smallWeights);
-            //Asser
-            Assert.AreEqual(new double[] { 0 }, result);
+            Assert.Throws(typeof(ArgumentOutOfRangeException), delegate () { nn.Sum(largeInput, smallWeights); });
+            Assert.Throws(typeof(ArgumentOutOfRangeException), delegate () { nn.Sum(smallInput, largeWeights); });
         }
 
         [Test()]
@@ -67,12 +61,5 @@ namespace ArtificialNeuralNetwork.Tests
                 Assert.Throws(typeof(ArgumentNullException), delegate () { nn.Sum(null, new double[,] { { 0 } }); });
             });
         }
-
-        [Test()]
-        public void CycleTest()
-        {
-            Assert.Pass();
-        }
     }
-
 }

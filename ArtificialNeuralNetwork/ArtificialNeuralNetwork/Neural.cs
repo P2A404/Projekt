@@ -128,20 +128,6 @@ namespace ArtificialNeuralNetwork
                 }
 
                 UpdateWeights(updateSumError, trainingsRate, weightDecay, inputSize);
-                /*
-                if (totalErrorTerm < 50 && totalErrorTerm > - 50 && trainingsRate == trainingsRateBegin)
-                {
-                    trainingsRate /= 10;
-                }
-                else if (totalErrorTerm < 10 && totalErrorTerm > - 10 && trainingsRate == trainingsRateBegin / 10)
-                {
-                    trainingsRate /= 10;
-                }
-                else if (totalErrorTerm < 1 && totalErrorTerm > -1 && trainingsRate == trainingsRateBegin / 100)
-                {
-                    trainingsRate /= 10;
-                }
-                */
 
                 // test
                 Console.WriteLine($"totalErrorTerm: {totalErrorTerm}      test: {test}");
@@ -157,8 +143,6 @@ namespace ArtificialNeuralNetwork
                     done = true;
                 }
                 previousErrorTerm = totalErrorTerm;
-
-                
 
             } while (!done);
         }
@@ -346,9 +330,9 @@ namespace ArtificialNeuralNetwork
         public double[] Sum(double[] input, double[,] weights)
         {
             if (input == null || weights == null)
-            {
-                throw new ArgumentNullException();
-            }
+            { throw new ArgumentNullException(); }
+            else if (input.Length != weights.GetLength(1))
+            { throw new ArgumentOutOfRangeException(); }
             double[] returnArray = new double[weights.GetLength(0)];
 
             for (int outputIndex = 0; outputIndex < returnArray.Length; outputIndex++)
