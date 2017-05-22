@@ -18,6 +18,13 @@ namespace ArtificialNeuralNetwork
             blueTeamLatestGames = blueRecent;
             redTeamLatestGames = redRecent;
         }
+
+        public TestCase(SaveGameInfo.Team[] blueRecent, SaveGameInfo.Team[] redRecent)
+        {
+            blueTeamLatestGames = blueRecent;
+            redTeamLatestGames = redRecent;
+        }
+
         public SaveGameInfo.Game actualGame;
         public SaveGameInfo.Team[] blueTeamLatestGames;
         public SaveGameInfo.Team[] redTeamLatestGames;

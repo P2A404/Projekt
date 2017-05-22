@@ -297,6 +297,27 @@ namespace ArtificialNeuralNetwork
             return saveGames;
         }
 
+        public TestCase predictTestCase (string firstTeamName, string secondTeamName)
+        {
+            List<SaveGameInfo.Team> firstTeamGames = new List<SaveGameInfo.Team>();
+            List<SaveGameInfo.Team> secondTeamGames = new List<SaveGameInfo.Team>();
+            for(int i = games.Count-1; i > 0; i--)
+            {
+                if (games[i].teams[0].teamName == firstTeamName && firstTeamGames.Count < 3)
+                { firstTeamGames.Add(games[i].teams[0]); }
+                if (games[i].teams[1].teamName == firstTeamName && firstTeamGames.Count < 3)
+                { firstTeamGames.Add(games[i].teams[1]); }
+
+                if (games[i].teams[0].teamName == secondTeamName && secondTeamGames.Count < 3)
+                { secondTeamGames.Add(games[i].teams[0]); }
+                if (games[i].teams[1].teamName == secondTeamName && secondTeamGames.Count < 3)
+                { secondTeamGames.Add(games[i].teams[1]); }
+                if (firstTeamGames.Count == 3 && secondTeamGames.Count == 3)
+                { break; }
+            }
+            return new TestCase(firstTeamGames.ToArray(), secondTeamGames.ToArray());
+        }
+
         private void MakeTestCases()
         {
             // Foreach non-buffer game make a testcase with previous 3 games from same team
@@ -337,25 +358,25 @@ namespace ArtificialNeuralNetwork
                 }
             }
             // Make recent games for each test case into input neurons
-            CalculateTestCasesInputNeurons();
+            for (int i = 0; i < testCases.Count; i++)
+            {
+                CalculateTestCasesInputNeurons(testCases[i]);
+            }
             Console.WriteLine($"Done making {testCases.Count} Test Cases.");
         }
 
-        private void CalculateTestCasesInputNeurons()
+        public void CalculateTestCasesInputNeurons(TestCase tcase)
         {
-            for (int i = 0; i < testCases.Count; i++)
-            {
                 double[][] recentGamesNeurons = new double[6][];
                 for (int j = 0; j < 3; j++)
                 {
-                    recentGamesNeurons[j] = SaveTeamToTeamNeurons(testCases[i].blueTeamLatestGames[j]);
+                    recentGamesNeurons[j] = SaveTeamToTeamNeurons(tcase.blueTeamLatestGames[j]);
                 }
                 for (int j = 0; j < 3; j++)
                 {
-                    recentGamesNeurons[j + 3] = SaveTeamToTeamNeurons(testCases[i].redTeamLatestGames[j]);
+                    recentGamesNeurons[j + 3] = SaveTeamToTeamNeurons(tcase.redTeamLatestGames[j]);
                 }
-                testCases[i].inputNeurons = CombineArrays(recentGamesNeurons);
-            }
+                tcase.inputNeurons = CombineArrays(recentGamesNeurons);
         }
 
         private void CalculateTestCasesDeltaInputNeurons()

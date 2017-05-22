@@ -142,7 +142,6 @@ namespace ArtificialNeuralNetwork
                     done = true;
                 }
                 previousErrorTerm = totalErrorTerm;
-
             } while (!done);
         }
 
@@ -333,6 +332,15 @@ namespace ArtificialNeuralNetwork
             return returnArray;
         }
 
+        public void Prediction (TestCase pcase, int BoX, int firstTeamHandicap, int secondTeamHandicap)
+        {
+            double[] result = Cycle(pcase.inputNeurons);
+            result = GetChances(BoX, firstTeamHandicap, secondTeamHandicap, result[0], 1 - result[0]);
+            Console.WriteLine($"Chance of {pcase.blueTeamLatestGames[0].teamName} winning: {result[0]*100}%");
+            Console.WriteLine($"Chance of {pcase.redTeamLatestGames[0].teamName} winning: {result[1] * 100}%");
+            Console.WriteLine($"Chance of draw: {result[2] * 100}%");
+        }
+
         double[] GetChances(int BestOf, int HandicapHome, int HandicapOut, double ChanceHome, double ChanceOut)
         {
             double homeChance = 0, outChance = 0, drawChance = 0;
@@ -353,8 +361,8 @@ namespace ArtificialNeuralNetwork
             { return 0; }
             else
             {
-                return ChanceHome * GetSingleTeamChance(HomeWon + 1, OutWon, BestOf, ChanceHome, ChanceOut, Round)
-                    + ChanceOut * GetSingleTeamChance(HomeWon, OutWon + 1, BestOf, ChanceHome, ChanceOut, Round);
+                return ChanceHome * GetSingleTeamChance(HomeWon + 1, OutWon, BestOf, ChanceHome, ChanceOut, Round+1)
+                    + ChanceOut * GetSingleTeamChance(HomeWon, OutWon + 1, BestOf, ChanceHome, ChanceOut, Round+1);
             }
         }
         #endregion
