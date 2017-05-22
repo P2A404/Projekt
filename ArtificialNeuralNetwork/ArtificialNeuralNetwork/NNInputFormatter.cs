@@ -233,8 +233,8 @@ namespace ArtificialNeuralNetwork
 
             minimumTeam.players[0].stats.assists = Math.Min(minimumTeam.players[0].stats.assists, PlayerStats.assists);
             minimumTeam.players[0].stats.champLevel = Math.Min(minimumTeam.players[0].stats.champLevel, PlayerStats.champLevel);
-            // minimumTeam.players[0].stats.damageDealtToObjectives = Math.Min(minimumTeam.players[0].stats.damageDealtToObjectives, PlayerStats.damageDealtToObjectives);
-            // minimumTeam.players[0].stats.damageDealtToTurrets = Math.Min(minimumTeam.players[0].stats.damageDealtToTurrets, PlayerStats.damageDealtToTurrets);
+            //minimumTeam.players[0].stats.damageDealtToObjectives = Math.Min(minimumTeam.players[0].stats.damageDealtToObjectives, PlayerStats.damageDealtToObjectives);
+            //minimumTeam.players[0].stats.damageDealtToTurrets = Math.Min(minimumTeam.players[0].stats.damageDealtToTurrets, PlayerStats.damageDealtToTurrets);
             //minimumTeam.players[0].stats.damageSelfMitigated = Math.Min(minimumTeam.players[0].stats.damageSelfMitigated, PlayerStats.damageSelfMitigated);
             minimumTeam.players[0].stats.deaths = Math.Min(minimumTeam.players[0].stats.deaths, PlayerStats.deaths);
             minimumTeam.players[0].stats.doubleKills = Math.Min(minimumTeam.players[0].stats.doubleKills, PlayerStats.doubleKills);
@@ -299,10 +299,10 @@ namespace ArtificialNeuralNetwork
 
         private void MakeTestCases()
         {
-            //foreach non-buffer game make a testcase with previous 3 games from same team
+            // Foreach non-buffer game make a testcase with previous 3 games from same team
             for (int i = 0; i < games.Count; i++)
             {
-                //check if the current game is a buffer game
+                // Check if the current game is a buffer game
                 bool isBuffer = false;
                 for (int j = 0; j < bufferGames.Count; j++)
                 {
@@ -317,7 +317,7 @@ namespace ArtificialNeuralNetwork
                     string redTeamName = games[i].teams[1].teamName;
                     List<SaveGameInfo.Team> recentBlueGames = new List<SaveGameInfo.Team>();
                     List<SaveGameInfo.Team> recentRedGames = new List<SaveGameInfo.Team>();
-                    //Find previous 3 games for each team
+                    // Find previous 3 games for each team
                     for (int j = i - 1; recentBlueGames.Count < 3; j--)
                     {
                         if (games[j].teams[0].teamName == blueTeamName)
@@ -332,11 +332,11 @@ namespace ArtificialNeuralNetwork
                         if (games[j].teams[1].teamName == redTeamName)
                         { recentRedGames.Add(games[j].teams[1]); }
                     }
-                    //add the new testCase to the list of testcases
+                    // Add the new testCase to the list of testcases
                     testCases.Add(new TestCase(recentBlueGames.ToArray(), recentRedGames.ToArray(), games[i]));
                 }
             }
-            //make recent games for each test case into input neurons
+            // Make recent games for each test case into input neurons
             CalculateTestCasesInputNeurons();
             Console.WriteLine($"Done making {testCases.Count} Test Cases.");
         }
@@ -748,7 +748,7 @@ namespace ArtificialNeuralNetwork
 
         private SaveGameInfo.Game GameInfoMatchToSaveGameInfoGame(GameInfo.Match match)
         {
-            //still missing some stuff
+            // Still missing some stuff
             SaveGameInfo.Game returnGame = new SaveGameInfo.Game();
             returnGame.gameCreation = match.gameCreation;
             returnGame.gameDuration = match.gameDuration;
