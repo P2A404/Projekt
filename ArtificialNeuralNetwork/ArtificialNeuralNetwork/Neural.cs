@@ -132,7 +132,7 @@ namespace ArtificialNeuralNetwork
                 Console.WriteLine($"totalErrorTerm: {totalErrorTerm}      test: {test}");
                 if (test%50 == 0)
                 {
-                    CalulateAccurracy(testCases);
+                    CalculateAccuracy(testCases);
                 }
                 test++;
 
