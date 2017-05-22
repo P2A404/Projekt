@@ -1,1 +1,4 @@
 C:\Users\ebbel\Source\Repos\Projekt4\ArtificialNeuralNetwork\ArtificialNeuralNetwork\obj\Debug\ArtificialNeuralNetwork.csprojResolveAssemblyReference.cache
+C:\Users\pete7492\Source\Repos\Projekt\ArtificialNeuralNetwork\ArtificialNeuralNetwork\bin\Debug\ArtificialNeuralNetwork.exe.config
+C:\Users\pete7492\Source\Repos\Projekt\ArtificialNeuralNetwork\ArtificialNeuralNetwork\obj\Debug\ArtificialNeuralNetwork.exe
+C:\Users\pete7492\Source\Repos\Projekt\ArtificialNeuralNetwork\ArtificialNeuralNetwork\obj\Debug\ArtificialNeuralNetwork.pdb
